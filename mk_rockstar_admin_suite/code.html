@@ -1,0 +1,2534 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>MK Rockstar | Admin Suite</title>
+  <meta name="description" content="MK Rockstar Admin Dashboard" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="output.css" />
+  <style>
+    /* ── Image Upload Zone ── */
+    .img-drop-zone {
+      border: 2px dashed rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.03);
+      transition: border-color 0.2s, background 0.2s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .img-drop-zone:hover,
+    .img-drop-zone.drag-over {
+      border-color: #e9c349;
+      background: rgba(233, 195, 73, 0.05);
+    }
+
+    .img-drop-zone.has-image {
+      border-style: solid;
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .img-preview {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .img-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.55);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .img-drop-zone.has-image:hover .img-overlay {
+      opacity: 1;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #131313;
+      color: #e5e2e1;
+      font-family: 'Hanken Grotesk', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      user-select: none;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .row-hover:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Sidebar */
+    #sidebar {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #sidebar-overlay {
+      transition: opacity 0.3s ease;
+    }
+
+    #mobile-topnav {
+      display: none;
+    }
+
+    @media(max-width:1023px) {
+      #sidebar {
+        transform: translateX(-100%);
+      }
+
+      #sidebar.open {
+        transform: translateX(0);
+      }
+
+      #mobile-topnav {
+        display: flex;
+      }
+
+      #main-content {
+        margin-left: 0 !important;
+        padding-top: 72px;
+      }
+
+      #sidebar-overlay.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+
+    @media(min-width:1024px) {
+      #sidebar {
+        transform: translateX(0) !important;
+      }
+
+      #sidebar-overlay {
+        display: none !important;
+      }
+
+      #main-content {
+        margin-left: 256px;
+      }
+    }
+
+    /* Scrollable table */
+    .table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Toast */
+    #toast {
+      transform: translateY(120px);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #toast.show {
+      transform: translateY(0);
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-box {
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+    }
+
+    .modal-hidden .modal-box {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+
+    .modal-hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Dropdown */
+    .dropdown-menu {
+      transform: scale(0.95);
+      opacity: 0;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      pointer-events: none;
+    }
+
+    .dropdown-menu.open {
+      transform: scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Notifications panel */
+    #notif-panel {
+      transform: translateX(110%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #notif-panel.open {
+      transform: translateX(0);
+    }
+
+    /* Input styling */
+    .mk-input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #e5e2e1;
+      padding: 10px 14px;
+      width: 100%;
+      outline: none;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .mk-input:focus {
+      border-color: #e9c349;
+    }
+
+    .mk-input::placeholder {
+      color: #988e90;
+    }
+
+    select.mk-input option {
+      background: #201f1f;
+      color: #e5e2e1;
+    }
+
+    /* Status badges */
+    .badge-shipped {
+      border: 1px solid #e9c349;
+      color: #e9c349;
+    }
+
+    .badge-processing {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #cfc4c5;
+    }
+
+    .badge-delivered {
+      border: 1px solid #c6c6c6;
+      color: #c6c6c6;
+    }
+
+    .badge-cancelled {
+      border: 1px solid #ffb4ab;
+      color: #ffb4ab;
+    }
+
+    .badge-pending {
+      border: 1px solid #e9c349;
+      color: #e9c349;
+      opacity: 0.7;
+    }
+
+    /* Bar chart animation */
+    .bar-fill {
+      transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Nav active */
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: #cfc4c5;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #e5e2e1;
+    }
+
+    .nav-link.active {
+      background: rgba(255, 255, 255, 0.05);
+      color: #c6c6c6;
+      border-right: 2px solid #c6c6c6;
+    }
+
+    /* Page views */
+    .page-view {
+      display: none;
+    }
+
+    .page-view.active {
+      display: block;
+    }
+
+    /* Product card */
+    .product-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .product-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    /* Analytics bar */
+    .analytics-bar {
+      height: 100%;
+      background: linear-gradient(to top, #e9c349, #e9c34960);
+      transition: height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @media(max-width:640px) {
+      .resp-h {
+        font-size: 28px !important;
+        line-height: 34px !important;
+      }
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════ LOGIN SCREEN ═══════════════════════ -->
+  <div id="login-screen" class="fixed inset-0 z-[200] bg-background flex flex-col items-center justify-center p-5" style="display:none;">
+    <div class="glass p-8 lg:p-10 w-full max-w-sm flex flex-col items-center">
+      <h1 class="font-headline-md text-headline-md text-on-surface leading-none mb-1 text-center"
+        style="font-family:Anton,sans-serif;font-size:36px;">MK ROCKSTAR</h1>
+      <p class="font-label-caps text-label-caps text-tertiary mb-8 text-center" style="font-size:12px;letter-spacing:0.15em;">ADMIN LOGIN</p>
+      
+      <form id="login-form" class="w-full space-y-4" onsubmit="handleLogin(event)">
+        <div>
+          <label class="block text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">EMAIL</label>
+          <input type="email" id="login-email" class="mk-input" required placeholder="admin@mkrockstar.com" />
+        </div>
+        <div>
+          <label class="block text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">PASSWORD</label>
+          <input type="password" id="login-pass" class="mk-input" required placeholder="••••••••" />
+        </div>
+        <button type="submit" id="login-btn" class="w-full bg-on-surface text-background font-label-caps py-3 mt-4 hover:bg-tertiary transition-all" style="font-size:12px;letter-spacing:0.15em;">
+          LOG IN
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="app-content" style="display:none;">
+  <!-- ═══════════════════════ SIDEBAR OVERLAY ═══════════════════════ -->
+  <div id="sidebar-overlay" class="fixed inset-0 z-30 bg-black/60 opacity-0 pointer-events-none"
+    onclick="closeSidebar()"></div>
+
+  <!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
+  <aside id="sidebar"
+    class="h-screen w-64 fixed left-0 top-0 z-40 bg-surface-container-low border-r border-white/10 flex flex-col py-8 px-4">
+    <div class="mb-10 px-2">
+      <h1 class="font-headline-md text-headline-md text-on-surface leading-none"
+        style="font-family:Anton,sans-serif;font-size:28px;">MK ROCKSTAR</h1>
+      <p class="font-label-caps text-label-caps text-tertiary mt-1" style="font-size:10px;letter-spacing:0.15em;">ADMIN
+        SUITE</p>
+    </div>
+    <nav class="flex-1 space-y-1" id="sidebar-nav">
+      <a class="nav-link active" href="#" data-page="dashboard" onclick="navigate('dashboard',this);return false;">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">dashboard</span>
+        <span class="font-label-caps text-label-caps" style="font-size:11px;letter-spacing:0.15em;">Dashboard</span>
+      </a>
+      <a class="nav-link" href="#" data-page="products" onclick="navigate('products',this);return false;">
+        <span class="material-symbols-outlined">inventory_2</span>
+        <span class="font-label-caps text-label-caps" style="font-size:11px;letter-spacing:0.15em;">Products</span>
+      </a>
+      <a class="nav-link" href="#" data-page="deals" onclick="navigate('deals',this);return false;">
+        <span class="material-symbols-outlined">loyalty</span>
+        <span class="font-label-caps text-label-caps" style="font-size:11px;letter-spacing:0.15em;">Deals</span>
+      </a>
+      <a class="nav-link" href="#" data-page="orders" onclick="navigate('orders',this);return false;">
+        <span class="material-symbols-outlined">shopping_bag</span>
+        <span class="font-label-caps text-label-caps" style="font-size:11px;letter-spacing:0.15em;">Orders</span>
+      </a>
+      <a class="nav-link" href="#" data-page="customers" onclick="navigate('customers',this);return false;">
+        <span class="material-symbols-outlined">group</span>
+        <span class="font-label-caps text-label-caps" style="font-size:11px;letter-spacing:0.15em;">Customers</span>
+      </a>
+      <a class="nav-link" href="#" data-page="analytics" onclick="navigate('analytics',this);return false;">
+        <span class="material-symbols-outlined">leaderboard</span>
+        <span class="font-label-caps text-label-caps" style="font-size:11px;letter-spacing:0.15em;">Analytics</span>
+      </a>
+    </nav>
+    <div class="mt-6 px-2">
+      <button onclick="openProductModal()"
+        class="w-full bg-on-surface text-background font-label-caps py-4 transition-all active:scale-95 hover:bg-tertiary"
+        style="font-size:11px;letter-spacing:0.15em;">
+        ADD NEW PRODUCT
+      </button>
+    </div>
+    <div class="mt-auto space-y-1 pt-8 border-t border-white/5">
+      <a class="nav-link" href="#" data-page="settings" onclick="navigate('settings',this);return false;">
+        <span class="material-symbols-outlined">settings</span>
+        <span class="font-label-caps text-label-caps" style="font-size:11px;letter-spacing:0.15em;">Settings</span>
+      </a>
+      <div class="flex items-center gap-3 px-4 pt-5 mt-3">
+        <div
+          class="w-10 h-10 bg-surface-container-highest rounded-full overflow-hidden border border-white/10 flex-shrink-0">
+          <img class="w-full h-full object-cover" loading="lazy" decoding="async"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgYZ0tELR-xz3Do1GWjMV7MDgyKyKKyZCJhK9kARHAiXcbi2kzEIY5Uchu3d8z_gB266GDDbw23Uj77ZM9DgkQliw3S51HVe0pd53m_8Pk-aHNo0e1xOpf0PzSCIC7a1eJQetfY46Gput3MHYiQmmFsOM20VwaLFr3yVw0Zg7RjxnjimH35N1PWvcS9i5b3jfJc1KiFXwNyJBfJQw90iWmbPt3WfLX9P0wrNtirUT1XgxMjgj7beV9Dty36YGkV5SNeuBu46r_9po"
+            alt="Admin" />
+        </div>
+        <div class="overflow-hidden">
+          <p class="font-label-caps truncate" style="font-size:11px;letter-spacing:0.15em;">MK ADMIN</p>
+          <button onclick="handleLogout()" class="text-error hover:text-white transition-colors uppercase tracking-widest mt-0.5 text-left" style="font-size:10px;">Log Out</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════ MOBILE TOP NAV ═══════════════════════ -->
+  <header id="mobile-topnav"
+    class="fixed top-0 left-0 right-0 z-30 h-[72px] bg-surface-container-low border-b border-white/10 items-center justify-between px-5">
+    <div>
+      <h1 style="font-family:Anton,sans-serif;font-size:20px;line-height:1;" class="text-on-surface">MK ROCKSTAR</h1>
+      <p class="text-tertiary mt-0.5" style="font-size:10px;letter-spacing:0.15em;">ADMIN SUITE</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="toggleNotif()"
+        class="relative material-symbols-outlined text-on-surface-variant hover:text-on-surface transition-colors">notifications
+        <span id="notif-dot-mob" class="absolute -top-1 -right-1 w-2 h-2 bg-tertiary rounded-full"></span>
+      </button>
+      <button onclick="toggleSidebar()"
+        class="material-symbols-outlined text-on-surface hover:text-tertiary transition-colors text-3xl">menu</button>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════ NOTIFICATIONS PANEL ═══════════════════════ -->
+  <div id="notif-panel"
+    class="fixed top-0 right-0 h-full w-full sm:w-96 z-50 bg-surface-container-low border-l border-white/10 flex flex-col">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
+      <h2 style="font-family:Anton,sans-serif;font-size:20px;letter-spacing:0.05em;">NOTIFICATIONS</h2>
+      <button onclick="toggleNotif()"
+        class="material-symbols-outlined text-on-surface-variant hover:text-on-surface transition-colors">close</button>
+    </div>
+    <div class="flex-1 overflow-y-auto divide-y divide-white/5" id="notif-list"></div>
+    <div class="px-6 py-4 border-t border-white/10">
+      <button onclick="clearNotifications()"
+        class="w-full font-label-caps text-on-surface-variant hover:text-on-surface transition-colors py-2"
+        style="font-size:11px;letter-spacing:0.15em;">CLEAR ALL</button>
+    </div>
+  </div>
+  <div id="notif-overlay" class="fixed inset-0 z-40 bg-black/50 opacity-0 pointer-events-none transition-opacity"
+    onclick="toggleNotif()"></div>
+
+  <!-- ═══════════════════════ MAIN CONTENT ═══════════════════════ -->
+  <main id="main-content" class="min-h-screen px-5 py-8 lg:px-margin-desktop lg:py-margin-desktop">
+
+    <!-- ──── PAGE: DASHBOARD ──── -->
+    <div id="page-dashboard" class="page-view active">
+      <header class="hidden lg:flex justify-between items-end mb-14">
+        <div>
+          <p class="font-label-caps text-on-surface-variant mb-2" style="font-size:11px;letter-spacing:0.15em;">OVERVIEW
+          </p>
+          <h2 class="resp-h" style="font-family:Anton,sans-serif;font-size:56px;letter-spacing:0.02em;line-height:1;">
+            ROCKSTAR HUB</h2>
+        </div>
+        <div class="flex items-center gap-6 pb-2">
+          <div class="text-right">
+            <p class="font-label-caps text-on-surface-variant" style="font-size:11px;letter-spacing:0.15em;">CURRENT
+              SESSION</p>
+            <p class="text-tertiary" style="font-size:14px;" id="session-date"></p>
+          </div>
+          <div class="w-px h-10 bg-white/10"></div>
+          <button onclick="toggleNotif()"
+            class="relative material-symbols-outlined text-on-surface-variant hover:text-on-surface transition-colors">notifications
+            <span id="notif-dot" class="absolute -top-1 -right-1 w-2 h-2 bg-tertiary rounded-full"></span>
+          </button>
+        </div>
+      </header>
+      <div class="lg:hidden mb-8">
+        <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">OVERVIEW</p>
+        <h2 style="font-family:Anton,sans-serif;font-size:36px;letter-spacing:0.02em;">ROCKSTAR HUB</h2>
+        <p class="text-tertiary mt-2" style="font-size:13px;" id="session-date-mob"></p>
+      </div>
+
+      <!-- Stats Grid -->
+      <section class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-gutter mb-4 lg:mb-gutter">
+        <div class="glass p-5 lg:p-8 relative overflow-hidden cursor-pointer group"
+          onclick="navigate('orders',document.querySelector('[data-page=orders]'))">
+          <div class="absolute top-0 right-0 p-3 opacity-10"><span
+              class="material-symbols-outlined text-5xl">payments</span></div>
+          <p class="text-on-surface-variant mb-3" style="font-size:10px;letter-spacing:0.15em;">TOTAL SALES</p>
+          <h3 id="stat-sales" style="font-family:Anton,sans-serif;font-size:28px;letter-spacing:0.05em;">Rs. 240.5K</h3>
+          <div class="mt-3 flex items-center gap-2"><span class="text-tertiary text-xs font-bold">+12.4%</span><span
+              class="text-on-surface-variant hidden sm:block" style="font-size:9px;letter-spacing:0.1em;">VS LAST
+              MONTH</span></div>
+        </div>
+        <div class="glass p-5 lg:p-8 relative overflow-hidden cursor-pointer group"
+          onclick="navigate('orders',document.querySelector('[data-page=orders]'))">
+          <div class="absolute top-0 right-0 p-3 opacity-10"><span
+              class="material-symbols-outlined text-5xl">shopping_cart</span></div>
+          <p class="text-on-surface-variant mb-3" style="font-size:10px;letter-spacing:0.15em;">TOTAL ORDERS</p>
+          <h3 id="stat-orders" style="font-family:Anton,sans-serif;font-size:28px;letter-spacing:0.05em;">—</h3>
+          <div class="mt-3 flex items-center gap-2"><span class="text-tertiary text-xs font-bold">+8.1%</span><span
+              class="text-on-surface-variant hidden sm:block" style="font-size:9px;letter-spacing:0.1em;">GROWTH
+              RATE</span></div>
+        </div>
+        <div class="glass p-5 lg:p-8 relative overflow-hidden cursor-pointer group"
+          onclick="navigate('analytics',document.querySelector('[data-page=analytics]'))">
+          <div class="absolute top-0 right-0 p-3 opacity-10"><span
+              class="material-symbols-outlined text-5xl">trending_up</span></div>
+          <p class="text-on-surface-variant mb-3" style="font-size:10px;letter-spacing:0.15em;">REVENUE</p>
+          <h3 style="font-family:Anton,sans-serif;font-size:28px;letter-spacing:0.05em;">Rs. 182.2K</h3>
+          <div class="mt-3 flex items-center gap-2"><span class="text-tertiary text-xs font-bold">+15.7%</span><span
+              class="text-on-surface-variant hidden sm:block" style="font-size:9px;letter-spacing:0.1em;">NET
+              MARGIN</span></div>
+        </div>
+        <div class="glass p-5 lg:p-8 relative overflow-hidden cursor-pointer group"
+          onclick="navigate('orders',document.querySelector('[data-page=orders]'))">
+          <div class="absolute top-0 right-0 p-3 opacity-10"><span
+              class="material-symbols-outlined text-5xl">pending_actions</span></div>
+          <p class="text-on-surface-variant mb-3" style="font-size:10px;letter-spacing:0.15em;">PENDING ORDERS</p>
+          <h3 id="stat-pending" style="font-family:Anton,sans-serif;font-size:28px;letter-spacing:0.05em;">—</h3>
+          <div class="mt-3 flex items-center gap-2 text-error"><span class="text-xs font-bold">ACTION REQ.</span><span
+              style="font-size:9px;" id="stat-urgent"></span></div>
+        </div>
+      </section>
+
+      <!-- Chart + Categories -->
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-gutter mb-4 lg:mb-gutter">
+        <div class="lg:col-span-8 glass p-5 lg:p-8 min-h-[300px] lg:min-h-[420px] flex flex-col">
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+            <div>
+              <p class="text-on-surface-variant" style="font-size:10px;letter-spacing:0.15em;">REVENUE ANALYTICS</p>
+              <h3 style="font-family:Anton,sans-serif;font-size:22px;letter-spacing:0.05em;" class="mt-1"
+                id="chart-title">PERFORMANCE INDEX</h3>
+            </div>
+            <div class="flex gap-3">
+              <button id="btn-monthly" onclick="setChart('monthly')"
+                class="px-3 py-1 border border-tertiary text-tertiary font-label-caps transition-colors"
+                style="font-size:10px;letter-spacing:0.1em;">MONTHLY</button>
+              <button id="btn-quarterly" onclick="setChart('quarterly')"
+                class="px-3 py-1 border border-white/20 font-label-caps hover:border-tertiary transition-colors"
+                style="font-size:10px;letter-spacing:0.1em;">QUARTERLY</button>
+            </div>
+          </div>
+          <div class="flex-1 relative flex items-end justify-between px-2 pb-8" id="chart-bars"></div>
+        </div>
+        <div class="lg:col-span-4 glass p-5 lg:p-8">
+          <p class="text-on-surface-variant mb-6" style="font-size:10px;letter-spacing:0.15em;">TOP CATEGORIES</p>
+          <div class="space-y-5" id="category-bars"></div>
+        </div>
+      </section>
+
+      <!-- Recent Orders Table -->
+      <section class="glass overflow-hidden">
+        <div class="px-5 lg:px-8 py-5 flex justify-between items-center border-b border-white/10">
+          <h3 style="font-family:Anton,sans-serif;font-size:22px;letter-spacing:0.05em;">RECENT ORDERS</h3>
+          <button onclick="navigate('orders',document.querySelector('[data-page=orders]'))"
+            class="flex items-center gap-2 text-on-surface-variant hover:text-white transition-colors"
+            style="font-size:11px;letter-spacing:0.15em;">
+            VIEW ALL <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </button>
+        </div>
+        <div id="dash-orders-mobile" class="block md:hidden divide-y divide-white/5"></div>
+        <div class="hidden md:block table-scroll">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-white/5">
+                <th class="px-6 lg:px-8 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">ORDER ID</th>
+                <th class="px-6 lg:px-8 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">CUSTOMER</th>
+                <th class="px-6 lg:px-8 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">DATE</th>
+                <th class="px-6 lg:px-8 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">AMOUNT</th>
+                <th class="px-6 lg:px-8 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">STATUS</th>
+                <th class="px-6 lg:px-8 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">ACTION</th>
+              </tr>
+            </thead>
+            <tbody id="dash-orders-table" class="divide-y divide-white/5"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer
+        class="mt-16 pt-8 border-t border-white/5 pb-8 flex flex-col sm:flex-row justify-between items-center gap-4 opacity-40">
+        <p style="font-size:10px;letter-spacing:0.1em;">© 2024 MK ROCKSTAR. ALL RIGHTS RESERVED.</p>
+        <div class="flex gap-6">
+          <a href="#" onclick="showToast('System status: All systems operational','info');return false;"
+            style="font-size:10px;letter-spacing:0.1em;" class="hover:text-white transition-colors">SYSTEM STATUS</a>
+          <a href="#" onclick="showToast('API Docs coming soon','info');return false;"
+            style="font-size:10px;letter-spacing:0.1em;" class="hover:text-white transition-colors">API DOCS</a>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ──── PAGE: PRODUCTS ──── -->
+    <div id="page-products" class="page-view">
+      <header class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 mb-10">
+        <div>
+          <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">INVENTORY</p>
+          <h2 style="font-family:Anton,sans-serif;font-size:48px;letter-spacing:0.02em;" class="resp-h">PRODUCTS</h2>
+        </div>
+        <div class="flex gap-3 flex-wrap">
+          <input id="product-search" type="text" placeholder="Search products..." class="mk-input w-48"
+            oninput="renderProducts()" />
+          <select id="product-filter" class="mk-input w-36" onchange="renderProducts()">
+            <option value="">All Categories</option>
+            <option value="Outerwear">Outerwear</option>
+            <option value="Footwear">Footwear</option>
+            <option value="Accessories">Accessories</option>
+            <option value="Tops">Tops</option>
+            <option value="Bottoms">Bottoms</option>
+          </select>
+          <button onclick="openProductModal()"
+            class="bg-on-surface text-background px-5 py-2 hover:bg-tertiary transition-all flex items-center gap-2 whitespace-nowrap"
+            style="font-size:11px;letter-spacing:0.15em;">
+            <span class="material-symbols-outlined text-lg">add</span>ADD PRODUCT
+          </button>
+        </div>
+      </header>
+      <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+      <p id="no-products" class="hidden text-center text-on-surface-variant py-16" style="font-size:13px;">No products
+        found.</p>
+    </div>
+
+    <!-- ──── PAGE: DEALS ──── -->
+    <div id="page-deals" class="page-view">
+      <header class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 mb-10">
+        <div>
+          <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">PROMOTIONS</p>
+          <h2 style="font-family:Anton,sans-serif;font-size:48px;letter-spacing:0.02em;" class="resp-h">DEALS</h2>
+        </div>
+        <div class="flex gap-3 flex-wrap">
+          <button onclick="openModal('deal-modal')"
+            class="bg-on-surface text-background px-5 py-2 hover:bg-tertiary transition-all flex items-center gap-2 whitespace-nowrap"
+            style="font-size:11px;letter-spacing:0.15em;">
+            <span class="material-symbols-outlined text-lg">add</span>ADD DEAL
+          </button>
+        </div>
+      </header>
+      <div id="deals-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+      <p id="no-deals" class="hidden text-center text-on-surface-variant py-16" style="font-size:13px;">No deals found.
+      </p>
+    </div>
+
+    <!-- ──── PAGE: ORDERS ──── -->
+    <div id="page-orders" class="page-view">
+      <header class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 mb-10">
+        <div>
+          <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">MANAGEMENT</p>
+          <h2 style="font-family:Anton,sans-serif;font-size:48px;letter-spacing:0.02em;" class="resp-h">ORDERS</h2>
+        </div>
+        <div class="flex gap-3 flex-wrap">
+          <input id="order-search" type="text" placeholder="Search orders..." class="mk-input w-44"
+            oninput="renderOrders()" />
+          <select id="order-filter" class="mk-input w-36" onchange="renderOrders()">
+            <option value="">All Status</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Processing">Processing</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+            <option value="Pending">Pending</option>
+          </select>
+          <button onclick="deleteTestOrders()" class="bg-red-600/20 text-red-400 hover:bg-red-600/40 hover:text-white px-4 py-2 text-xs font-bold border border-red-500/30 transition-all" style="letter-spacing:0.1em; border-radius:4px;">DELETE TEST ORDERS</button>
+          <button onclick="deleteAllOrders()" class="bg-red-600 text-white hover:bg-red-750 px-4 py-2 text-xs font-bold transition-all" style="letter-spacing:0.1em; border-radius:4px;">DELETE ALL ORDERS</button>
+        </div>
+      </header>
+      <!-- Mobile cards -->
+      <div id="orders-mobile" class="block md:hidden space-y-3 mb-4"></div>
+      <!-- Desktop table -->
+      <div class="hidden md:block glass overflow-hidden">
+        <div class="table-scroll">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-white/5">
+                <th class="px-6 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">ORDER ID</th>
+                <th class="px-6 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">CUSTOMER</th>
+                <th class="px-6 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">DATE</th>
+                <th class="px-6 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">ITEMS</th>
+                <th class="px-6 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">AMOUNT</th>
+                <th class="px-6 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">STATUS</th>
+                <th class="px-6 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">ACTION</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table" class="divide-y divide-white/5"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="orders-load-more-container" class="flex justify-center mt-6 hidden">
+        <button onclick="loadMoreOrders()" class="bg-surface-container-high hover:bg-surface-container-highest text-on-surface px-6 py-3 text-xs font-bold transition-all border border-white/5" style="letter-spacing:0.1em; border-radius:4px;">LOAD MORE</button>
+      </div>
+      <p id="no-orders" class="hidden text-center text-on-surface-variant py-16" style="font-size:13px;">No orders found.</p>
+    </div>
+
+    <!-- ──── PAGE: CUSTOMERS ──── -->
+    <div id="page-customers" class="page-view">
+      <header class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 mb-10">
+        <div>
+          <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">CRM</p>
+          <h2 style="font-family:Anton,sans-serif;font-size:48px;letter-spacing:0.02em;" class="resp-h">CUSTOMERS</h2>
+        </div>
+        <input id="customer-search" type="text" placeholder="Search customers..." class="mk-input w-48"
+          oninput="renderCustomers()" />
+      </header>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div class="glass p-6">
+          <p class="text-on-surface-variant mb-2" style="font-size:10px;letter-spacing:0.15em;">TOTAL CUSTOMERS</p>
+          <h3 id="cust-total" style="font-family:Anton,sans-serif;font-size:32px;">—</h3>
+        </div>
+        <div class="glass p-6">
+          <p class="text-on-surface-variant mb-2" style="font-size:10px;letter-spacing:0.15em;">VIP MEMBERS</p>
+          <h3 style="font-family:Anton,sans-serif;font-size:32px;">3</h3>
+        </div>
+        <div class="glass p-6">
+          <p class="text-on-surface-variant mb-2" style="font-size:10px;letter-spacing:0.15em;">AVG ORDER VALUE</p>
+          <h3 style="font-family:Anton,sans-serif;font-size:32px;">Rs. 892</h3>
+        </div>
+      </div>
+      <!-- Mobile -->
+      <div id="customers-mobile" class="block md:hidden space-y-3"></div>
+      <!-- Desktop table -->
+      <div class="hidden md:block glass overflow-hidden">
+        <div class="table-scroll">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-white/5">
+                <th class="px-6 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">CUSTOMER</th>
+                <th class="px-6 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">EMAIL</th>
+                <th class="px-6 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">ORDERS</th>
+                <th class="px-6 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">TOTAL SPENT</th>
+                <th class="px-6 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">TIER</th>
+                <th class="px-6 py-4 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">JOINED</th>
+              </tr>
+            </thead>
+            <tbody id="customers-table" class="divide-y divide-white/5"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ──── PAGE: ANALYTICS ──── -->
+    <div id="page-analytics" class="page-view">
+      <header class="mb-10">
+        <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">INSIGHTS</p>
+        <h2 style="font-family:Anton,sans-serif;font-size:48px;letter-spacing:0.02em;" class="resp-h">ANALYTICS</h2>
+      </header>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="glass p-5">
+          <p class="text-on-surface-variant mb-2" style="font-size:10px;letter-spacing:0.15em;">CONVERSION RATE</p>
+          <h3 style="font-family:Anton,sans-serif;font-size:28px;">3.8%</h3>
+          <p class="text-tertiary text-xs mt-1">+0.4% this month</p>
+        </div>
+        <div class="glass p-5">
+          <p class="text-on-surface-variant mb-2" style="font-size:10px;letter-spacing:0.15em;">AVG ORDER VALUE</p>
+          <h3 style="font-family:Anton,sans-serif;font-size:28px;">Rs. 892</h3>
+          <p class="text-tertiary text-xs mt-1">+Rs. 34 this month</p>
+        </div>
+        <div class="glass p-5">
+          <p class="text-on-surface-variant mb-2" style="font-size:10px;letter-spacing:0.15em;">RETURN RATE</p>
+          <h3 style="font-family:Anton,sans-serif;font-size:28px;">2.1%</h3>
+          <p class="text-primary text-xs mt-1">-0.2% this month</p>
+        </div>
+        <div class="glass p-5">
+          <p class="text-on-surface-variant mb-2" style="font-size:10px;letter-spacing:0.15em;">SITE VISITS</p>
+          <h3 style="font-family:Anton,sans-serif;font-size:28px;">48.2K</h3>
+          <p class="text-tertiary text-xs mt-1">+18% this month</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+        <!-- Revenue chart big -->
+        <div class="glass p-6 lg:p-8">
+          <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">MONTHLY REVENUE</p>
+          <h3 style="font-family:Anton,sans-serif;font-size:20px;" class="mb-6">2024 PERFORMANCE</h3>
+          <div class="h-52 flex items-end justify-between gap-1 pb-6 relative">
+            <div class="absolute inset-0 flex flex-col justify-between pb-6 opacity-10 pointer-events-none">
+              <div class="border-t border-white w-full"></div>
+              <div class="border-t border-white w-full"></div>
+              <div class="border-t border-white w-full"></div>
+              <div class="border-t border-white w-full"></div>
+            </div>
+            <div id="analytics-monthly-bars" class="flex items-end justify-between w-full gap-1 h-full"></div>
+          </div>
+        </div>
+        <!-- Category donut -->
+        <div class="glass p-6 lg:p-8">
+          <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">CATEGORY BREAKDOWN</p>
+          <h3 style="font-family:Anton,sans-serif;font-size:20px;" class="mb-6">SALES BY CATEGORY</h3>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between mb-1"><span style="font-size:13px;">Outerwear</span><span
+                  class="text-tertiary font-bold" style="font-size:13px;">42%</span></div>
+              <div class="h-2 bg-white/10">
+                <div class="h-full bg-tertiary" style="width:42%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-1"><span style="font-size:13px;">Footwear</span><span
+                  class="text-tertiary font-bold" style="font-size:13px;">30%</span></div>
+              <div class="h-2 bg-white/10">
+                <div class="h-full bg-tertiary opacity-70" style="width:30%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-1"><span style="font-size:13px;">Accessories</span><span
+                  class="text-tertiary font-bold" style="font-size:13px;">18%</span></div>
+              <div class="h-2 bg-white/10">
+                <div class="h-full bg-tertiary opacity-50" style="width:18%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-1"><span style="font-size:13px;">Tops</span><span
+                  class="text-primary font-bold" style="font-size:13px;">7%</span></div>
+              <div class="h-2 bg-white/10">
+                <div class="h-full bg-primary opacity-50" style="width:7%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-1"><span style="font-size:13px;">Bottoms</span><span
+                  class="text-primary font-bold" style="font-size:13px;">3%</span></div>
+              <div class="h-2 bg-white/10">
+                <div class="h-full bg-primary opacity-30" style="width:3%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Top products table -->
+      <div class="glass overflow-hidden">
+        <div class="px-6 py-5 border-b border-white/10">
+          <h3 style="font-family:Anton,sans-serif;font-size:20px;letter-spacing:0.05em;">TOP PERFORMING PRODUCTS</h3>
+        </div>
+        <div class="table-scroll">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-white/5">
+                <th class="px-6 py-3 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">PRODUCT</th>
+                <th class="px-6 py-3 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">CATEGORY</th>
+                <th class="px-6 py-3 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">UNITS SOLD</th>
+                <th class="px-6 py-3 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">REVENUE</th>
+                <th class="px-6 py-3 text-on-surface-variant whitespace-nowrap"
+                  style="font-size:10px;letter-spacing:0.15em;">TREND</th>
+              </tr>
+            </thead>
+            <tbody id="analytics-products" class="divide-y divide-white/5"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ──── PAGE: SETTINGS ──── -->
+    <div id="page-settings" class="page-view">
+      <header class="mb-10">
+        <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">CONFIGURATION</p>
+        <h2 style="font-family:Anton,sans-serif;font-size:48px;letter-spacing:0.02em;" class="resp-h">SETTINGS</h2>
+      </header>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="glass p-6 space-y-5">
+          <h3 style="font-family:Anton,sans-serif;font-size:18px;letter-spacing:0.05em;" class="mb-4">STORE PROFILE</h3>
+          <div><label class="block text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">STORE
+              NAME</label><input class="mk-input" value="MK Rockstar" /></div>
+          <div><label class="block text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">ADMIN
+              EMAIL</label><input class="mk-input" value="admin@mkrockstar.com" /></div>
+          <div><label class="block text-on-surface-variant mb-1"
+              style="font-size:10px;letter-spacing:0.15em;">CURRENCY</label>
+            <select class="mk-input">
+              <option>USD ($)</option>
+              <option>PKR (₨)</option>
+              <option>EUR (€)</option>
+              <option>GBP (£)</option>
+            </select>
+          </div>
+          <div><label class="block text-on-surface-variant mb-1"
+              style="font-size:10px;letter-spacing:0.15em;">TIMEZONE</label>
+            <select class="mk-input">
+              <option>Asia/Karachi (PKT)</option>
+              <option>UTC</option>
+              <option>America/New_York</option>
+            </select>
+          </div>
+          <button onclick="showToast('Store profile saved','success')"
+            class="bg-on-surface text-background px-6 py-3 hover:bg-tertiary transition-all mt-2"
+            style="font-size:11px;letter-spacing:0.15em;">SAVE CHANGES</button>
+        </div>
+        <div class="glass p-6 space-y-5">
+          <h3 style="font-family:Anton,sans-serif;font-size:18px;letter-spacing:0.05em;" class="mb-4">NOTIFICATIONS</h3>
+          <div class="flex justify-between items-center py-3 border-b border-white/10">
+            <div>
+              <p style="font-size:14px;">New Order Alerts</p>
+              <p class="text-on-surface-variant" style="font-size:12px;">Get notified for every new order</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" checked
+                class="sr-only peer" onchange="showToast('Setting updated','success')">
+              <div
+                class="w-11 h-6 bg-white/10 peer-checked:bg-tertiary rounded-full peer-focus:outline-none transition-colors">
+              </div>
+              <div
+                class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform peer-checked:translate-x-5">
+              </div>
+            </label>
+          </div>
+          <div class="flex justify-between items-center py-3 border-b border-white/10">
+            <div>
+              <p style="font-size:14px;">Low Stock Warnings</p>
+              <p class="text-on-surface-variant" style="font-size:12px;">Alert when stock falls below 5</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" checked
+                class="sr-only peer" onchange="showToast('Setting updated','success')">
+              <div class="w-11 h-6 bg-white/10 peer-checked:bg-tertiary rounded-full transition-colors"></div>
+              <div
+                class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform peer-checked:translate-x-5">
+              </div>
+            </label>
+          </div>
+          <div class="flex justify-between items-center py-3">
+            <div>
+              <p style="font-size:14px;">Weekly Reports</p>
+              <p class="text-on-surface-variant" style="font-size:12px;">Email summary every Monday</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer"
+                onchange="showToast('Setting updated','success')">
+              <div class="w-11 h-6 bg-white/10 peer-checked:bg-tertiary rounded-full transition-colors"></div>
+              <div
+                class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform peer-checked:translate-x-5">
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══════════════════════ MODALS ═══════════════════════ -->
+
+  <!-- ═══════════════════════ PRODUCT MODAL ═══════════════════════ -->
+  <div id="product-modal"
+    class="modal-hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop bg-black/70">
+    <div class="modal-box bg-surface-container-high border border-white/10 w-full max-w-2xl max-h-[90vh] flex flex-col">
+      <div class="flex justify-between items-center p-6 border-b border-white/10">
+        <h3 id="product-modal-title" style="font-family:Anton,sans-serif;font-size:24px;letter-spacing:0.02em;">PRODUCT
+          DETAILS</h3>
+        <button type="button" onclick="closeModal('product-modal')"
+          class="text-on-surface-variant hover:text-white transition-colors"><span
+            class="material-symbols-outlined">close</span></button>
+      </div>
+      <div class="p-6 overflow-y-auto flex-1">
+        <form id="product-form" onsubmit="saveProduct(event)" class="space-y-5">
+          <input type="hidden" id="edit-product-id">
+          <input type="hidden" id="p-image-data">
+
+          <!-- ── IMAGE UPLOAD ── -->
+          <div>
+            <label class="block text-on-surface-variant mb-2" style="font-size:10px;letter-spacing:0.15em;">PRODUCT
+              IMAGE</label>
+            <div id="img-drop-zone" class="img-drop-zone rounded-none mb-3" style="height:180px;"
+              onclick="document.getElementById('p-image-file').click()" ondragover="handleDragOver(event)"
+              ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+              <div id="img-placeholder"
+                class="absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none">
+                <span class="material-symbols-outlined text-on-surface-variant"
+                  style="font-size:36px;opacity:0.4;">add_photo_alternate</span>
+                <p class="text-on-surface-variant text-center" style="font-size:11px;letter-spacing:0.1em;opacity:0.6;">
+                  DRAG & DROP OR CLICK TO UPLOAD</p>
+              </div>
+              <img id="img-preview-el" class="img-preview hidden" alt="Product preview" loading="lazy" decoding="async" />
+              <div class="img-overlay">
+                <span class="material-symbols-outlined text-white" style="font-size:28px;">edit</span>
+              </div>
+            </div>
+            <input type="file" id="p-image-file" accept="image/*" class="hidden" onchange="handleImageFile(this)" />
+            <input type="file" id="p-camera-file" accept="image/*" capture="environment" class="hidden"
+              onchange="handleImageFile(this)" />
+            <div class="grid grid-cols-2 gap-3">
+              <button type="button" onclick="document.getElementById('p-image-file').click()"
+                class="flex items-center justify-center gap-2 border border-white/20 py-2.5 text-on-surface-variant hover:border-tertiary hover:text-tertiary transition-all"
+                style="font-size:11px;letter-spacing:0.1em;"><span class="material-symbols-outlined"
+                  style="font-size:18px;">photo_library</span>CHOOSE FROM PHOTOS</button>
+              <button type="button" onclick="document.getElementById('p-camera-file').click()"
+                class="flex items-center justify-center gap-2 border border-white/20 py-2.5 text-on-surface-variant hover:border-tertiary hover:text-tertiary transition-all"
+                style="font-size:11px;letter-spacing:0.1em;"><span class="material-symbols-outlined"
+                  style="font-size:18px;">photo_camera</span>TAKE PHOTO</button>
+            </div>
+            <button type="button" id="img-remove-btn" onclick="removeProductImage()"
+              class="hidden mt-2 text-error hover:opacity-70 transition-opacity flex items-center gap-1"
+              style="font-size:11px;letter-spacing:0.1em;"><span class="material-symbols-outlined"
+                style="font-size:14px;">close</span>REMOVE IMAGE</button>
+          </div>
+
+          <div class="flex items-center gap-3 mb-4">
+            <input type="checkbox" id="p-is-new" checked
+              class="w-4 h-4 bg-transparent border-white/20 checked:bg-tertiary checked:border-tertiary focus:ring-tertiary focus:ring-offset-background">
+            <label for="p-is-new"
+              class="text-[11px] font-bold text-on-surface-variant tracking-widest cursor-pointer hover:text-white transition-colors">MARK
+              AS NEW ARRIVAL</label>
+          </div>
+          <div><label class="block text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">PRODUCT
+              NAME *</label><input class="mk-input" id="p-name" placeholder="e.g. Oversized Bomber Jacket" /></div>
+          <div class="grid grid-cols-2 gap-4">
+            <div><label class="block text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">PRICE
+                (PKR) *</label><input class="mk-input" id="p-price" type="number" step="0.01" min="0"
+                placeholder="0.00" /></div>
+            <div><label class="block text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">STOCK
+                *</label><input class="mk-input" id="p-stock" type="number" min="0" placeholder="0" /></div>
+          </div>
+          <div><label class="block text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">CATEGORY
+              *</label>
+            <select class="mk-input" id="p-category">
+              <option value="">Select Category</option>
+              <option>Outerwear</option>
+              <option>Footwear</option>
+              <option>Accessories</option>
+              <option>Tops</option>
+              <option>Bottoms</option>
+            </select>
+          </div>
+          <div><label class="block text-on-surface-variant mb-1"
+              style="font-size:10px;letter-spacing:0.15em;">SKU</label><input class="mk-input" id="p-sku"
+              placeholder="MK-XXXX" /></div>
+          <div><label class="block text-on-surface-variant mb-1"
+              style="font-size:10px;letter-spacing:0.15em;">DESCRIPTION</label><textarea
+              class="mk-input h-20 resize-none" id="p-desc" placeholder="Product description..."></textarea></div>
+          <div class="flex gap-4 mt-6">
+            <button type="submit" class="flex-1 bg-on-surface text-background py-3 hover:bg-tertiary transition-all"
+              style="font-size:11px;letter-spacing:0.15em;">SAVE PRODUCT</button>
+            <button type="button" onclick="closeModal('product-modal')"
+              class="flex-1 border border-white/20 py-3 text-on-surface-variant hover:border-white/50 hover:text-white transition-all"
+              style="font-size:11px;letter-spacing:0.15em;">CANCEL</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- DEAL MODAL -->
+  <div id="deal-modal"
+    class="modal-hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop bg-black/70">
+    <div class="modal-box bg-surface-container-low border border-white/10 w-full max-w-lg max-h-[90vh] flex flex-col">
+      <div class="flex justify-between items-center p-6 border-b border-white/10">
+        <h3 style="font-family:Anton,sans-serif;font-size:24px;letter-spacing:0.05em;">DEAL DETAILS</h3>
+        <button type="button" onclick="closeModal('deal-modal')"
+          class="material-symbols-outlined text-on-surface-variant hover:text-white transition-colors">close</button>
+      </div>
+      <div class="p-6 lg:p-8 overflow-y-auto flex-1">
+        <form id="deal-form" onsubmit="saveDeal(event)" class="space-y-4">
+          <input type="hidden" id="edit-deal-id">
+          <input type="hidden" id="d-image-data">
+          <div>
+            <label class="block text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">DEAL TITLE *</label>
+            <input class="mk-input w-full" id="d-title" placeholder="e.g. Summer Blowout">
+          </div>
+          <div>
+            <label class="block text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">DESCRIPTION</label>
+            <textarea class="mk-input w-full h-20 resize-none" id="d-desc" placeholder="Brief description of the deal..."></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">ORIGINAL PRICE *</label>
+              <input class="mk-input w-full" type="number" id="d-orig-price" required min="0" step="0.01" placeholder="0.00">
+            </div>
+            <div>
+              <label class="block text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">DEAL PRICE *</label>
+              <input class="mk-input w-full" type="number" id="d-deal-price" required min="0" step="0.01" placeholder="0.00">
+            </div>
+          </div>
+          <div>
+            <label class="block text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">LINKED PRODUCT ID</label>
+            <input class="mk-input w-full" type="number" id="d-product-id" placeholder="Product ID if applicable">
+          </div>
+          <div>
+            <label class="block text-on-surface-variant mb-2" style="font-size:10px;letter-spacing:0.15em;">DEAL IMAGE</label>
+            <div id="d-img-drop-zone" class="img-drop-zone rounded-none mb-3" style="height:180px;"
+              onclick="document.getElementById('d-image-file').click()" ondragover="handleDealDragOver(event)"
+              ondragleave="handleDealDragLeave(event)" ondrop="handleDealDrop(event)">
+              <div id="d-img-placeholder" class="absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none">
+                <span class="material-symbols-outlined text-on-surface-variant" style="font-size:36px;opacity:0.4;">add_photo_alternate</span>
+                <p class="text-on-surface-variant text-center" style="font-size:11px;letter-spacing:0.1em;opacity:0.6;">DRAG & DROP OR CLICK TO UPLOAD</p>
+              </div>
+              <img id="d-img-preview-el" class="img-preview hidden" alt="Deal preview" loading="lazy" decoding="async" />
+              <div class="img-overlay">
+                <span class="material-symbols-outlined text-white" style="font-size:28px;">edit</span>
+              </div>
+            </div>
+            <input type="file" id="d-image-file" accept="image/*" class="hidden" onchange="handleDealImageFile(this)" />
+            <input type="file" id="d-camera-file" accept="image/*" capture="environment" class="hidden" onchange="handleDealImageFile(this)" />
+            <div class="grid grid-cols-2 gap-3">
+              <button type="button" onclick="document.getElementById('d-image-file').click()"
+                class="flex items-center justify-center gap-2 border border-white/20 py-2.5 text-on-surface-variant hover:border-tertiary hover:text-tertiary transition-all"
+                style="font-size:11px;letter-spacing:0.1em;"><span class="material-symbols-outlined" style="font-size:18px;">photo_library</span>CHOOSE</button>
+              <button type="button" onclick="document.getElementById('d-camera-file').click()"
+                class="flex items-center justify-center gap-2 border border-white/20 py-2.5 text-on-surface-variant hover:border-tertiary hover:text-tertiary transition-all"
+                style="font-size:11px;letter-spacing:0.1em;"><span class="material-symbols-outlined" style="font-size:18px;">photo_camera</span>CAMERA</button>
+            </div>
+            <button type="button" id="d-img-remove-btn" onclick="removeDealImage()"
+              class="hidden mt-2 text-error hover:opacity-70 transition-opacity flex items-center gap-1"
+              style="font-size:11px;letter-spacing:0.1em;"><span class="material-symbols-outlined" style="font-size:14px;">close</span>REMOVE IMAGE</button>
+          </div>
+          <div class="flex items-center gap-3 py-2">
+            <input type="checkbox" id="d-is-active" checked
+              class="w-4 h-4 bg-transparent border-white/20 checked:bg-tertiary checked:border-tertiary focus:ring-tertiary focus:ring-offset-background">
+            <label for="d-is-active" class="text-[11px] font-bold text-on-surface-variant tracking-widest cursor-pointer hover:text-white transition-colors">ACTIVE</label>
+          </div>
+          <div class="flex gap-3 pt-2">
+            <button type="submit" class="flex-1 bg-on-surface text-background py-3 hover:bg-tertiary transition-all" style="font-size:11px;letter-spacing:0.15em;">SAVE DEAL</button>
+            <button type="button" onclick="closeModal('deal-modal')" class="flex-1 border border-white/20 py-3 text-on-surface-variant hover:border-white/50 hover:text-white transition-all" style="font-size:11px;letter-spacing:0.15em;">CANCEL</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER DETAIL MODAL -->
+  <div id="order-modal"
+    class="modal-hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop bg-black/70">
+    <div
+      class="modal-box bg-surface-container-low border border-white/10 w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 lg:p-8">
+      <div class="flex justify-between items-center mb-6">
+        <h3 id="order-modal-id" style="font-family:Anton,sans-serif;font-size:24px;letter-spacing:0.05em;">ORDER DETAIL
+        </h3>
+        <button onclick="closeModal('order-modal')"
+          class="material-symbols-outlined text-on-surface-variant hover:text-white transition-colors">close</button>
+      </div>
+      <div id="order-modal-content" class="space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- CUSTOMER DETAIL MODAL -->
+  <div id="customer-modal"
+    class="modal-hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop bg-black/70">
+    <div
+      class="modal-box bg-surface-container-low border border-white/10 w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 lg:p-8">
+      <div class="flex justify-between items-center mb-6">
+        <h3 style="font-family:Anton,sans-serif;font-size:24px;letter-spacing:0.05em;">CUSTOMER DETAIL</h3>
+        <button onclick="closeModal('customer-modal')"
+          class="material-symbols-outlined text-on-surface-variant hover:text-white transition-colors">close</button>
+      </div>
+      <div id="customer-modal-content" class="space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- CONFIRM DELETE MODAL -->
+  <div id="confirm-modal"
+    class="modal-hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop bg-black/70">
+    <div class="modal-box bg-surface-container-low border border-white/10 w-full max-w-sm p-6 lg:p-8 text-center">
+      <span class="material-symbols-outlined text-error text-5xl mb-4 block">delete_forever</span>
+      <h3 style="font-family:Anton,sans-serif;font-size:22px;" class="mb-2">CONFIRM DELETE</h3>
+      <p id="confirm-message" class="text-on-surface-variant mb-6" style="font-size:14px;"></p>
+      <div class="flex gap-3">
+        <button id="confirm-yes" class="flex-1 bg-error text-on-error py-3 hover:opacity-90 transition-all"
+          style="font-size:11px;letter-spacing:0.15em;">DELETE</button>
+        <button onclick="closeModal('confirm-modal')"
+          class="flex-1 border border-white/20 py-3 text-on-surface-variant hover:border-white/50 transition-all"
+          style="font-size:11px;letter-spacing:0.15em;">CANCEL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPDATE STATUS MODAL -->
+  <div id="status-modal"
+    class="modal-hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop bg-black/70">
+    <div class="modal-box bg-surface-container-low border border-white/10 w-full max-w-sm p-6 lg:p-8">
+      <div class="flex justify-between items-center mb-6">
+        <h3 style="font-family:Anton,sans-serif;font-size:22px;letter-spacing:0.05em;">UPDATE STATUS</h3>
+        <button onclick="closeModal('status-modal')"
+          class="material-symbols-outlined text-on-surface-variant hover:text-white">close</button>
+      </div>
+      <input type="hidden" id="status-order-id" />
+      <p id="status-order-ref" class="text-on-surface-variant mb-4" style="font-size:13px;"></p>
+      <div class="space-y-2" id="status-options"></div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-5 py-3 border min-w-[200px]"
+    style="background:rgba(30,29,29,0.95);backdrop-filter:blur(12px);">
+    <span id="toast-icon" class="material-symbols-outlined text-lg">check_circle</span>
+    <span id="toast-msg" style="font-size:13px;"></span>
+  </div>
+
+  <!-- ═══════════════════════ CONTEXT DROPDOWN ═══════════════════════ -->
+  <div id="ctx-menu"
+    class="dropdown-menu fixed z-50 bg-surface-container-high border border-white/10 shadow-xl min-w-[160px]">
+    <button class="w-full text-left px-4 py-3 hover:bg-white/5 transition-colors flex items-center gap-3" id="ctx-view"
+      style="font-size:12px;"><span class="material-symbols-outlined text-sm">visibility</span>VIEW DETAILS</button>
+    <button class="w-full text-left px-4 py-3 hover:bg-white/5 transition-colors flex items-center gap-3"
+      id="ctx-status" style="font-size:12px;"><span class="material-symbols-outlined text-sm">swap_horiz</span>UPDATE
+      STATUS</button>
+    <div class="border-t border-white/10"></div>
+    <button class="w-full text-left px-4 py-3 hover:bg-white/5 transition-colors flex items-center gap-3 text-error"
+      id="ctx-delete" style="font-size:12px;"><span class="material-symbols-outlined text-sm">delete</span>DELETE
+      ORDER</button>
+  </div>
+  </div>
+
+  <script>
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      alert('Global JS Error: ' + msg + '\nLine: ' + lineNo);
+      return false;
+    };
+    window.addEventListener('unhandledrejection', function (event) {
+      alert('Unhandled Promise Rejection: ' + (event.reason && event.reason.message ? event.reason.message : event.reason));
+    });
+
+    // App State═══════════════════════════════════════════
+    //  DATA STORE
+    // ═══════════════════════════════════════════
+    const STATUS_LIST = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
+    const CATEGORIES = ['Outerwear', 'Footwear', 'Accessories', 'Tops', 'Bottoms'];
+
+
+    const supabaseUrl = 'https://aigyflxgtbkwhlhkdznd.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpZ3lmbHhndGJrd2hsaGtkem5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MDE2MDAsImV4cCI6MjA5ODM3NzYwMH0.S-9Ti5SyZ0_bpc0RKcM28eDY8okWmte3O-ePP_RGCT4';
+    const dbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    let products = [];
+
+
+    let orders = [];
+
+    let customers = [];
+
+    let deals = [];
+    let totalSalesVal = 0;
+    let totalOrdersCount = 0;
+    let pendingOrdersCount = 0;
+    let totalCustomersCount = 0;
+    let notifications = [
+      { icon: 'shopping_bag', msg: 'New order #RS-20412 received', sub: '2 minutes ago', read: false },
+      { icon: 'inventory_2', msg: 'Low stock: Midnight Parka (4 left)', sub: '1 hour ago', read: false },
+      { icon: 'person_add', msg: 'New customer: Elena Haze', sub: '3 hours ago', read: false },
+      { icon: 'payments', msg: 'Payment confirmed for #RS-20410', sub: 'Yesterday', read: true },
+    ];
+
+    const MONTHLY_DATA = [
+      { label: 'JAN', val: 40 }, { label: 'FEB', val: 55 }, { label: 'MAR', val: 38 }, { label: 'APR', val: 72 },
+      { label: 'MAY', val: 85 }, { label: 'JUN', val: 65 }, { label: 'JUL', val: 95 }
+    ];
+    const QUARTERLY_DATA = [
+      { label: 'Q1', val: 55 }, { label: 'Q2', val: 75 }, { label: 'Q3', val: 90 }, { label: 'Q4', val: 60 }
+    ];
+    const CATEGORIES_DATA = [
+      { name: 'Outerwear', pct: 42 }, { name: 'Footwear', pct: 30 }, { name: 'Accessories', pct: 18 }, { name: 'Others', pct: 10 }
+    ];
+
+    let currentChart = 'monthly';
+    let currentCtxOrderId = null;
+
+    function clearStorefrontCache() {
+      console.log('[StorefrontRefresh] Clearing sessionStorage cache keys for storefront updates...');
+      try {
+        sessionStorage.removeItem('mk_deals');
+        sessionStorage.removeItem('mk_products');
+        sessionStorage.removeItem('mk_shop_all');
+        console.log('[StorefrontRefresh] Cache cleared successfully.');
+      } catch (e) {
+        console.error('[StorefrontRefresh] Failed to clear cache:', e);
+      }
+    }
+
+    // ═══════════════════════════════════════════
+    //  AUTH & INIT
+    // ═══════════════════════════════════════════
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-pass').value;
+      const btn = document.getElementById('login-btn');
+      btn.textContent = 'LOGGING IN...';
+      const { data, error } = await dbClient.auth.signInWithPassword({ email, password: pass });
+      btn.textContent = 'LOG IN';
+      if (error) {
+        showToast(error.message, 'error');
+      }
+    }
+
+    async function handleLogout() {
+      await dbClient.auth.signOut();
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const { data: { session } } = await dbClient.auth.getSession();
+      if (!session) {
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('app-content').style.display = 'none';
+      } else {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app-content').style.display = 'block';
+        initApp();
+      }
+
+      dbClient.auth.onAuthStateChange((_event, session) => {
+        if (!session) {
+          document.getElementById('login-screen').style.display = 'flex';
+          document.getElementById('app-content').style.display = 'none';
+        } else {
+          document.getElementById('login-screen').style.display = 'none';
+          document.getElementById('app-content').style.display = 'block';
+          initApp();
+        }
+      });
+    });
+
+    async function initApp() {
+      displayedOrdersCount = 50;
+      // 1. Fetch Products Independently
+      dbClient.from('products').select('id, name, category, color, price, badge, img_url, hex_color, is_new_arrival, created_at').then(prodRes => {
+        if (prodRes.data) {
+          products = prodRes.data.map(p => ({
+            id: p.id.toString(),
+            name: p.name,
+            category: p.category,
+            price: p.price,
+            stock: 50,
+            sku: 'MK-' + p.id.toString().substring(0, 6),
+            desc: p.name,
+            image: p.img_url,
+            is_new: p.is_new_arrival
+          }));
+          renderProducts();
+          renderAnalytics();
+        }
+      }).catch(err => console.error('Error fetching products:', err));
+
+      // 2. Fetch Deals Independently
+      dbClient.from('deals').select('id, title, description, product_id, original_price, deal_price, image_url, start_date, end_date, is_active, created_at').then(dealsRes => {
+        if (dealsRes.data) {
+          deals = dealsRes.data;
+          renderDeals();
+        }
+      }).catch(err => console.error('Error fetching deals:', err));
+
+      // 3. Fetch Customers & Orders Together
+      Promise.all([
+        dbClient.from('customers').select('id, email, first_name, last_name, phone, address, created_at', { count: 'exact' }).order('created_at', { ascending: false }).limit(100),
+        dbClient.from('orders').select('id, customer_id, total_amount, status, created_at, is_test_order, customers(first_name, last_name)').order('created_at', { ascending: false }).limit(100),
+        dbClient.from('orders').select('customer_id, total_amount, status')
+      ]).then(([custRes, ordRes, lightOrdRes]) => {
+        // 1. Calculate overall counts and totals using lightweight data
+        totalOrdersCount = lightOrdRes.data ? lightOrdRes.data.length : 0;
+        totalSalesVal = 0;
+        pendingOrdersCount = 0;
+
+        let customerStatsMap = {};
+        if (lightOrdRes.data) {
+          lightOrdRes.data.forEach(o => {
+            totalSalesVal += Number(o.total_amount);
+            if (o.status === 'Pending' || o.status === 'Processing') {
+              pendingOrdersCount += 1;
+            }
+            if (o.customer_id) {
+              if (!customerStatsMap[o.customer_id]) {
+                customerStatsMap[o.customer_id] = { orders: 0, spent: 0 };
+              }
+              customerStatsMap[o.customer_id].orders += 1;
+              customerStatsMap[o.customer_id].spent += Number(o.total_amount);
+            }
+          });
+        }
+
+        // 2. Map recent customers
+        let customerMap = {};
+        if (custRes.data) {
+          custRes.data.forEach(c => {
+            const name = (c.first_name || '') + ' ' + (c.last_name || '');
+            const stats = customerStatsMap[c.id] || { orders: 0, spent: 0 };
+            customerMap[c.id] = {
+              id: c.id,
+              name: name.trim() || c.email,
+              initials: name.trim() ? name.trim().substring(0, 2).toUpperCase() : c.email.substring(0, 2).toUpperCase(),
+              email: c.email,
+              phone: c.phone || 'N/A',
+              address: c.address || 'N/A',
+              orders: stats.orders,
+              spent: stats.spent,
+              tier: stats.spent > 50000 ? 'VIP' : (stats.spent > 15000 ? 'Gold' : 'New'),
+              joined: new Date(c.created_at).toLocaleDateString()
+            };
+          });
+        }
+        customers = Object.values(customerMap);
+        totalCustomersCount = custRes.count || customers.length;
+
+        // 3. Map recent orders
+        if (ordRes.data) {
+          orders = ordRes.data.map(o => {
+            const cName = o.customers ? ((o.customers.first_name || '') + ' ' + (o.customers.last_name || '')).trim() : 'Unknown';
+            return {
+              id: String(o.id),
+              customer: cName,
+              initials: cName.substring(0, 2).toUpperCase(),
+              date: new Date(o.created_at).toLocaleDateString(),
+              items: 1, // mock items
+              amount: Number(o.total_amount),
+              status: o.status || 'Pending',
+              is_test_order: o.is_test_order || false
+            };
+          });
+        }
+      }).catch(err => {
+        console.error('Error fetching admin data:', err);
+        showToast('Failed to load dashboard data', 'error');
+      });
+
+      // Set date
+      const now = new Date();
+      const d = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      document.getElementById('session-date').textContent = d;
+      const mob = document.getElementById('session-date-mob');
+      if (mob) mob.textContent = d;
+
+      renderDashboard();
+      renderProducts();
+      renderDeals();
+      renderOrders();
+      renderCustomers();
+      renderAnalytics();
+      renderNotifications();
+
+      // Close ctx menu on click outside
+      document.addEventListener('click', (e) => {
+        const menu = document.getElementById('ctx-menu');
+        if (!menu.contains(e.target) && !e.target.closest('.ctx-trigger')) {
+          menu.classList.remove('open');
+        }
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    //  NAVIGATION
+    // ═══════════════════════════════════════════
+    function navigate(page, el) {
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('page-' + page);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      const navEl = el || document.querySelector('[data-page="' + page + '"]');
+      if (navEl && navEl.classList) navEl.classList.add('active');
+
+      document.title = 'MK Rockstar | ' + page.charAt(0).toUpperCase() + page.slice(1);
+
+      if (window.innerWidth < 1024) closeSidebar();
+
+      // Re-render stats
+      if (page === 'dashboard') renderDashboard();
+    }
+
+    // ═══════════════════════════════════════════
+    //  SIDEBAR
+    // ═══════════════════════════════════════════
+    function toggleSidebar() {
+      const s = document.getElementById('sidebar'), o = document.getElementById('sidebar-overlay');
+      s.classList.contains('open') ? closeSidebar() : (s.classList.add('open'), o.classList.add('visible'), document.body.style.overflow = 'hidden');
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').classList.remove('visible');
+      document.body.style.overflow = '';
+    }
+    window.addEventListener('resize', () => { if (window.innerWidth >= 1024) closeSidebar(); });
+
+    // ═══════════════════════════════════════════
+    //  MODALS
+    // ═══════════════════════════════════════════
+    function openModal(id) {
+      const m = document.getElementById(id);
+      m.classList.remove('modal-hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.add('modal-hidden');
+      document.body.style.overflow = '';
+    }
+    // Close on backdrop click
+    document.querySelectorAll('.modal-backdrop').forEach(m => {
+      m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); });
+    });
+
+    // ═══════════════════════════════════════════
+    //  TOAST
+    // ═══════════════════════════════════════════
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      const icon = document.getElementById('toast-icon');
+      document.getElementById('toast-msg').textContent = msg;
+      const cfg = { success: ['check_circle', '#e9c349'], error: ['error', '#ffb4ab'], info: ['info', '#c6c6c6'] };
+      icon.textContent = cfg[type][0];
+      icon.style.color = cfg[type][1];
+      t.style.borderColor = cfg[type][1] + '40';
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+    }
+
+    // ═══════════════════════════════════════════
+    //  NOTIFICATIONS
+    // ═══════════════════════════════════════════
+    function toggleNotif() {
+      const p = document.getElementById('notif-panel'), o = document.getElementById('notif-overlay');
+      const isOpen = p.classList.contains('open');
+      if (isOpen) {
+        p.classList.remove('open'); o.style.opacity = '0'; o.style.pointerEvents = 'none';
+      } else {
+        p.classList.add('open'); o.style.opacity = '1'; o.style.pointerEvents = 'auto';
+        // Mark all read
+        notifications.forEach(n => n.read = true);
+        document.getElementById('notif-dot').style.display = 'none';
+        document.getElementById('notif-dot-mob').style.display = 'none';
+        renderNotifications();
+      }
+    }
+    function clearNotifications() {
+      notifications = [];
+      renderNotifications();
+      showToast('Notifications cleared', 'info');
+    }
+    function renderNotifications() {
+      const list = document.getElementById('notif-list');
+      if (!notifications.length) {
+        list.innerHTML = '<div class="text-center py-16 text-on-surface-variant" style="font-size:13px;">No notifications</div>';
+        return;
+      }
+      list.innerHTML = notifications.map(n => `
+    <div class="flex items-start gap-4 px-6 py-4 ${n.read ? 'opacity-50' : ''}">
+      <span class="material-symbols-outlined text-tertiary mt-0.5">${n.icon}</span>
+      <div><p style="font-size:13px;">${n.msg}</p><p class="text-on-surface-variant mt-0.5" style="font-size:11px;">${n.sub}</p></div>
+    </div>`).join('');
+      const unread = notifications.filter(n => !n.read).length;
+      ['notif-dot', 'notif-dot-mob'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = unread ? 'block' : 'none';
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    //  DASHBOARD
+    // ═══════════════════════════════════════════
+    function renderDashboard() {
+      // Stats
+      const total = orders.reduce((s, o) => s + o.amount, 0);
+      document.getElementById('stat-sales').textContent = 'Rs. ' + (total / 1000).toFixed(1) + 'K';
+      document.getElementById('stat-orders').textContent = orders.length;
+      const pend = orders.filter(o => o.status === 'Pending' || o.status === 'Processing').length;
+      document.getElementById('stat-pending').textContent = pend;
+      document.getElementById('stat-urgent').textContent = pend > 0 ? pend + ' URGENT' : '';
+
+      // Chart
+      setChart(currentChart);
+
+      // Categories
+      const cats = document.getElementById('category-bars');
+      cats.innerHTML = CATEGORIES_DATA.map(c => `
+    <div>
+      <div class="flex justify-between items-center mb-1">
+        <span style="font-size:14px;">${c.name}</span>
+        <span class="text-tertiary font-bold" style="font-size:12px;letter-spacing:0.1em;">${c.pct}%</span>
+      </div>
+      <div class="w-full h-1 overflow-hidden" style="background:rgba(255,255,255,0.1);">
+        <div class="h-full bg-tertiary" style="width:${c.pct}%"></div>
+      </div>
+    </div>`).join('');
+
+      // Recent orders table (last 4)
+      renderDashOrders();
+    }
+
+    function renderDashOrders() {
+      const recent = orders.slice(0, 4);
+      // Mobile
+      document.getElementById('dash-orders-mobile').innerHTML = recent.map(o => `
+    <div class="row-hover px-5 py-5 transition-colors">
+      <div class="flex justify-between items-start mb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold flex-shrink-0" style="font-size:10px;">${o.initials}</div>
+          <div>
+            <div class="flex items-center gap-2">
+              <p style="font-size:14px;">${o.customer}</p>
+              ${o.is_test_order ? `<span class="px-1 bg-yellow-500/20 text-yellow-500 font-bold border border-yellow-500/30" style="font-size:8px;border-radius:2px;">TEST</span>` : ''}
+            </div>
+            <p class="text-on-surface-variant opacity-60" style="font-size:10px;">${o.id.substring(0, 8)} · ${o.date}</p>
+          </div>
+        </div>
+        <span class="px-2 py-1 badge-${o.status.toLowerCase()}" style="font-size:10px;letter-spacing:0.1em;">${o.status.toUpperCase()}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span style="font-size:14px;">Rs. ${o.amount.toFixed(2)}</span>
+        <button class="material-symbols-outlined text-on-surface-variant hover:text-white ctx-trigger" onclick="openCtx(event,'${o.id}')">more_vert</button>
+      </div>
+    </div>`).join('');
+      // Desktop
+      document.getElementById('dash-orders-table').innerHTML = recent.map(o => `
+    <tr class="row-hover transition-colors">
+      <td class="px-6 lg:px-8 py-5 whitespace-nowrap" style="font-size:14px;">
+        <div class="flex items-center gap-2">
+          <span>${o.id.substring(0, 8)}</span>
+          ${o.is_test_order ? `<span class="px-1 bg-yellow-500/20 text-yellow-500 font-bold border border-yellow-500/30" style="font-size:8px;border-radius:2px;">TEST</span>` : ''}
+        </div>
+      </td>
+      <td class="px-6 lg:px-8 py-5">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold flex-shrink-0" style="font-size:10px;">${o.initials}</div>
+          <span class="whitespace-nowrap" style="font-size:14px;">${o.customer}</span>
+        </div>
+      </td>
+      <td class="px-6 lg:px-8 py-5 opacity-60 whitespace-nowrap" style="font-size:14px;">${o.date}</td>
+      <td class="px-6 lg:px-8 py-5 whitespace-nowrap" style="font-size:14px;">Rs. ${o.amount.toFixed(2)}</td>
+      <td class="px-6 lg:px-8 py-5"><span class="px-3 py-1 badge-${o.status.toLowerCase()} whitespace-nowrap" style="font-size:10px;letter-spacing:0.1em;">${o.status.toUpperCase()}</span></td>
+      <td class="px-6 lg:px-8 py-5"><button class="material-symbols-outlined text-on-surface-variant hover:text-white ctx-trigger" onclick="openCtx(event,'${o.id}')">more_vert</button></td>
+    </tr>`).join('');
+    }
+
+    function setChart(mode) {
+      currentChart = mode;
+      const data = mode === 'monthly' ? MONTHLY_DATA : QUARTERLY_DATA;
+
+      document.getElementById('btn-monthly').className = 'px-3 py-1 border font-label-caps transition-colors ' +
+        (mode === 'monthly' ? 'border-tertiary text-tertiary' : 'border-white/20 hover:border-tertiary');
+      document.getElementById('btn-quarterly').className = 'px-3 py-1 border font-label-caps transition-colors ' +
+        (mode === 'quarterly' ? 'border-tertiary text-tertiary' : 'border-white/20 hover:border-tertiary');
+
+      const container = document.getElementById('chart-bars');
+      container.innerHTML = data.map(d => `
+    <div class="flex-1 mx-0.5 lg:mx-1 relative group flex flex-col justify-end" style="height:100%">
+      <div class="bg-white/5 w-full relative overflow-hidden transition-all duration-500 hover:bg-white/10" style="height:${d.val}%">
+        <div class="absolute bottom-0 w-full bg-tertiary opacity-80 group-hover:opacity-100 bar-fill" style="height:${d.val}%"></div>
+      </div>
+      <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-on-surface-variant opacity-40" style="font-size:9px;letter-spacing:0.1em;">${d.label}</span>
+    </div>`).join('');
+    }
+
+    // ═══════════════════════════════════════════
+    //  PRODUCTS
+    // ═══════════════════════════════════════════
+    function renderProducts() {
+      const q = (document.getElementById('product-search')?.value || '').toLowerCase();
+      const cat = document.getElementById('product-filter')?.value || '';
+      const grid = document.getElementById('products-grid');
+      const noMsg = document.getElementById('no-products');
+      const filtered = products.filter(p =>
+        (p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)) &&
+        (!cat || p.category === cat)
+      );
+      noMsg.classList.toggle('hidden', filtered.length > 0);
+      grid.innerHTML = filtered.map(p => `
+    <div class="product-card flex flex-col" style="overflow:hidden;">
+      <!-- Product Image -->
+      <div style="height:200px;overflow:hidden;background:rgba(255,255,255,0.04);position:relative;">
+        ${p.image
+          ? `<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;"/>`
+          : `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0.25;">
+               <span class="material-symbols-outlined" style="font-size:40px;">image_not_supported</span>
+               <span style="font-size:10px;letter-spacing:0.1em;">NO IMAGE</span>
+             </div>`
+        }
+        <div style="position:absolute;top:8px;right:8px;">
+          <span style="background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:2px 8px;font-size:9px;letter-spacing:0.12em;color:#cfc4c5;">${p.category.toUpperCase()}</span>
+        </div>
+      </div>
+      <!-- Card body -->
+      <div class="p-4 flex flex-col gap-2 flex-1">
+        <div class="flex justify-between items-start">
+          <h4 style="font-size:14px;font-weight:500;line-height:1.3;flex:1;margin-right:8px;">${p.name}</h4>
+          <span class="text-on-surface-variant flex-shrink-0" style="font-size:10px;">${p.sku}</span>
+        </div>
+        <p class="text-on-surface-variant flex-1" style="font-size:12px;line-height:1.5;">${p.desc}</p>
+        <div class="flex justify-between items-center border-t border-white/10 pt-3 mt-auto">
+          <div>
+            <p style="font-family:Anton,sans-serif;font-size:22px;">Rs. ${p.price}</p>
+            <p class="${p.stock <= 5 ? 'text-error' : 'text-on-surface-variant'}" style="font-size:11px;">${p.stock} in stock</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="editProduct('${p.id}')" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors" title="Edit">edit</button>
+            <button onclick="confirmDeleteProduct('${p.id}')" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors" title="Delete">delete</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+    }
+
+    function openProductModal(id) {
+      try {
+        if (id && typeof id !== 'string' && typeof id !== 'number') {
+          id = null;
+        }
+        document.getElementById('product-modal-title').textContent = id ? 'EDIT PRODUCT' : 'ADD PRODUCT';
+        document.getElementById('edit-product-id').value = id || '';
+        // Reset image UI
+        setImagePreview(null);
+        if (id) {
+          const p = products.find(x => x.id === id);
+          if (p) {
+            document.getElementById('p-name').value = p.name;
+            document.getElementById('p-price').value = p.price;
+            document.getElementById('p-stock').value = p.stock;
+            document.getElementById('p-category').value = p.category;
+            document.getElementById('p-sku').value = p.sku;
+            document.getElementById('p-desc').value = p.desc;
+            // Restore image if exists
+            if (p.image) setImagePreview(p.image);
+          }
+        } else {
+          document.getElementById('product-form').reset();
+          document.getElementById('p-image-data').value = '';
+        }
+        openModal('product-modal');
+      } catch (err) {
+        alert("Error opening product modal: " + err.message);
+        console.error("Error opening product modal:", err);
+      }
+    }
+
+    function editProduct(id) { openProductModal(id); }
+
+    // ── Image helpers ──
+    function setImagePreview(dataUrl) {
+      const zone = document.getElementById('img-drop-zone');
+      const preview = document.getElementById('img-preview-el');
+      const placeholder = document.getElementById('img-placeholder');
+      const removeBtn = document.getElementById('img-remove-btn');
+      const hidden = document.getElementById('p-image-data');
+      if (dataUrl) {
+        preview.src = dataUrl;
+        preview.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+        zone.classList.add('has-image');
+        removeBtn.classList.remove('hidden');
+        hidden.value = dataUrl;
+      } else {
+        preview.src = '';
+        preview.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+        zone.classList.remove('has-image');
+        removeBtn.classList.add('hidden');
+        hidden.value = '';
+      }
+    }
+
+    function removeProductImage() {
+      setImagePreview(null);
+      // Clear both file inputs so same file can be re-selected
+      document.getElementById('p-image-file').value = '';
+      document.getElementById('p-camera-file').value = '';
+    }
+
+    function handleImageFile(input) {
+      const file = input.files[0];
+      if (!file) return;
+      // Validate type
+      if (!file.type.startsWith('image/')) { showToast('Please select an image file', 'error'); return; }
+      // Validate size (10MB max)
+      if (file.size > 10 * 1024 * 1024) { showToast('Image must be under 10MB', 'error'); return; }
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width; let height = img.height;
+          const MAX_DIM = 800;
+          if (width > height && width > MAX_DIM) { height *= MAX_DIM / width; width = MAX_DIM; }
+          else if (height > MAX_DIM) { width *= MAX_DIM / height; height = MAX_DIM; }
+          canvas.width = width; canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          setImagePreview(canvas.toDataURL('image/jpeg', 0.8));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('img-drop-zone').classList.add('drag-over');
+    }
+    function handleDragLeave(e) {
+      document.getElementById('img-drop-zone').classList.remove('drag-over');
+    }
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('img-drop-zone').classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const input = document.getElementById('p-image-file');
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        handleImageFile(input);
+      }
+    }
+
+    // ── Deal Image Helpers ──
+    function setDealImagePreview(dataUrl) {
+      const zone = document.getElementById('d-img-drop-zone');
+      const preview = document.getElementById('d-img-preview-el');
+      const placeholder = document.getElementById('d-img-placeholder');
+      const removeBtn = document.getElementById('d-img-remove-btn');
+      const hidden = document.getElementById('d-image-data');
+      if (dataUrl) {
+        preview.src = dataUrl;
+        preview.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+        zone.classList.add('has-image');
+        removeBtn.classList.remove('hidden');
+        hidden.value = dataUrl;
+      } else {
+        preview.src = '';
+        preview.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+        zone.classList.remove('has-image');
+        removeBtn.classList.add('hidden');
+        hidden.value = '';
+      }
+    }
+
+    function removeDealImage() {
+      setDealImagePreview(null);
+      document.getElementById('d-image-file').value = '';
+      document.getElementById('d-camera-file').value = '';
+    }
+
+    function handleDealImageFile(input) {
+      const file = input.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) { showToast('Please select an image file', 'error'); return; }
+      if (file.size > 10 * 1024 * 1024) { showToast('Image must be under 10MB', 'error'); return; }
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width; let height = img.height;
+          const MAX_DIM = 800;
+          if (width > height && width > MAX_DIM) { height *= MAX_DIM / width; width = MAX_DIM; }
+          else if (height > MAX_DIM) { width *= MAX_DIM / height; height = MAX_DIM; }
+          canvas.width = width; canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          setDealImagePreview(canvas.toDataURL('image/jpeg', 0.8));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleDealDragOver(e) {
+      e.preventDefault();
+      document.getElementById('d-img-drop-zone').classList.add('drag-over');
+    }
+    function handleDealDragLeave(e) {
+      e.preventDefault();
+      document.getElementById('d-img-drop-zone').classList.remove('drag-over');
+    }
+    function handleDealDrop(e) {
+      e.preventDefault();
+      document.getElementById('d-img-drop-zone').classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const input = document.getElementById('d-image-file');
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        handleDealImageFile(input);
+      }
+    }
+    async function saveProduct(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-product-id').value;
+      const imageData = document.getElementById('p-image-data').value || null;
+      
+      const dbData = {
+        name: document.getElementById('p-name').value,
+        price: parseFloat(document.getElementById('p-price').value),
+        category: document.getElementById('p-category').value,
+        color: 'DEFAULT',
+        hex_color: '#000000',
+        is_new_arrival: document.getElementById('p-is-new').checked
+      };
+
+      const finalId = id ? parseInt(id, 10) : Date.now();
+      if (!id) {
+        dbData.id = finalId;
+      }
+
+      if (imageData) {
+        // Upload to Supabase Storage instead of storing base64 in DB
+        try {
+          const resp = await fetch(imageData);
+          const blob = await resp.blob();
+          const ext = blob.type.includes('png') ? 'png' : 'jpg';
+          const filename = `product-${finalId}.${ext}`;
+          const { error: upErr } = await dbClient.storage.from('product-images').upload(filename, blob, { contentType: blob.type, upsert: true });
+          if (upErr) throw upErr;
+          const { data: urlData } = dbClient.storage.from('product-images').getPublicUrl(filename);
+          dbData.img_url = urlData.publicUrl;
+        } catch (storageErr) {
+          console.warn('Storage upload failed, saving compressed base64 to DB:', storageErr.message);
+          dbData.img_url = imageData; // Fallback
+        }
+      }
+
+      try {
+        if (id) {
+          console.log('[ProductEdit] Sending update payload to Supabase:', { id, dbData });
+          const { data, error } = await dbClient.from('products').update(dbData).eq('id', id).select();
+          console.log('[ProductEdit] Supabase response data:', data, 'error:', error);
+          if (error) throw error;
+          showToast('Product updated', 'success');
+        } else {
+          console.log('[ProductAdd] Sending insert payload to Supabase:', dbData);
+          const { data, error } = await dbClient.from('products').insert([dbData]).select();
+          console.log('[ProductAdd] Supabase response data:', data, 'error:', error);
+          if (error) throw error;
+          notifications.unshift({ icon: 'inventory_2', msg: `New product added: ${dbData.name}`, sub: 'Just now', read: false });
+          showToast('Product added', 'success');
+        }
+
+        // Refresh products list
+        const { data: refreshed, error: refreshErr } = await dbClient.from('products').select('id, name, category, color, price, badge, img_url, hex_color, is_new_arrival, created_at');
+        if (refreshErr) throw refreshErr;
+        if (refreshed) {
+          products = refreshed.map(p => ({
+            id: p.id.toString(),
+            name: p.name,
+            category: p.category,
+            price: p.price,
+            stock: 50,
+            sku: 'MK-' + p.id.toString().substring(0, 6),
+            desc: p.name,
+            image: p.img_url,
+            is_new: p.is_new_arrival
+          }));
+        }
+
+        // Clear storefront cache
+        clearStorefrontCache();
+
+        closeModal('product-modal');
+        renderProducts();
+        renderAnalytics();
+      } catch (err) {
+        if (id) {
+          console.error('[ProductEdit] Error updating product:', err);
+        } else {
+          console.error('[ProductAdd] Error inserting product:', err);
+        }
+        alert('Failed to save product: ' + (err.message || err.details || err));
+        showToast('Failed to save product: ' + (err.message || 'error'), 'error');
+      }
+    }
+
+    function confirmDeleteProduct(id) {
+      const p = products.find(x => x.id === id);
+      document.getElementById('confirm-message').textContent = `Delete "${p.name}"? This will also delete any linked deals or order items and cannot be undone.`;
+      document.getElementById('confirm-yes').onclick = async () => {
+        try {
+          console.log('[ProductDelete] Deleting product. Affected ID:', id);
+
+          // 1. Delete linked deals first (foreign key constraint)
+          console.log('[ProductDelete] Deleting linked deals for product ID:', id);
+          const dealDelRes = await dbClient.from('deals').delete().eq('product_id', id);
+          console.log('[ProductDelete] Deals delete response:', dealDelRes);
+          if (dealDelRes.error) throw dealDelRes.error;
+
+          // 2. Delete linked order_items first (foreign key constraint)
+          console.log('[ProductDelete] Deleting linked order_items for product ID:', id);
+          const itemsDelRes = await dbClient.from('order_items').delete().eq('product_id', id);
+          console.log('[ProductDelete] order_items delete response:', itemsDelRes);
+          if (itemsDelRes.error) throw itemsDelRes.error;
+
+          // 3. Delete product
+          console.log('[ProductDelete] Deleting main product from Supabase...');
+          const prodDelRes = await dbClient.from('products').delete().eq('id', id).select();
+          console.log('[ProductDelete] Product delete response:', prodDelRes);
+          if (prodDelRes.error) throw prodDelRes.error;
+
+          products = products.filter(x => x.id !== id);
+          closeModal('confirm-modal');
+          renderProducts();
+          showToast('Product deleted', 'error');
+
+          // Clear storefront cache
+          clearStorefrontCache();
+        } catch (err) {
+          console.error('[ProductDelete] Error deleting product:', err);
+          alert('Failed to delete product: ' + (err.message || err.details || err));
+          showToast('Failed to delete product', 'error');
+        }
+      };
+      openModal('confirm-modal');
+    }
+
+    // ═══════════════════════════════════════════
+    //  DEALS
+    // ═══════════════════════════════════════════
+    function renderDeals() {
+      const grid = document.getElementById('deals-grid');
+      const noMsg = document.getElementById('no-deals');
+      if (!grid) return;
+      noMsg.classList.toggle('hidden', deals.length > 0);
+
+      grid.innerHTML = deals.map(d => `
+    <div class="product-card flex flex-col" style="overflow:hidden; ${!d.is_active ? 'opacity:0.6;' : ''}">
+      <div style="height:200px;overflow:hidden;background:rgba(255,255,255,0.04);position:relative;">
+        <img src="${d.image_url || 'https://via.placeholder.com/400x500?text=No+Image'}" alt="${d.title}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;"/>
+        <div style="position:absolute;top:8px;right:8px;">
+          <span style="background:${d.is_active ? 'rgba(0,180,0,0.6)' : 'rgba(180,0,0,0.6)'};backdrop-filter:blur(4px);padding:2px 8px;font-size:9px;letter-spacing:0.12em;color:#fff;">
+            ${d.is_active ? 'ACTIVE' : 'INACTIVE'}
+          </span>
+        </div>
+      </div>
+      <div class="p-4 flex flex-col gap-2 flex-1">
+        <h4 style="font-size:14px;font-weight:500;line-height:1.3;flex:1;">${d.title}</h4>
+        <p class="text-on-surface-variant flex-1" style="font-size:12px;line-height:1.5;">${d.description || ''}</p>
+        <div class="flex justify-between items-center border-t border-white/10 pt-3 mt-auto">
+          <div>
+            <p style="font-family:Anton,sans-serif;font-size:22px;">Rs. ${d.deal_price}</p>
+            <p class="text-on-surface-variant line-through" style="font-size:11px;">Rs. ${d.original_price}</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="editDeal('${d.id}')" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors" title="Edit">edit</button>
+            <button onclick="confirmDeleteDeal('${d.id}')" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors" title="Delete">delete</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+    }
+
+    function openDealModal(id = null) {
+      document.getElementById('edit-deal-id').value = id || '';
+      if (id) {
+        const d = deals.find(x => String(x.id) === String(id));
+        if (d) {
+          document.getElementById('d-title').value = d.title || '';
+          document.getElementById('d-desc').value = d.description || '';
+          document.getElementById('d-product-id').value = d.product_id || '';
+          document.getElementById('d-orig-price').value = d.original_price || '';
+          document.getElementById('d-deal-price').value = d.deal_price || '';
+          if (d.image_url) setDealImagePreview(d.image_url);
+          document.getElementById('d-is-active').checked = d.is_active;
+        }
+      } else {
+        document.getElementById('deal-form').reset();
+        document.getElementById('d-image-data').value = '';
+        setDealImagePreview(null);
+      }
+      openModal('deal-modal');
+    }
+
+    function editDeal(id) { openDealModal(id); }
+
+    async function saveDeal(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-deal-id').value;
+      const imageData = document.getElementById('d-image-data').value || null;
+      const dbData = {
+        title: document.getElementById('d-title').value,
+        description: document.getElementById('d-desc').value || null,
+        product_id: document.getElementById('d-product-id').value.trim() ? parseInt(document.getElementById('d-product-id').value.trim()) : null,
+        original_price: parseFloat(document.getElementById('d-orig-price').value),
+        deal_price: parseFloat(document.getElementById('d-deal-price').value),
+        start_date: null,
+        end_date: null,
+        is_active: document.getElementById('d-is-active').checked
+      };
+
+      if (imageData) {
+        // Upload to Supabase Storage instead of storing base64 in DB
+        try {
+          const resp = await fetch(imageData);
+          const blob = await resp.blob();
+          const ext = blob.type.includes('png') ? 'png' : 'jpg';
+          const filename = `deal-${id || Date.now()}.${ext}`;
+          const { error: upErr } = await dbClient.storage.from('product-images').upload(filename, blob, { contentType: blob.type, upsert: true });
+          if (upErr) throw upErr;
+          const { data: urlData } = dbClient.storage.from('product-images').getPublicUrl(filename);
+          dbData.image_url = urlData.publicUrl;
+        } catch (storageErr) {
+          console.warn('Storage upload failed, saving compressed base64 to DB:', storageErr.message);
+          dbData.image_url = imageData; // Fallback
+        }
+      }
+
+      try {
+        if (id) {
+          console.log('[DealEdit] Updating deal payload:', { id, dbData });
+          const { data, error } = await dbClient.from('deals').update(dbData).eq('id', id).select();
+          console.log('[DealEdit] Deal update response:', data, 'error:', error);
+          if (error) throw error;
+          showToast('Deal updated', 'success');
+        } else {
+          console.log('[DealAdd] Inserting deal payload:', dbData);
+          const { data, error } = await dbClient.from('deals').insert(dbData).select();
+          console.log('[DealAdd] Deal insert response:', data, 'error:', error);
+          if (error) throw error;
+          showToast('Deal added', 'success');
+        }
+
+        // Refresh
+        const { data: refreshed, error: refErr } = await dbClient.from('deals').select('id, title, description, product_id, original_price, deal_price, image_url, start_date, end_date, is_active, created_at');
+        if (refErr) throw refErr;
+        if (refreshed) deals = refreshed;
+
+        // Clear storefront cache
+        clearStorefrontCache();
+
+        closeModal('deal-modal');
+        renderDeals();
+      } catch (err) {
+        console.error('Error saving deal:', err);
+        alert('Failed to save deal: ' + (err.message || err.details || err));
+        showToast('Failed to save deal', 'error');
+      }
+    }
+
+    function confirmDeleteDeal(id) {
+      const d = deals.find(x => String(x.id) === String(id));
+      document.getElementById('confirm-message').textContent = `Delete deal "${d.title}"? This cannot be undone.`;
+      document.getElementById('confirm-yes').onclick = async () => {
+        try {
+          console.log('[DealDelete] Deleting deal from Supabase. Affected ID:', id);
+          const { data, error } = await dbClient.from('deals').delete().eq('id', id).select();
+          console.log('[DealDelete] Deletion result error:', error);
+          if (error) throw error;
+          
+          deals = deals.filter(x => String(x.id) !== String(id));
+          closeModal('confirm-modal');
+          renderDeals();
+          showToast('Deal deleted', 'error');
+
+          // Clear storefront cache
+          clearStorefrontCache();
+        } catch (err) {
+          console.error('[DealDelete] Error deleting deal:', err);
+          alert('Failed to delete deal: ' + (err.message || err.details || err));
+          showToast('Failed to delete deal', 'error');
+        }
+      };
+      openModal('confirm-modal');
+    }
+
+    // ═══════════════════════════════════════════
+    //  ORDERS
+    // ═══════════════════════════════════════════
+    let displayedOrdersCount = 50;
+
+    function loadMoreOrders() {
+      displayedOrdersCount += 50;
+      renderOrders();
+    }
+
+    function renderOrders() {
+      const q = (document.getElementById('order-search')?.value || '').toLowerCase();
+      const st = document.getElementById('order-filter')?.value || '';
+      const filtered = orders.filter(o =>
+        (String(o.id).toLowerCase().includes(q) || o.customer.toLowerCase().includes(q)) &&
+        (!st || o.status === st)
+      );
+      const noMsg = document.getElementById('no-orders');
+      noMsg.classList.toggle('hidden', filtered.length > 0);
+
+      const displayed = filtered.slice(0, displayedOrdersCount);
+      const hasMore = filtered.length > displayedOrdersCount;
+      const loadMoreContainer = document.getElementById('orders-load-more-container');
+      if (loadMoreContainer) {
+        loadMoreContainer.classList.toggle('hidden', !hasMore);
+      }
+
+      // Mobile cards
+      document.getElementById('orders-mobile').innerHTML = displayed.map(o => `
+    <div class="glass p-5">
+      <div class="flex justify-between items-start mb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-surface-container-highest flex items-center justify-center font-bold flex-shrink-0" style="font-size:11px;">${o.initials}</div>
+          <div>
+            <div class="flex items-center gap-2">
+              <p style="font-size:14px;font-weight:500;">${o.customer}</p>
+              ${o.is_test_order ? `<span class="px-1 bg-yellow-500/20 text-yellow-500 font-bold border border-yellow-500/30" style="font-size:8px;border-radius:2px;">TEST</span>` : ''}
+            </div>
+            <p class="text-on-surface-variant" style="font-size:10px;letter-spacing:0.05em;">${o.id.substring(0, 8)}</p>
+          </div>
+        </div>
+        <span class="px-2 py-1 badge-${o.status.toLowerCase()}" style="font-size:10px;letter-spacing:0.1em;">${o.status.toUpperCase()}</span>
+      </div>
+      <div class="flex justify-between items-center text-on-surface-variant border-t border-white/10 pt-3" style="font-size:12px;">
+        <span>${o.date}</span><span>${o.items} items</span><span style="color:#e5e2e1;font-size:14px;">Rs. ${o.amount.toFixed(2)}</span>
+        <button class="material-symbols-outlined hover:text-white ctx-trigger" onclick="openCtx(event,'${o.id}')">more_vert</button>
+      </div>
+    </div>`).join('');
+
+      // Desktop table
+      document.getElementById('orders-table').innerHTML = displayed.map(o => `
+    <tr class="row-hover transition-colors">
+      <td class="px-6 py-5 whitespace-nowrap" style="font-size:14px;">
+        <div class="flex items-center gap-2">
+          <span>${o.id.substring(0, 8)}</span>
+          ${o.is_test_order ? `<span class="px-1 bg-yellow-500/20 text-yellow-500 font-bold border border-yellow-500/30" style="font-size:8px;border-radius:2px;">TEST</span>` : ''}
+        </div>
+      </td>
+      <td class="px-6 py-5">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold flex-shrink-0" style="font-size:10px;">${o.initials}</div>
+          <span class="whitespace-nowrap" style="font-size:14px;">${o.customer}</span>
+        </div>
+      </td>
+      <td class="px-6 py-5 opacity-60 whitespace-nowrap" style="font-size:13px;">${o.date}</td>
+      <td class="px-6 py-5 opacity-70 whitespace-nowrap" style="font-size:13px;">${o.items} items</td>
+      <td class="px-6 py-5 whitespace-nowrap" style="font-size:14px;">Rs. ${o.amount.toFixed(2)}</td>
+      <td class="px-6 py-5"><span class="px-3 py-1 badge-${o.status.toLowerCase()} whitespace-nowrap" style="font-size:10px;letter-spacing:0.1em;">${o.status.toUpperCase()}</span></td>
+      <td class="px-6 py-5"><button class="material-symbols-outlined text-on-surface-variant hover:text-white ctx-trigger" onclick="openCtx(event,'${o.id}')">more_vert</button></td>
+    </tr>`).join('');
+    }
+
+    // Context menu
+    function openCtx(e, orderId) {
+      e.stopPropagation();
+      currentCtxOrderId = orderId;
+      const menu = document.getElementById('ctx-menu');
+      const rect = e.currentTarget.getBoundingClientRect();
+      let top = rect.bottom + window.scrollY + 4;
+      let left = rect.left + window.scrollX - 140;
+      if (left < 8) left = 8;
+      if (top + 160 > window.innerHeight + window.scrollY) top = rect.top + window.scrollY - 164;
+      menu.style.top = top + 'px';
+      menu.style.left = left + 'px';
+      menu.classList.add('open');
+
+      document.getElementById('ctx-view').onclick = () => { menu.classList.remove('open'); viewOrder(orderId); };
+      document.getElementById('ctx-status').onclick = () => { menu.classList.remove('open'); openStatusModal(orderId); };
+      document.getElementById('ctx-delete').onclick = () => { menu.classList.remove('open'); confirmDeleteOrder(orderId); };
+    }
+
+    function viewOrder(orderId) {
+      const o = orders.find(x => x.id === orderId);
+      if (!o) return;
+      document.getElementById('order-modal-id').textContent = o.id;
+      document.getElementById('order-modal-content').innerHTML = `
+    <div class="grid grid-cols-2 gap-4">
+      <div><p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">CUSTOMER</p><p style="font-size:15px;">${o.customer}</p></div>
+      <div><p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">DATE</p><p style="font-size:15px;">${o.date}</p></div>
+      <div><p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">AMOUNT</p><p style="font-family:Anton,sans-serif;font-size:24px;">Rs. ${o.amount.toFixed(2)}</p></div>
+      <div><p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">ITEMS</p><p style="font-size:15px;">${o.items} items</p></div>
+    </div>
+    <div class="border-t border-white/10 pt-4">
+      <p class="text-on-surface-variant mb-3" style="font-size:10px;letter-spacing:0.15em;">STATUS</p>
+      <span class="px-3 py-2 badge-${o.status.toLowerCase()}" style="font-size:12px;letter-spacing:0.1em;">${o.status.toUpperCase()}</span>
+    </div>
+    <div class="flex gap-3 pt-2">
+      <button onclick="openStatusModal('${o.id}');closeModal('order-modal')" class="flex-1 border border-white/20 py-3 text-on-surface-variant hover:border-tertiary hover:text-tertiary transition-all" style="font-size:11px;letter-spacing:0.15em;">UPDATE STATUS</button>
+      <button onclick="confirmDeleteOrder('${o.id}');closeModal('order-modal')" class="flex-1 border border-error/40 py-3 text-error hover:border-error transition-all" style="font-size:11px;letter-spacing:0.15em;">DELETE ORDER</button>
+    </div>`;
+      openModal('order-modal');
+    }
+
+    function viewCustomer(customerId) {
+      const c = customers.find(x => x.id === customerId);
+      if (!c) return;
+      document.getElementById('customer-modal-content').innerHTML = `
+    <div class="flex items-center gap-4 mb-6">
+      <div class="w-14 h-14 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-lg flex-shrink-0">${c.initials}</div>
+      <div>
+        <h4 style="font-family:Anton,sans-serif;font-size:20px;letter-spacing:0.02em;">${c.name}</h4>
+        <p class="text-on-surface-variant" style="font-size:13px;">Customer since ${c.joined}</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 gap-4">
+      <div class="glass p-4 border border-white/5">
+        <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">EMAIL</p>
+        <p style="font-size:15px;">${c.email}</p>
+      </div>
+      <div class="glass p-4 border border-white/5">
+        <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">PHONE NUMBER</p>
+        <p style="font-size:15px;">${c.phone}</p>
+      </div>
+      <div class="glass p-4 border border-white/5">
+        <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">SHIPPING ADDRESS</p>
+        <p style="font-size:15px;">${c.address}</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mt-4">
+      <div class="glass p-4 text-center">
+        <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">ORDERS</p>
+        <p style="font-family:Anton,sans-serif;font-size:24px;">${c.orders}</p>
+      </div>
+      <div class="glass p-4 text-center">
+        <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">TOTAL SPENT</p>
+        <p style="font-family:Anton,sans-serif;font-size:24px;">Rs. ${c.spent.toLocaleString()}</p>
+      </div>
+    </div>
+  `;
+      openModal('customer-modal');
+    }
+
+    function openStatusModal(orderId) {
+      const o = orders.find(x => x.id === orderId);
+      if (!o) return;
+      document.getElementById('status-order-id').value = orderId;
+      document.getElementById('status-order-ref').textContent = 'Order ' + orderId + ' — ' + o.customer;
+      document.getElementById('status-options').innerHTML = STATUS_LIST.map(s => `
+    <button onclick="updateStatus('${orderId}','${s}')"
+      class="w-full text-left px-4 py-3 border transition-colors flex items-center justify-between
+        ${o.status === s ? 'border-tertiary text-tertiary' : 'border-white/10 text-on-surface-variant hover:border-white/30 hover:text-on-surface'}"
+      style="font-size:12px;letter-spacing:0.1em;">
+      ${s.toUpperCase()}
+      ${o.status === s ? '<span class="material-symbols-outlined text-sm">check</span>' : ''}
+    </button>`).join('');
+      openModal('status-modal');
+    }
+
+    function updateStatus(orderId, newStatus) {
+      const i = orders.findIndex(o => o.id === orderId);
+      if (i >= 0) orders[i].status = newStatus;
+      closeModal('status-modal');
+      renderOrders();
+      renderDashOrders();
+      // Re-render stats
+      const pend = orders.filter(o => o.status === 'Pending' || o.status === 'Processing').length;
+      document.getElementById('stat-pending').textContent = pend;
+      document.getElementById('stat-urgent').textContent = pend > 0 ? pend + ' URGENT' : '';
+      showToast(`Order ${orderId} → ${newStatus}`, 'success');
+      notifications.unshift({ icon: 'swap_horiz', msg: `Order ${orderId} status → ${newStatus}`, sub: 'Just now', read: false });
+      document.getElementById('notif-dot').style.display = 'block';
+      document.getElementById('notif-dot-mob').style.display = 'block';
+    }
+
+    function confirmDeleteOrder(orderId) {
+      document.getElementById('confirm-message').textContent = `Delete order ${orderId.substring(0, 8)}? This cannot be undone.`;
+      document.getElementById('confirm-yes').onclick = async () => {
+        try {
+          const { error: itemsErr } = await dbClient.from('order_items').delete().eq('order_id', orderId);
+          if (itemsErr) throw itemsErr;
+          
+          const { error: orderErr } = await dbClient.from('orders').delete().eq('id', orderId);
+          if (orderErr) throw orderErr;
+
+          orders = orders.filter(o => o.id !== orderId);
+          closeModal('confirm-modal');
+          renderOrders();
+          renderDashOrders();
+          const pend = orders.filter(o => o.status === 'Pending' || o.status === 'Processing').length;
+          document.getElementById('stat-pending').textContent = pend;
+          document.getElementById('stat-orders').textContent = orders.length;
+          showToast('Order deleted', 'error');
+        } catch (err) {
+          console.error('Failed to delete order:', err);
+          showToast('Failed to delete order', 'error');
+        }
+      };
+      openModal('confirm-modal');
+    }
+
+    async function deleteTestOrders() {
+      if (!confirm('Are you sure you want to delete all load test orders? This will permanently delete test orders and their line items.')) return;
+      try {
+        const { data: testOrders, error: fetchErr } = await dbClient.from('orders').select('id').eq('is_test_order', true);
+        if (fetchErr) {
+          console.error('[DeleteTestOrders] Error fetching test orders:', fetchErr);
+          throw fetchErr;
+        }
+        if (!testOrders || testOrders.length === 0) {
+          showToast('No test orders found to delete.', 'info');
+          return;
+        }
+
+        const testOrderIds = testOrders.map(o => o.id);
+        console.log('[DeleteTestOrders] Found order IDs:', testOrderIds);
+
+        // Chunk deletions to prevent HTTP 400/414 (Request URI too long) when deleting 1,000+ orders
+        const CHUNK_SIZE = 100;
+        for (let i = 0; i < testOrderIds.length; i += CHUNK_SIZE) {
+          const chunk = testOrderIds.slice(i, i + CHUNK_SIZE);
+          
+          console.log('[DeleteTestOrders] Deleting order_items...');
+          const itemsResult = await dbClient.from('order_items').delete().in('order_id', chunk);
+          console.log('[DeleteTestOrders] order_items delete result:', itemsResult);
+          if (itemsResult.error) throw itemsResult.error;
+
+          console.log('[DeleteTestOrders] Deleting orders...');
+          const ordersResult = await dbClient.from('orders').delete().in('id', chunk);
+          console.log('[DeleteTestOrders] orders delete result:', ordersResult);
+          if (ordersResult.error) throw ordersResult.error;
+        }
+
+        console.log('[DeleteTestOrders] Cleanup complete');
+        showToast(`Deleted ${testOrderIds.length} test orders successfully.`, 'success');
+        
+        // Refresh admin dashboard
+        await initApp();
+      } catch (err) {
+        console.error('[DeleteTestOrders] Error:', err);
+        showToast('Failed to delete test orders: ' + (err.message || err), 'error');
+      }
+    }
+
+    async function deleteAllOrders() {
+      const isConfirm = confirm('WARNING: This will permanently delete ALL orders and ALL order items from the database. This action cannot be undone.');
+      if (!isConfirm) return;
+
+      const confirmText = prompt("Type DELETE to confirm complete database reset of orders:");
+      if (confirmText !== 'DELETE') {
+        showToast('Reset cancelled. Confirmation text did not match.', 'info');
+        return;
+      }
+
+      console.log('[DeleteAllOrders] Confirm text typed correctly. Starting reset...');
+      try {
+        console.log('[DeleteAllOrders] Deleting all order_items...');
+        const itemsResult = await dbClient.from('order_items').delete().not('id', 'is', null);
+        console.log('[DeleteAllOrders] order_items delete result:', itemsResult);
+        if (itemsResult.error) throw itemsResult.error;
+
+        console.log('[DeleteAllOrders] Deleting all orders...');
+        const ordersResult = await dbClient.from('orders').delete().not('id', 'is', null);
+        console.log('[DeleteAllOrders] orders delete result:', ordersResult);
+        if (ordersResult.error) throw ordersResult.error;
+
+        console.log('[DeleteAllOrders] Cleanup complete');
+        showToast('All orders and items successfully deleted.', 'success');
+
+        // Refresh admin dashboard
+        await initApp();
+      } catch (err) {
+        console.error('[DeleteAllOrders] Error:', err);
+        showToast('Failed to delete all orders: ' + (err.message || err.details || err), 'error');
+      }
+    }
+
+    // ═══════════════════════════════════════════
+    //  CUSTOMERS
+    // ═══════════════════════════════════════════
+    function renderCustomers() {
+      const q = (document.getElementById('customer-search')?.value || '').toLowerCase();
+      const filtered = customers.filter(c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q));
+      document.getElementById('cust-total').textContent = customers.length;
+
+      const tierBadge = (t) => {
+        const map = { VIP: 'text-tertiary border-tertiary', Regular: 'text-primary border-primary', New: 'text-on-surface-variant border-white/20' };
+        return `<span class="px-2 py-0.5 border ${map[t] || ''}" style="font-size:10px;letter-spacing:0.1em;">${t.toUpperCase()}</span>`;
+      };
+
+      // Mobile
+      document.getElementById('customers-mobile').innerHTML = filtered.map(c => `
+    <div class="glass p-5 cursor-pointer" onclick="viewCustomer('${c.id}')">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-bold flex-shrink-0" style="font-size:12px;">${c.initials}</div>
+        <div><p style="font-size:14px;font-weight:500;">${c.name}</p><p class="text-on-surface-variant" style="font-size:11px;">${c.email}</p></div>
+        ${tierBadge(c.tier)}
+      </div>
+      <div class="flex justify-between text-on-surface-variant border-t border-white/10 pt-3" style="font-size:12px;">
+        <span>${c.orders} orders</span><span>Rs. ${c.spent.toLocaleString()} spent</span><span>${c.joined}</span>
+      </div>
+    </div>`).join('');
+
+      // Desktop
+      document.getElementById('customers-table').innerHTML = filtered.map(c => `
+    <tr class="row-hover transition-colors cursor-pointer" onclick="viewCustomer('${c.id}')">
+      <td class="px-6 py-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-surface-container-highest flex items-center justify-center font-bold flex-shrink-0" style="font-size:11px;">${c.initials}</div>
+          <span style="font-size:14px;">${c.name}</span>
+        </div>
+      </td>
+      <td class="px-6 py-4 text-on-surface-variant" style="font-size:13px;">${c.email}</td>
+      <td class="px-6 py-4" style="font-size:14px;">${c.orders}</td>
+      <td class="px-6 py-4" style="font-size:14px;">Rs. ${c.spent.toLocaleString()}</td>
+      <td class="px-6 py-4">${tierBadge(c.tier)}</td>
+      <td class="px-6 py-4 text-on-surface-variant" style="font-size:13px;">${c.joined}</td>
+    </tr>`).join('');
+    }
+
+    // ═══════════════════════════════════════════
+    //  ANALYTICS
+    // ═══════════════════════════════════════════
+    function renderAnalytics() {
+      // Monthly bars
+      const container = document.getElementById('analytics-monthly-bars');
+      if (container) {
+        container.innerHTML = MONTHLY_DATA.map(d => `
+      <div class="flex-1 mx-0.5 flex flex-col justify-end group" style="height:100%;position:relative;">
+        <div class="w-full analytics-bar" style="height:${d.val}%;position:relative;">
+          <div class="absolute inset-0" style="background:linear-gradient(to top,#e9c349,rgba(233,195,73,0.4));"></div>
+        </div>
+        <span class="text-center text-on-surface-variant opacity-50 mt-2" style="font-size:9px;letter-spacing:0.1em;">${d.label}</span>
+      </div>`).join('');
+      }
+
+      // Top products table
+      const tbody = document.getElementById('analytics-products');
+      if (tbody) {
+        const topProds = [...products].sort((a, b) => b.price - a.price).slice(0, 5);
+        tbody.innerHTML = topProds.map((p, i) => `
+      <tr class="row-hover transition-colors">
+        <td class="px-6 py-4" style="font-size:14px;">${p.name}</td>
+        <td class="px-6 py-4 text-on-surface-variant" style="font-size:13px;">${p.category}</td>
+        <td class="px-6 py-4" style="font-size:14px;">${Math.floor(Math.random() * 50) + 10}</td>
+        <td class="px-6 py-4" style="font-size:14px;">Rs. ${(p.price * (Math.floor(Math.random() * 50) + 10)).toLocaleString()}</td>
+        <td class="px-6 py-4"><span class="text-tertiary font-bold" style="font-size:13px;">↑ ${(Math.random() * 20 + 5).toFixed(1)}%</span></td>
+      </tr>`).join('');
+      }
+    }
+
+    // Expose to HTML onclick attributes
+    window.navigate = navigate;
+    window.toggleSidebar = toggleSidebar;
+    window.closeSidebar = closeSidebar;
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+    window.showToast = showToast;
+    window.toggleNotif = toggleNotif;
+    window.clearNotifications = clearNotifications;
+    window.setChart = setChart;
+    window.renderProducts = renderProducts;
+    window.renderOrders = renderOrders;
+    window.renderCustomers = renderCustomers;
+    window.editProduct = editProduct;
+    window.saveProduct = saveProduct;
+    window.confirmDeleteProduct = confirmDeleteProduct;
+    window.openCtx = openCtx;
+    window.viewOrder = viewOrder;
+    window.openStatusModal = openStatusModal;
+    window.updateStatus = updateStatus;
+    window.confirmDeleteOrder = confirmDeleteOrder;
+    window.saveDeal = saveDeal;
+    window.openDealModal = openDealModal;
+    window.openProductModal = openProductModal;
+    window.editDeal = editDeal;
+    window.confirmDeleteDeal = confirmDeleteDeal;
+  </script>
+</body>
+
+</html>

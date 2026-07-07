@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MK Rockstar | Luxury Streetwear</title>
+<meta name="description" content="MK Rockstar — Premium streetwear for the modern generation. Engineered for those who command the room without saying a word."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode:"class",
+    theme:{extend:{
+      colors:{
+        "secondary":"#c6c6c7","inverse-primary":"#5e5e5e","tertiary-container":"#000000",
+        "surface-bright":"#393939","error":"#ffb4ab","on-surface-variant":"#cfc4c5",
+        "primary":"#c6c6c6","on-primary-fixed-variant":"#474747","outline-variant":"#4c4546",
+        "on-primary-container":"#757575","primary-fixed":"#e2e2e2","on-primary":"#303030",
+        "on-tertiary":"#3c2f00","on-error":"#690005","surface-tint":"#c6c6c6",
+        "surface-container":"#201f1f","tertiary":"#e9c349","on-error-container":"#ffdad6",
+        "inverse-on-surface":"#313030","secondary-container":"#454747","on-secondary":"#2f3131",
+        "on-background":"#e5e2e1","on-primary-fixed":"#1b1b1b","secondary-fixed":"#e2e2e2",
+        "surface-container-low":"#1c1b1b","primary-container":"#000000","error-container":"#93000a",
+        "inverse-surface":"#e5e2e1","on-tertiary-container":"#8f7200","surface-container-high":"#2a2a2a",
+        "on-surface":"#e5e2e1","outline":"#988e90","surface-dim":"#131313",
+        "surface-container-lowest":"#0e0e0e","background":"#131313","on-secondary-container":"#b4b5b5",
+        "surface-container-highest":"#353534","tertiary-fixed":"#ffe088","surface-variant":"#353534",
+        "tertiary-fixed-dim":"#e9c349","surface":"#131313"
+      },
+      spacing:{
+        "gutter":"24px","margin-desktop":"64px","margin-mobile":"20px",
+        "unit":"8px","container-max":"1440px"
+      },
+      fontFamily:{
+        "headline-md":["Anton"],"headline-lg":["Anton"],"body-md":["Hanken Grotesk"],
+        "display-xl":["Anton"],"body-lg":["Hanken Grotesk"],"headline-lg-mobile":["Anton"],"label-caps":["Hanken Grotesk"]
+      },
+      fontSize:{
+        "headline-md":["32px",{"lineHeight":"40px","letterSpacing":"0.05em","fontWeight":"400"}],
+        "headline-lg":["64px",{"lineHeight":"72px","letterSpacing":"0.02em","fontWeight":"400"}],
+        "body-md":["16px",{"lineHeight":"24px","fontWeight":"400"}],
+        "display-xl":["120px",{"lineHeight":"110px","letterSpacing":"-0.02em","fontWeight":"400"}],
+        "body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],
+        "headline-lg-mobile":["40px",{"lineHeight":"44px","letterSpacing":"0.02em","fontWeight":"400"}],
+        "label-caps":["12px",{"lineHeight":"16px","letterSpacing":"0.15em","fontWeight":"700"}]
+      }
+    }}
+  }
+</script>
+<style>
+  *{box-sizing:border-box;}
+  body{background:#131313;color:#e5e2e1;font-family:'Hanken Grotesk',sans-serif;overflow-x:hidden;scroll-behavior:smooth;}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;user-select:none;}
+
+  /* NAV glass */
+  .nav-glass{background:rgba(19,19,19,0.0);backdrop-filter:blur(0px);border-bottom:1px solid transparent;transition:background 0.4s,backdrop-filter 0.4s,border-color 0.4s,padding 0.3s;}
+  .nav-glass.scrolled{background:rgba(19,19,19,0.88);backdrop-filter:blur(20px);border-color:rgba(255,255,255,0.08);}
+
+  /* Mobile menu */
+  #mobile-menu{transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);}
+  #mobile-menu.open{transform:translateX(0);}
+  #mobile-overlay{transition:opacity 0.35s ease;}
+
+  /* Scroll reveal */
+  .reveal{opacity:0;transform:translateY(32px);transition:opacity 0.75s ease-out,transform 0.75s ease-out;}
+  .reveal.active{opacity:1;transform:translateY(0);}
+
+  /* Image zoom */
+  .img-zoom{overflow:hidden;}
+  .img-zoom img{transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);}
+  .img-zoom:hover img{transform:scale(1.06);}
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar{width:5px;}
+  ::-webkit-scrollbar-track{background:#131313;}
+  ::-webkit-scrollbar-thumb{background:#2a2a2a;}
+
+  /* Product card hover slide-up */
+  .product-card .quick-view{transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
+  .product-card:hover .quick-view{transform:translateY(0);}
+  .product-card .product-img{transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);}
+  .product-card:hover .product-img{transform:scale(1.08);}
+
+  /* Wishlist heart active */
+  .wishlist-btn.active .material-symbols-outlined{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;color:#e9c349;}
+
+  /* Toast */
+  #toast{transform:translateY(100px);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1),opacity 0.35s;}
+  #toast.show{transform:translateY(0);}
+
+  /* Cart drawer */
+  #cart-drawer{transform:translateX(110%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);}
+  #cart-drawer.open{transform:translateX(0);}
+
+  /* Quick view modal */
+  .modal-bg{transition:opacity 0.25s ease;}
+  .modal-box{transition:transform 0.3s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;}
+  .modal-hidden .modal-box{transform:scale(0.95);opacity:0;}
+  .modal-hidden{opacity:0;pointer-events:none;}
+
+  /* Newsletter input */
+  .nl-input{background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.2);outline:none;padding:16px 0;color:#e5e2e1;font-family:'Hanken Grotesk',sans-serif;font-size:12px;letter-spacing:0.15em;width:100%;transition:border-color 0.2s;}
+  .nl-input:focus{border-color:#e9c349;}
+  .nl-input::placeholder{color:#988e90;}
+
+  /* Hero text responsive */
+  @media(max-width:640px){
+    .hero-h1{font-size:52px!important;line-height:54px!important;}
+  }
+  @media(max-width:400px){
+    .hero-h1{font-size:40px!important;line-height:44px!important;}
+  }
+
+  /* Collections grid responsive */
+  @media(max-width:767px){
+    .bento-grid{grid-template-columns:1fr 1fr!important;grid-template-rows:auto!important;height:auto!important;}
+    .bento-large{grid-column:1/3!important;grid-row:auto!important;height:300px;}
+    .bento-small{grid-column:auto!important;grid-row:auto!important;height:200px;}
+  }
+
+  /* Badge pulse */
+  .badge-pulse{animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.6;}}
+
+  /* Count badge */
+  .cart-count{position:absolute;top:-6px;right:-6px;background:#e9c349;color:#131313;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;letter-spacing:0;}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script type="text/javascript">
+  (function() {
+    emailjs.init("2OKrNi3XdtW_PWkxa");
+  })();
+</script>
+</head>
+
+<body class="overflow-x-hidden">
+
+<!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
+<nav id="navbar" class="nav-glass fixed top-0 w-full z-50">
+  <div class="max-w-[1440px] mx-auto px-5 lg:px-16 py-5 flex justify-between items-center">
+    <!-- Logo + Desktop Links -->
+    <div class="flex items-center gap-10">
+      <a href="#" style="font-family:Anton,sans-serif;font-size:26px;letter-spacing:-0.01em;" class="text-on-surface hover:text-tertiary transition-colors">MK Rockstar</a>
+      <div class="hidden md:flex gap-8 items-center" id="nav-links">
+        <a href="#hero" class="nav-item text-on-surface-variant hover:text-on-surface transition-colors border-b border-transparent data-[active=true]:text-tertiary data-[active=true]:border-tertiary pb-0.5" style="font-size:11px;letter-spacing:0.15em;">SHOP</a>
+        <a href="#collections" class="nav-item text-on-surface-variant hover:text-on-surface transition-colors border-b border-transparent data-[active=true]:text-tertiary data-[active=true]:border-tertiary pb-0.5" style="font-size:11px;letter-spacing:0.15em;">CATEGORIES</a>
+        <a href="#new-arrivals" class="nav-item text-on-surface-variant hover:text-on-surface transition-colors border-b border-transparent data-[active=true]:text-tertiary data-[active=true]:border-tertiary pb-0.5" style="font-size:11px;letter-spacing:0.15em;">NEW ARRIVALS</a>
+        <a href="#deals" class="nav-item text-on-surface-variant hover:text-on-surface transition-colors border-b border-transparent data-[active=true]:text-tertiary data-[active=true]:border-tertiary pb-0.5" style="font-size:11px;letter-spacing:0.15em;">DEALS</a>
+      </div>
+    </div>
+    <!-- Icons -->
+    <div class="flex items-center gap-4 lg:gap-5">
+      <!-- Wishlist -->
+      <button id="nav-wishlist" onclick="openWishlist()" class="wishlist-btn relative material-symbols-outlined text-on-surface hover:text-tertiary transition-colors hidden sm:block" title="Wishlist">favorite
+        <span id="wishlist-count" class="cart-count hidden">0</span>
+      </button>
+      <!-- Cart -->
+      <button onclick="openCart()" class="relative material-symbols-outlined text-on-surface hover:text-tertiary transition-colors" title="Cart">shopping_cart
+        <span id="cart-count" class="cart-count hidden">0</span>
+      </button>
+      <!-- Mobile hamburger -->
+      <button id="hamburger" onclick="toggleMobileMenu()" class="md:hidden material-symbols-outlined text-on-surface hover:text-tertiary transition-colors" title="Menu">menu</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ MOBILE MENU ═══════════════════════ -->
+<div id="mobile-overlay" class="fixed inset-0 z-40 bg-black/60 opacity-0 pointer-events-none" onclick="toggleMobileMenu()"></div>
+<div id="mobile-menu" class="fixed top-0 right-0 h-full w-4/5 max-w-xs z-50 bg-surface-container-low border-l border-white/10 flex flex-col py-8 px-6">
+  <div class="flex justify-between items-center mb-10">
+    <span style="font-family:Anton,sans-serif;font-size:20px;">MK ROCKSTAR</span>
+    <button onclick="toggleMobileMenu()" class="material-symbols-outlined text-on-surface-variant hover:text-white">close</button>
+  </div>
+  <nav class="space-y-1 flex-1">
+    <a href="#hero" onclick="toggleMobileMenu()" class="flex items-center gap-3 py-3 border-b border-white/5 text-on-surface hover:text-tertiary transition-colors" style="font-size:11px;letter-spacing:0.15em;">
+      <span class="material-symbols-outlined text-tertiary" style="font-size:18px;">storefront</span>SHOP ALL
+    </a>
+    <a href="#collections" onclick="toggleMobileMenu()" class="flex items-center gap-3 py-3 border-b border-white/5 text-on-surface-variant hover:text-on-surface transition-colors" style="font-size:11px;letter-spacing:0.15em;">
+      <span class="material-symbols-outlined" style="font-size:18px;">category</span>CATEGORIES
+    </a>
+    <a href="#new-arrivals" onclick="toggleMobileMenu()" class="flex items-center gap-3 py-3 border-b border-white/5 text-on-surface-variant hover:text-on-surface transition-colors" style="font-size:11px;letter-spacing:0.15em;">
+      <span class="material-symbols-outlined" style="font-size:18px;">local_fire_department</span>NEW ARRIVALS
+    </a>
+    <a href="#deals" onclick="toggleMobileMenu()" class="flex items-center gap-3 py-3 border-b border-white/5 text-on-surface-variant hover:text-on-surface transition-colors" style="font-size:11px;letter-spacing:0.15em;">
+      <span class="material-symbols-outlined" style="font-size:18px;">loyalty</span>DEALS
+    </a>
+    <a href="#" onclick="openWishlist();toggleMobileMenu();" class="flex items-center gap-3 py-3 border-b border-white/5 text-on-surface-variant hover:text-on-surface transition-colors" style="font-size:11px;letter-spacing:0.15em;">
+      <span class="material-symbols-outlined" style="font-size:18px;">favorite</span>WISHLIST
+    </a>
+  </nav>
+  <button onclick="openCart();toggleMobileMenu();" class="w-full bg-on-surface text-background py-4 hover:bg-tertiary transition-all flex items-center justify-center gap-2 mt-6" style="font-size:11px;letter-spacing:0.15em;">
+    <span class="material-symbols-outlined text-lg">shopping_cart</span>VIEW CART
+  </button>
+</div>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section id="hero" class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+  <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/70 z-10"></div>
+    <img class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyWDJ7cSKXEk9fac3oOZdIvPQdWrqghc6Jy8I-0DSLE4Xj6PgLXQ9P_FUf6kq8tXlgfY0wgouRgFWv8Kkhcx0kUjYa-aoDhMX9rTk9bA54Jd5e49rO8h09SnD1TP280p0bBbm7o2Vwb2ZXh5iVTJOvtDtI03gtMdxpH3P1f8HBDjdNuYAVDFlaKPNldE1WHi9m1egMGxBvjP6xw6KfNwDZDctSKL_Pwj1tVb1VTzL8pm3HIb_ecRd4XKCAM97QuXQ5jQvqqqsVJYA" alt="MK Rockstar hero — luxury streetwear model"/>
+  </div>
+  <div class="relative z-20 text-center px-5 lg:px-16 max-w-4xl mx-auto">
+    <h1 class="hero-h1 text-white uppercase mb-6" style="font-family:Anton,sans-serif;font-size:88px;line-height:0.95;letter-spacing:0.01em;">
+      WEAR THE<br/>SPOTLIGHT
+    </h1>
+    <p class="text-secondary mb-10 max-w-xl mx-auto" style="font-size:16px;line-height:1.7;opacity:0.85;">
+      Premium Streetwear For The Modern Generation. Engineered for those who command the room without saying a word.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <a href="#new-arrivals" class="bg-white text-black px-10 py-4 hover:bg-tertiary transition-colors w-full sm:w-auto text-center" style="font-size:11px;letter-spacing:0.15em;">SHOP NOW</a>
+      <a href="#collections" class="border border-white/40 text-white px-10 py-4 hover:bg-white/10 transition-colors w-full sm:w-auto text-center" style="font-size:11px;letter-spacing:0.15em;">EXPLORE COLLECTION</a>
+    </div>
+  </div>
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce opacity-40">
+    <span class="material-symbols-outlined text-white">expand_more</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════ COLLECTIONS (BENTO) ═══════════════════════ -->
+<section id="collections" class="py-20 lg:py-32 px-5 lg:px-16 max-w-[1440px] mx-auto">
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 lg:mb-16 gap-4 reveal">
+    <h2 class="uppercase" style="font-family:Anton,sans-serif;font-size:52px;letter-spacing:0.02em;line-height:1;">Collections</h2>
+    <a href="#new-arrivals" class="border-b border-white/20 pb-1 hover:border-white transition-all text-on-surface-variant hover:text-white" style="font-size:11px;letter-spacing:0.15em;">VIEW ALL CATEGORIES</a>
+  </div>
+  <!-- Bento Grid -->
+  <div class="bento-grid grid grid-cols-4 grid-rows-2 gap-4 lg:gap-6 h-auto lg:h-[800px] reveal">
+    <!-- Large — Hoodies -->
+    <div class="bento-large col-span-4 md:col-span-2 md:row-span-2 relative img-zoom cursor-pointer group" onclick="filterCategory('Hoodies')" style="min-height:300px;">
+      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2flgCMmT1aW8ykPgmfW8ofNu_VMRDBp7838D7Nw65mrsQm8gHIGkKTmzPIMCnmN2CakuW5rXg1wKfolqICS-g9BFcb_WHrsUYblKEJgDDFyfbs17HzgioH3SZBEQu1fvf7nYFLHn0BbaJ591usnRw2kidFD7eWPkHqddUS9R1fu8tIf3tYt2BuoOyd96P7y7q8PI1bOKCurQxW2baSmVXp3HoKdEjGPQb6-Gq9RsDHIytU3saGS55jNqMTDSboknnfSgmp8m1Cuw" alt="Hoodies Collection"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity"></div>
+      <div class="absolute bottom-6 left-6 lg:bottom-8 lg:left-8">
+        <span class="text-tertiary block mb-1 uppercase" style="font-size:10px;letter-spacing:0.2em;">Premium Basics</span>
+        <h3 class="text-white uppercase group-hover:text-tertiary transition-colors" style="font-family:Anton,sans-serif;font-size:32px;letter-spacing:0.05em;">Hoodies</h3>
+      </div>
+      <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+        <span class="bg-white text-black px-3 py-1" style="font-size:10px;letter-spacing:0.1em;">SHOP →</span>
+      </div>
+    </div>
+    <!-- T-Shirts -->
+    <div class="bento-small col-span-2 relative img-zoom cursor-pointer group" onclick="filterCategory('T-Shirts')" style="min-height:200px;">
+      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfq4qhe0wLBIOHRLV5ICkhJn3r964hlKwhbhsjYNFp_oENSE0klrwtwRVSDmNZae7tlFHx95ToIAC9HCEJ0FhCyLp7TrwhgAeUsYa0IDiQBBGUWO5xZgP_wtBEoQ50RI5KhQ42yd4LfGF45QKeJc_FYscl7u7Y6NQ4Lg4ktLg_J5tO-BPdBzHE9_dKGDWMgX7LtL1X3X6ixNJk4ReSDCTl4ORCAZ75ls2tkTaGfUlz_BzPmxJ9pIZv3jW1HnSJvawBXLidfG7IAW0" alt="T-Shirts Collection"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+      <div class="absolute bottom-5 left-5 lg:bottom-8 lg:left-8">
+        <h3 class="text-white uppercase group-hover:text-tertiary transition-colors" style="font-family:Anton,sans-serif;font-size:24px;letter-spacing:0.05em;">T-Shirts</h3>
+      </div>
+    </div>
+    <!-- Jackets -->
+    <div class="bento-small col-span-1 relative img-zoom cursor-pointer group" onclick="filterCategory('Jackets')" style="min-height:200px;">
+      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcOULVU9GsMFqshUEhm5F-ENMPjxNx_3sJLUmdj0BC1ZM0WSKtCLBOmIAHsANAfYEGEdY_KjrPcqCn6G8NogF635G-KR7Eo3mfaeEHzjViEtevtUkKCVk9EcUW1SyPPBJcyBYlMS2DFRE2jHStap30iv38mac1yu1SqFws5rSUnknX5UTCT8kc8GMPKJ8tLQ6iyqw0rkqXKNLD6x6gOAo4LDH-oYPIE395UzFBKhHrzKnPOm08NaWsNVfR8Hd29UFfj1P_7-E1Z3s" alt="Jackets Collection"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+      <div class="absolute bottom-5 left-5 lg:bottom-8 lg:left-8">
+        <h3 class="text-white uppercase group-hover:text-tertiary transition-colors" style="font-family:Anton,sans-serif;font-size:22px;letter-spacing:0.05em;">Jackets</h3>
+      </div>
+    </div>
+    <!-- Old Money -->
+    <div class="bento-small col-span-1 relative img-zoom cursor-pointer group" onclick="filterCategory('Old Money')" style="min-height:200px;">
+      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB0uCPVze1dH3McJ670NeBmcdr-V1sv28CrGmDjkRSGtXla4xBRG1HLgXVZXV9bvLvqgFgcncf1O3OrsXGXj1OUuJNByQReymBf8ZJVNb1-hK02moYhmiY9lCgNvQDRNJYTgNAbiXqveFqYBoOd0SD8SbCk5ovIZOO3Pw7OJr0GuJ0awWhz-sYl19xuCLaC1uNABrLcMO4t4jUvQsLakr8a5zatnqkgH7MnvG3Bsbl0WqQDHsFquFEh0CY6m_b3vykEGQBMGU2J_M" alt="Old Money Collection"/>
+      <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
+      <div class="absolute inset-0 flex items-center justify-center border border-white/10 m-3 group-hover:border-tertiary/60 transition-all">
+        <div class="text-center">
+          <span class="text-secondary block mb-1 uppercase" style="font-size:9px;letter-spacing:0.15em;">The Archive</span>
+          <h3 class="text-white uppercase group-hover:text-tertiary transition-colors" style="font-family:Anton,sans-serif;font-size:18px;letter-spacing:0.05em;">Old Money</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ NEW ARRIVALS ═══════════════════════ -->
+<section id="new-arrivals" class="py-20 lg:py-32 bg-surface-container-lowest">
+  <div class="px-5 lg:px-16 max-w-[1440px] mx-auto">
+    <div class="text-center mb-16 lg:mb-20 reveal">
+      <span class="text-tertiary uppercase tracking-[0.3em]" style="font-size:11px;">Just Dropped</span>
+      <h2 class="uppercase mt-2" style="font-family:Anton,sans-serif;font-size:52px;letter-spacing:0.02em;">New Arrivals</h2>
+    </div>
+    <!-- Filter tabs -->
+    <div class="flex gap-3 overflow-x-auto pb-3 mb-10 lg:justify-center reveal" id="filter-tabs" style="scrollbar-width:none;">
+      <button onclick="setFilter('all')" data-filter="all" class="filter-tab px-5 py-2 border border-tertiary text-tertiary whitespace-nowrap" style="font-size:10px;letter-spacing:0.15em;">ALL</button>
+      <button onclick="setFilter('Hoodies')" data-filter="Hoodies" class="filter-tab px-5 py-2 border border-white/20 text-on-surface-variant whitespace-nowrap hover:border-white/50 transition-colors" style="font-size:10px;letter-spacing:0.15em;">HOODIES</button>
+      <button onclick="setFilter('Jackets')" data-filter="Jackets" class="filter-tab px-5 py-2 border border-white/20 text-on-surface-variant whitespace-nowrap hover:border-white/50 transition-colors" style="font-size:10px;letter-spacing:0.15em;">JACKETS</button>
+      <button onclick="setFilter('T-Shirts')" data-filter="T-Shirts" class="filter-tab px-5 py-2 border border-white/20 text-on-surface-variant whitespace-nowrap hover:border-white/50 transition-colors" style="font-size:10px;letter-spacing:0.15em;">T-SHIRTS</button>
+      <button onclick="setFilter('Bottoms')" data-filter="Bottoms" class="filter-tab px-5 py-2 border border-white/20 text-on-surface-variant whitespace-nowrap hover:border-white/50 transition-colors" style="font-size:10px;letter-spacing:0.15em;">BOTTOMS</button>
+    </div>
+    <!-- Products Grid -->
+    <div id="products-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-x-8 lg:gap-y-16"></div>
+    <!-- Load More -->
+    <div id="load-more-wrap" class="text-center mt-12 hidden">
+      <button id="load-more-btn" onclick="loadMoreProducts()" class="border border-white/30 text-on-surface-variant px-12 py-4 hover:border-tertiary hover:text-tertiary transition-colors" style="font-size:11px;letter-spacing:0.15em;">LOAD MORE</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ DEALS ═══════════════════════ -->
+<section id="deals" class="py-20 lg:py-32 bg-surface border-t border-white/5">
+  <div class="px-5 lg:px-16 max-w-[1440px] mx-auto">
+    <div class="text-center mb-16 lg:mb-20 reveal">
+      <span class="text-tertiary uppercase tracking-[0.3em]" style="font-size:11px;">Limited Time</span>
+      <h2 class="uppercase mt-2" style="font-family:Anton,sans-serif;font-size:52px;letter-spacing:0.02em;">Deals</h2>
+    </div>
+    <div id="deals-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+      <!-- Deals injected here via JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ BRAND STORY ═══════════════════════ -->
+<section class="relative py-32 lg:py-48 overflow-hidden">
+  <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 bg-black/70 z-10"></div>
+    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUpS8vUUpQCPAGNisOm_KLJvKsI7euYVUjNFJHCu-25N7DVRrUze7V4Eym8Ej-DdNsp5rCOeB0ki2pmbYRbqS9pQr-U7-FDWE_fSROqlmO2VK5mpeJv2kaXcqKOTuo_EPZrE3Emuiv5t-De61oz_Hr-EJFO6x9i5fPJYFwBh9sh5m4_zLPePgtdjaXJf8O9Z28gZn8LZMAn0eTMQT4fkCIeLRcyk8GjrTnE3VVBkkAiP5G4iV5Ge69zA9r7X7k9GsdLTTgk51eNrU" alt="Brand Story"/>
+  </div>
+  <div class="relative z-20 px-5 lg:px-16 max-w-4xl mx-auto text-center reveal">
+    <span class="text-primary tracking-[0.4em] uppercase mb-8 block" style="font-size:11px;">The Vision</span>
+    <h2 class="uppercase mb-10 leading-tight" style="font-family:Anton,sans-serif;font-size:clamp(36px,6vw,72px);letter-spacing:0.02em;">Crafting the Future<br/>of Street Luxury</h2>
+    <p class="text-secondary leading-relaxed mb-12 max-w-2xl mx-auto" style="font-size:16px;line-height:1.8;">
+      MK Rockstar was born from the intersection of underground energy and high-end tailoring. Every stitch is a statement, every fabric a testament to our obsession with quality. We don't follow trends; we create the atmosphere that defines them.
+    </p>
+    <div class="h-px w-20 bg-tertiary mx-auto mb-10"></div>
+    <a href="#new-arrivals" class="border border-white/30 text-white px-10 py-4 hover:bg-white hover:text-black transition-all inline-block" style="font-size:11px;letter-spacing:0.15em;">DISCOVER MORE</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════ WHY CHOOSE US ═══════════════════════ -->
+<section class="py-20 lg:py-24 border-y border-white/5">
+  <div class="px-5 lg:px-16 max-w-[1440px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-12 lg:gap-16">
+    <div class="flex flex-col items-center text-center reveal">
+      <span class="material-symbols-outlined text-tertiary mb-6" style="font-size:48px;font-variation-settings:'FILL' 1;">sync</span>
+      <h5 class="text-white mb-3 uppercase tracking-widest" style="font-size:11px;letter-spacing:0.2em;">Easy Returns</h5>
+      <p class="text-on-surface-variant max-w-xs" style="font-size:14px;line-height:1.7;">30-day effortless return policy for a perfect fit, every time.</p>
+    </div>
+    <div class="flex flex-col items-center text-center reveal" style="transition-delay:150ms;">
+      <span class="material-symbols-outlined text-tertiary mb-6" style="font-size:48px;font-variation-settings:'FILL' 1;">local_shipping</span>
+      <h5 class="text-white mb-3 uppercase tracking-widest" style="font-size:11px;letter-spacing:0.2em;">Nationwide Shipping</h5>
+      <p class="text-on-surface-variant max-w-xs" style="font-size:14px;line-height:1.7;">Expedited premium delivery to your doorstep across the country.</p>
+    </div>
+    <div class="flex flex-col items-center text-center reveal" style="transition-delay:300ms;">
+      <span class="material-symbols-outlined text-tertiary mb-6" style="font-size:48px;font-variation-settings:'FILL' 1;">verified_user</span>
+      <h5 class="text-white mb-3 uppercase tracking-widest" style="font-size:11px;letter-spacing:0.2em;">Secure Checkout</h5>
+      <p class="text-on-surface-variant max-w-xs" style="font-size:14px;line-height:1.7;">End-to-end encrypted transactions for total peace of mind.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ NEWSLETTER ═══════════════════════ -->
+<section id="newsletter" class="py-24 lg:py-40 bg-surface-container">
+  <div class="px-5 lg:px-16 max-w-[1440px] mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <div class="reveal">
+        <h2 class="uppercase mb-5" style="font-family:Anton,sans-serif;font-size:52px;letter-spacing:0.02em;line-height:1;">JOIN THE ELITE</h2>
+        <p class="text-secondary mb-8" style="font-size:16px;line-height:1.7;">Subscribe to receive exclusive early access to drops, member-only lookbooks, and private events.</p>
+        <form id="nl-form" onsubmit="subscribeNewsletter(event)" class="flex flex-col sm:flex-row gap-0">
+          <input id="nl-email" type="email" class="nl-input" placeholder="YOUR EMAIL ADDRESS" required/>
+          <button type="submit" class="bg-white text-black px-10 py-4 hover:bg-tertiary transition-colors whitespace-nowrap mt-4 sm:mt-0" style="font-size:11px;letter-spacing:0.15em;">SUBSCRIBE</button>
+        </form>
+        <p id="nl-success" class="hidden text-tertiary mt-4" style="font-size:12px;letter-spacing:0.1em;">✓ YOU'RE ON THE LIST. WATCH YOUR INBOX.</p>
+      </div>
+      <div class="relative reveal hidden lg:block">
+        <div class="absolute inset-0 border border-white/10 -m-4 translate-x-8 translate-y-8 z-0"></div>
+        <img class="relative z-10 w-full h-80 object-cover grayscale opacity-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNAb9iOVrkJeoQkGYP3WRrpCgZYHPeyEcN86qtaV7Yz3_W6EnwnpgMYq1jZnSvAz2WQT-qTaYRb2IC6xS8zseRnYnE4mI1KMl9LId03cBOT0cwpK9WTrfldHXjgwA0L3ZsbyIvCEPlOIVmvaVzpL8sSJOEerV1ihd2U-2aaSKs3ouh_tO7zGPIqvIk447SlJVSnlyqVBNcOsquo0WfEwIW-ovAc_ymLvHDShcDWAJuy9LybQaXO2_a4SXFeEeMITMQ_e2COy8j1es" alt="MK Rockstar Elite Membership"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer class="bg-surface-container-lowest py-16 lg:py-24 border-t border-white/10">
+  <div class="max-w-[1440px] mx-auto px-5 lg:px-16 grid grid-cols-2 md:grid-cols-4 gap-10 lg:gap-12">
+    <div class="col-span-2 md:col-span-1">
+      <span class="block mb-6 hover:text-tertiary transition-colors cursor-pointer" style="font-family:Anton,sans-serif;font-size:36px;color:#c6c6c6;">MK Rockstar</span>
+      <p class="text-on-surface-variant mb-8 max-w-xs" style="font-size:14px;line-height:1.7;">Defining the next era of urban luxury. High-end streetwear for the visionaries.</p>
+      <div class="flex gap-5">
+        <a href="https://www.instagram.com/m_k_rockstar?igsh=MTB1NHZsc2gyMW0xcw==" target="_blank" class="text-on-surface-variant hover:text-tertiary transition-colors" title="Instagram">
+          <!-- Instagram SVG icon -->
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm3.98-10.834a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/@m_k_rockstar?_r=1&_t=ZS-92R8PqQfa5q" target="_blank" class="text-on-surface-variant hover:text-tertiary transition-colors" title="TikTok">
+          <!-- TikTok SVG icon -->
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.22-1.15 4.39-2.9 5.8-1.57 1.25-3.61 1.78-5.6 1.48-1.89-.28-3.6-1.26-4.83-2.73-1.12-1.35-1.74-3.1-1.72-4.87.03-1.77.67-3.5 1.83-4.82 1.24-1.4 3.03-2.28 4.9-2.54.34-.05.69-.07 1.04-.08V13c-.94.01-1.88.24-2.71.71-.62.36-1.16.89-1.48 1.53-.33.68-.39 1.47-.32 2.21.08.83.4 1.63 1.02 2.19.68.61 1.6.93 2.52.85 1.02-.09 1.94-.57 2.58-1.35.48-.59.74-1.34.75-2.1.02-4.81.01-9.61.02-14.42z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div>
+      <h6 class="text-white mb-6 tracking-widest uppercase" style="font-size:11px;letter-spacing:0.2em;">Shop</h6>
+      <ul class="space-y-3">
+        <li><a href="#new-arrivals" class="text-on-surface-variant hover:text-white transition-colors" style="font-size:14px;">All Products</a></li>
+        <li><a href="#" onclick="filterCategory('Hoodies');scrollToProducts();return false;" class="text-on-surface-variant hover:text-white transition-colors" style="font-size:14px;">Hoodies</a></li>
+        <li><a href="#" onclick="filterCategory('Jackets');scrollToProducts();return false;" class="text-on-surface-variant hover:text-white transition-colors" style="font-size:14px;">Accessories</a></li>
+        <li><a href="#" onclick="filterCategory('Old Money');scrollToProducts();return false;" class="text-on-surface-variant hover:text-white transition-colors" style="font-size:14px;">Old Money Collection</a></li>
+      </ul>
+    </div>
+    <div>
+      <h6 class="text-white mb-6 tracking-widest uppercase" style="font-size:11px;letter-spacing:0.2em;">Support</h6>
+      <ul class="space-y-3">
+        <li><a href="#" onclick="openModal('privacy-modal');return false;" class="text-on-surface-variant hover:text-white transition-colors" style="font-size:14px;">Privacy Policy</a></li>
+        <li><a href="#" onclick="openModal('terms-modal');return false;" class="text-on-surface-variant hover:text-white transition-colors" style="font-size:14px;">Terms of Service</a></li>
+        <li><a href="#" onclick="openModal('shipping-modal');return false;" class="text-on-surface-variant hover:text-white transition-colors" style="font-size:14px;">Shipping &amp; Returns</a></li>
+        <li><a href="mailto:mkrockstar149@gmail.com" class="text-on-surface-variant hover:text-white transition-colors" style="font-size:14px;">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h6 class="text-white mb-6 tracking-widest uppercase" style="font-size:11px;letter-spacing:0.2em;">Visit</h6>
+        Rockstar Garments Commercial Market Rawalpindi<br/>
+        Commercial Market Rd, B-Block<br/>
+        Satellite Town, Rawalpindi, 44000<br/>
+        Pakistan
+    </div>
+  </div>
+  <div class="max-w-[1440px] mx-auto px-5 lg:px-16 mt-16 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <p class="text-on-surface-variant" style="font-size:10px;letter-spacing:0.1em;">© 2026 MK ROCKSTAR. ALL RIGHTS RESERVED.</p>
+  </div>
+</footer>
+
+<!-- ═══════════════════════ WISHLIST DRAWER ═══════════════════════ -->
+<div id="wishlist-overlay" class="fixed inset-0 z-40 bg-black/60 opacity-0 pointer-events-none transition-opacity" onclick="closeWishlist()"></div>
+<div id="wishlist-drawer" class="fixed top-0 right-0 h-full w-full sm:w-96 z-50 bg-surface-container-low border-l border-white/10 flex flex-col translate-x-full transition-transform duration-300">
+  <div class="p-6 border-b border-white/10 flex justify-between items-center bg-surface-container">
+    <h3 class="text-xl text-white font-bold tracking-widest uppercase" style="font-family:Anton,sans-serif;letter-spacing:0.05em;">WISHLIST</h3>
+    <button onclick="closeWishlist()" class="text-on-surface-variant hover:text-white transition-colors">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div id="wishlist-items" class="flex-1 overflow-y-auto p-6 space-y-6">
+    <!-- Wishlist items injected here -->
+  </div>
+</div>
+
+<!-- ═══════════════════════ CART DRAWER ═══════════════════════ -->
+<div id="cart-overlay" class="fixed inset-0 z-40 bg-black/60 opacity-0 pointer-events-none transition-opacity" onclick="closeCart()"></div>
+<div id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-96 z-50 bg-surface-container-low border-l border-white/10 flex flex-col">
+  <div class="flex justify-between items-center px-6 py-5 border-b border-white/10">
+    <h3 style="font-family:Anton,sans-serif;font-size:22px;letter-spacing:0.05em;">CART <span id="cart-header-count" class="text-tertiary text-lg">(0)</span></h3>
+    <button onclick="closeCart()" class="material-symbols-outlined text-on-surface-variant hover:text-white transition-colors">close</button>
+  </div>
+  <div id="cart-items" class="flex-1 overflow-y-auto divide-y divide-white/5 px-6"></div>
+  <div class="px-6 py-5 border-t border-white/10">
+    <div class="flex justify-between items-center mb-5">
+      <span style="font-size:11px;letter-spacing:0.15em;" class="text-on-surface-variant">SUBTOTAL</span>
+      <span id="cart-total" style="font-family:Anton,sans-serif;font-size:24px;">$0.00</span>
+    </div>
+    <button onclick="checkout()" class="w-full bg-on-surface text-background py-4 hover:bg-tertiary transition-all mb-3" style="font-size:11px;letter-spacing:0.15em;">CHECKOUT</button>
+    <button onclick="closeCart()" class="w-full border border-white/20 text-on-surface-variant py-3 hover:border-white/50 hover:text-white transition-all" style="font-size:11px;letter-spacing:0.15em;">CONTINUE SHOPPING</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ QUICK VIEW MODAL ═══════════════════════ -->
+<div id="qv-modal" class="modal-hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 modal-bg bg-black/70">
+  <div class="modal-box bg-surface-container-low border border-white/10 w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div id="qv-content"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TOAST ═══════════════════════ -->
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-5 py-3 border min-w-[220px] max-w-xs" style="background:rgba(25,24,24,0.97);backdrop-filter:blur(12px);">
+  <span id="toast-icon" class="material-symbols-outlined text-lg text-tertiary">check_circle</span>
+  <span id="toast-msg" style="font-size:13px;"></span>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════
+
+const supabaseUrl = 'https://aigyflxgtbkwhlhkdznd.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpZ3lmbHhndGJrd2hsaGtkem5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MDE2MDAsImV4cCI6MjA5ODM3NzYwMH0.S-9Ti5SyZ0_bpc0RKcM28eDY8okWmte3O-ePP_RGCT4';
+const dbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+// Explicit column lists — never use select('*')
+const PRODUCT_COLS = 'id, name, category, color, price, badge, img_url, hex_color, is_new_arrival';
+const DEAL_COLS = 'id, title, description, original_price, deal_price, image_url, product_id';
+
+let PRODUCTS = [];
+let DEALS = [];
+
+let cart = JSON.parse(localStorage.getItem('mkr_cart') || '[]');
+let wishlist = new Set();
+let currentFilter = 'all';
+let IS_LOAD_TEST_MODE = new URLSearchParams(window.location.search).has('loadtest') || window.IS_LOAD_TEST_MODE || false;
+
+// Pagination
+const PAGE_SIZE = 24;
+let productsLoaded = 0;
+let allProductsLoaded = false;
+let productsFetched = false;
+let dealsFetched = false;
+
+function saveCart() {
+  localStorage.setItem('mkr_cart', JSON.stringify(cart));
+}
+
+// ═══════════════════════════════════════════
+//  CACHE (sessionStorage, 5-min TTL)
+// ═══════════════════════════════════════════
+const CACHE_TTL = 5 * 60 * 1000;
+
+function getCached(key) {
+  try {
+    const raw = sessionStorage.getItem(key);
+    if (!raw) return null;
+    const { data, ts } = JSON.parse(raw);
+    if (Date.now() - ts > CACHE_TTL) { sessionStorage.removeItem(key); return null; }
+    return data;
+  } catch { return null; }
+}
+
+function setCache(key, data) {
+  try { sessionStorage.setItem(key, JSON.stringify({ data, ts: Date.now() })); } catch {}
+}
+
+// ═══════════════════════════════════════════
+//  DATA FETCHING
+// ═══════════════════════════════════════════
+function mapProduct(p) {
+  return { ...p, img: p.img_url, hex: p.hex_color };
+}
+
+async function fetchProducts() {
+  if (productsFetched) return;
+  productsFetched = true;
+
+  // Check cache first
+  const cached = getCached('mk_products');
+  if (cached) {
+    PRODUCTS = cached.map(mapProduct);
+    productsLoaded = PRODUCTS.length;
+    allProductsLoaded = true;
+    renderProducts(PRODUCTS);
+    setupReveal();
+    updateLoadMoreButton();
+    return;
+  }
+
+  // Fetch first page from Supabase (explicit columns, paginated)
+  try {
+    const { data, error } = await dbClient.from('products')
+      .select(PRODUCT_COLS)
+      .order('created_at', { ascending: false })
+      .range(0, PAGE_SIZE - 1);
+    if (error) throw error;
+    if (data) {
+      PRODUCTS = data.map(mapProduct);
+      productsLoaded = data.length;
+      allProductsLoaded = data.length < PAGE_SIZE;
+      // Cache the raw DB rows (without mapped fields)
+      setCache('mk_products_page0', data);
+      renderProducts(PRODUCTS);
+      setupReveal();
+      updateLoadMoreButton();
+    }
+  } catch (err) {
+    console.error('Error fetching products:', err);
+    showToast('Failed to load products', 'error');
+  }
+}
+
+async function loadMoreProducts() {
+  if (allProductsLoaded) return;
+  const btn = document.getElementById('load-more-btn');
+  btn.textContent = 'LOADING...';
+  btn.disabled = true;
+
+  try {
+    const from = productsLoaded;
+    const to = from + PAGE_SIZE - 1;
+    const { data, error } = await dbClient.from('products')
+      .select(PRODUCT_COLS)
+      .order('created_at', { ascending: false })
+      .range(from, to);
+    if (error) throw error;
+    if (data) {
+      const mapped = data.map(mapProduct);
+      PRODUCTS = PRODUCTS.concat(mapped);
+      productsLoaded += data.length;
+      allProductsLoaded = data.length < PAGE_SIZE;
+      // Re-render with the active filter
+      const filtered = currentFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === currentFilter);
+      renderProducts(filtered);
+      setupReveal();
+      updateLoadMoreButton();
+    }
+  } catch (err) {
+    console.error('Error loading more products:', err);
+    showToast('Failed to load more products', 'error');
+  }
+
+  btn.textContent = 'LOAD MORE';
+  btn.disabled = false;
+}
+
+function updateLoadMoreButton() {
+  const wrap = document.getElementById('load-more-wrap');
+  if (wrap) {
+    wrap.classList.toggle('hidden', allProductsLoaded);
+  }
+}
+
+async function fetchDeals() {
+  if (dealsFetched) return;
+  dealsFetched = true;
+
+  // Check cache first
+  const cached = getCached('mk_deals');
+  if (cached) {
+    DEALS = cached;
+    renderDeals(DEALS);
+    setupReveal();
+    return;
+  }
+
+  // Fetch from Supabase — explicit columns, NO products(*) join
+  try {
+    const { data, error } = await dbClient.from('deals')
+      .select(DEAL_COLS)
+      .eq('is_active', true);
+    if (error) throw error;
+    if (data) {
+      DEALS = data;
+      setCache('mk_deals', data);
+      renderDeals(DEALS);
+      setupReveal();
+    }
+  } catch (err) {
+    console.error('Error fetching deals:', err);
+  }
+}
+
+// ═══════════════════════════════════════════
+//  INIT (Lazy Loading via IntersectionObserver)
+// ═══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  setupNav();
+  setupScrollSpy();
+  setupReveal();
+
+  // Show skeletons immediately
+  renderSkeletons();
+
+  // Lazy-load products when the New Arrivals section nears viewport
+  const productsSection = document.getElementById('new-arrivals');
+  if (productsSection) {
+    const prodObserver = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        fetchProducts();
+        prodObserver.disconnect();
+      }
+    }, { rootMargin: '200px' }); // Start loading 200px before visible
+    prodObserver.observe(productsSection);
+  }
+
+  // Lazy-load deals when the Deals section nears viewport
+  const dealsSection = document.getElementById('deals');
+  if (dealsSection) {
+    const dealsObserver = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        fetchDeals();
+        dealsObserver.disconnect();
+      }
+    }, { rootMargin: '200px' });
+    dealsObserver.observe(dealsSection);
+  }
+});
+
+// ═══════════════════════════════════════════
+//  SCROLL REVEAL
+// ═══════════════════════════════════════════
+function setupReveal() {
+  function check() {
+    document.querySelectorAll('.reveal').forEach(el => {
+      if(el.getBoundingClientRect().top < window.innerHeight - 100) el.classList.add('active');
+    });
+  }
+  window.addEventListener('scroll', check, {passive:true});
+  check();
+}
+
+// ═══════════════════════════════════════════
+//  NAV SCROLL EFFECT
+// ═══════════════════════════════════════════
+function setupNav() {
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, {passive:true});
+}
+
+// ═══════════════════════════════════════════
+//  NAV ACTIVE STATE (SCROLL SPY)
+// ═══════════════════════════════════════════
+function setupScrollSpy() {
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('#nav-links .nav-item');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => {
+          if (link.getAttribute('href') === '#' + entry.target.id) {
+            link.setAttribute('data-active', 'true');
+          } else {
+            link.setAttribute('data-active', 'false');
+          }
+        });
+      }
+    });
+  }, { threshold: 0.3, rootMargin: "-10% 0px -40% 0px" });
+
+  sections.forEach(section => observer.observe(section));
+}
+
+// ═══════════════════════════════════════════
+//  MOBILE MENU
+// ═══════════════════════════════════════════
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const overlay = document.getElementById('mobile-overlay');
+  const isOpen = menu.classList.contains('open');
+  menu.classList.toggle('open', !isOpen);
+  overlay.style.opacity = isOpen ? '0' : '1';
+  overlay.style.pointerEvents = isOpen ? 'none' : 'auto';
+  document.body.style.overflow = isOpen ? '' : 'hidden';
+}
+
+// ═══════════════════════════════════════════
+//  PRODUCTS
+// ═══════════════════════════════════════════
+function renderSkeletons() {
+  const grid = document.getElementById('products-grid');
+  if(!grid) return;
+  const skeletonHtml = Array(8).fill(0).map(() => `
+    <div class="product-card skeleton-card animate-pulse">
+      <div class="w-full bg-white/10 mb-4 lg:mb-6" style="aspect-ratio:3/4;"></div>
+      <div class="h-3 bg-white/20 w-3/4 mb-2"></div>
+      <div class="h-2 bg-white/10 w-1/2 mb-3"></div>
+      <div class="h-4 bg-white/20 w-1/3"></div>
+    </div>
+  `).join('');
+  grid.innerHTML = skeletonHtml;
+}
+
+function renderProducts(list) {
+  const grid = document.getElementById('products-grid');
+  if(!list.length) { grid.innerHTML = '<div class="col-span-4 text-center py-16 text-on-surface-variant" style="font-size:14px;">No products found in this category.</div>'; return; }
+  grid.innerHTML = list.map((p, i) => `
+    <div class="product-card group reveal" style="transition-delay:${(i%4)*80}ms;">
+      <div class="relative overflow-hidden mb-4 lg:mb-6 img-zoom" style="aspect-ratio:3/4;background:#201f1f;">
+        <img class="product-img w-full h-full object-cover" src="${p.img}" alt="${p.name}" loading="lazy"/>
+        <!-- Quick View -->
+        <button class="quick-view absolute bottom-0 left-0 w-full bg-white text-black py-3 lg:py-4" style="font-size:10px;letter-spacing:0.15em;" onclick="quickView(${p.id})">QUICK VIEW</button>
+        <!-- Wishlist -->
+        <button class="wishlist-btn absolute top-3 right-3 lg:top-4 lg:right-4 w-8 h-8 flex items-center justify-center bg-black/50 backdrop-blur-sm hover:bg-black/70 transition-colors" id="wl-${p.id}" onclick="toggleWishlist(${p.id},event)" title="Wishlist">
+          <span class="material-symbols-outlined" style="font-size:18px;color:#e5e2e1;">favorite</span>
+        </button>
+        ${p.badge ? `<div class="absolute top-3 left-3 lg:top-4 lg:left-4"><span class="bg-black/80 text-white px-2 py-0.5" style="font-size:9px;letter-spacing:0.12em;">${p.badge.toUpperCase()}</span></div>` : ''}
+      </div>
+      <h4 class="text-white mb-0.5 uppercase" style="font-size:11px;letter-spacing:0.1em;">${p.name}</h4>
+      <p class="text-secondary/60 mb-1 uppercase" style="font-size:10px;">${p.color}</p>
+      <p class="text-tertiary font-bold" style="font-size:14px;">Rs. ${p.price}.00</p>
+    </div>`).join('');
+  // Re-run reveal for new items
+  setTimeout(() => document.querySelectorAll('.reveal').forEach(el => {
+    if(el.getBoundingClientRect().top < window.innerHeight - 80) el.classList.add('active');
+  }), 50);
+}
+
+function setFilter(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-tab').forEach(btn => {
+    const active = btn.dataset.filter === cat;
+    btn.className = `filter-tab px-5 py-2 border whitespace-nowrap transition-colors ${active ? 'border-tertiary text-tertiary' : 'border-white/20 text-on-surface-variant hover:border-white/50'}`;
+    btn.style.fontSize = '10px'; btn.style.letterSpacing = '0.15em';
+  });
+  const filtered = cat === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === cat);
+  renderProducts(filtered);
+}
+
+function filterCategory(cat) {
+  document.getElementById('new-arrivals').scrollIntoView({behavior:'smooth'});
+  setTimeout(() => setFilter(cat), 400);
+}
+function scrollToProducts() {
+  document.getElementById('new-arrivals').scrollIntoView({behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════════
+//  DEALS
+// ═══════════════════════════════════════════
+function renderDeals(list) {
+  const grid = document.getElementById('deals-grid');
+  if(!grid) return;
+  if(!list || !list.length) { 
+    grid.innerHTML = '<div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-16 text-on-surface-variant" style="font-size:14px;">No active deals at the moment.</div>'; 
+    return; 
+  }
+  grid.innerHTML = list.map((d, i) => `
+    <div class="glass flex flex-col h-full relative group reveal" style="transition-delay:${(i%3)*80}ms;">
+      <div class="relative overflow-hidden h-64 img-zoom">
+        <img src="${d.image_url || 'https://via.placeholder.com/400x500?text=No+Image'}" alt="${d.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy">
+        ${d.original_price > 0 ? `<div class="absolute top-4 left-4 bg-error text-on-error px-3 py-1 font-bold shadow-lg" style="font-size:10px;letter-spacing:0.1em;">
+          SALE -${Math.round(((d.original_price - d.deal_price)/d.original_price)*100)}%
+        </div>` : ''}
+      </div>
+      <div class="p-6 flex flex-col flex-1 border-t border-white/5">
+        <h3 class="text-white uppercase mb-2" style="font-family:Anton,sans-serif;font-size:24px;letter-spacing:0.02em;">${d.title}</h3>
+        <p class="text-on-surface-variant mb-6 text-sm leading-relaxed">${d.description || ''}</p>
+        <div class="mt-auto flex items-end gap-3 mb-6">
+          <span class="text-tertiary font-bold" style="font-family:Anton,sans-serif;font-size:28px;">Rs. ${d.deal_price}</span>
+          <span class="text-on-surface-variant line-through mb-1" style="font-size:14px;">Rs. ${d.original_price}</span>
+        </div>
+        <button onclick="quickViewDeal('${d.id}')" class="w-full bg-white text-black py-4 hover:bg-tertiary transition-colors" style="font-size:11px;letter-spacing:0.15em;font-weight:700;">GRAB DEAL</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════
+//  WISHLIST
+// ═══════════════════════════════════════════
+function toggleWishlist(id, e) {
+  if (e) { e.stopPropagation(); }
+  const p = PRODUCTS.find(x=>x.id===id);
+  const wasAdded = !wishlist.has(id);
+  
+  if (wasAdded) {
+    wishlist.add(id);
+    showToast(`${p ? p.name : 'Item'} added to wishlist`,'success');
+  } else {
+    wishlist.delete(id);
+    showToast(`Removed from wishlist`,'info');
+  }
+  
+  updateBadges();
+
+  const btn = document.getElementById('wl-'+id);
+  const qvBtn = document.getElementById('qv-wl-'+id);
+  
+  if (btn) {
+    const icon = btn.querySelector('.material-symbols-outlined');
+    if (icon) {
+      icon.style.fontVariationSettings = wasAdded ? "'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24" : "'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24";
+      icon.style.color = wasAdded ? '#e9c349' : '#e5e2e1';
+    }
+  }
+
+  if (qvBtn) {
+    const qvIcon = qvBtn.querySelector('.material-symbols-outlined');
+    if (qvIcon) {
+      qvIcon.style.fontVariationSettings = wasAdded ? "'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24" : "'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24";
+      qvIcon.style.color = wasAdded ? '#e9c349' : '#e5e2e1';
+    }
+  }
+}
+function openWishlist() {
+  renderWishlist();
+  document.getElementById('wishlist-overlay').classList.remove('opacity-0', 'pointer-events-none');
+  document.getElementById('wishlist-drawer').classList.remove('translate-x-full');
+}
+
+function closeWishlist() {
+  document.getElementById('wishlist-overlay').classList.add('opacity-0', 'pointer-events-none');
+  document.getElementById('wishlist-drawer').classList.add('translate-x-full');
+}
+
+function renderWishlist() {
+  const wlContainer = document.getElementById('wishlist-items');
+  if(!wishlist.size) {
+    wlContainer.innerHTML = '<p class="text-on-surface-variant text-center mt-10" style="font-size:14px;">Your wishlist is empty.</p>';
+    return;
+  }
+  let html = '';
+  wishlist.forEach(id => {
+    const p = PRODUCTS.find(x => x.id == id);
+    if(p) {
+      html += `
+      <div class="flex gap-4 border-b border-white/5 pb-4">
+        <img src="${p.img}" class="w-20 h-24 object-cover" alt="${p.name}">
+        <div class="flex-1 flex flex-col justify-between">
+          <div>
+            <h4 class="text-white text-sm font-bold uppercase tracking-wider">${p.name}</h4>
+            <p class="text-on-surface-variant text-xs mt-1">Rs. ${p.price}</p>
+          </div>
+          <div class="flex gap-3 mt-2">
+            <button onclick="quickView(${p.id});closeWishlist()" class="text-[10px] tracking-widest text-tertiary hover:text-white transition-colors uppercase font-bold">VIEW</button>
+            <button onclick="toggleWishlist(${p.id});renderWishlist()" class="text-[10px] tracking-widest text-error hover:text-red-400 transition-colors uppercase font-bold">REMOVE</button>
+          </div>
+        </div>
+      </div>
+      `;
+    }
+  });
+  wlContainer.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════
+//  CART
+// ═══════════════════════════════════════════
+function addToCart(id, size='M') {
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  const existing = cart.find(c=>c.id===id&&c.size===size);
+  if(existing) existing.qty++;
+  else cart.push({...p,size,qty:1});
+  saveCart();
+  renderCart();
+  updateBadges();
+  showToast(`${p.name} added to cart`,'success');
+}
+
+function removeFromCart(id, size) {
+  cart = cart.filter(c=>!(c.id===id&&c.size===size));
+  saveCart();
+  renderCart();
+  updateBadges();
+  showToast('Item removed','info');
+}
+
+function renderCart() {
+  const container = document.getElementById('cart-items');
+  const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
+  document.getElementById('cart-total').textContent = '$'+total.toFixed(2);
+  document.getElementById('cart-header-count').textContent = `(${cart.reduce((s,c)=>s+c.qty,0)})`;
+  if(!cart.length) {
+    container.innerHTML = `<div class="py-16 text-center text-on-surface-variant" style="font-size:14px;">Your cart is empty.<br/><br/><button onclick="closeCart()" class="border border-white/20 px-6 py-2 hover:border-white/50 transition-colors" style="font-size:11px;letter-spacing:0.1em;">SHOP NOW</button></div>`;
+    return;
+  }
+  container.innerHTML = cart.map(c=>`
+    <div class="py-5 flex gap-4">
+      <div class="w-16 h-20 flex-shrink-0 overflow-hidden bg-surface-container">
+        <img src="${c.img}" alt="${c.name}" class="w-full h-full object-cover"/>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p style="font-size:12px;letter-spacing:0.08em;" class="text-white uppercase truncate">${c.name}</p>
+        <p class="text-on-surface-variant mt-0.5" style="font-size:11px;">${c.color} · Size ${c.size}</p>
+        <div class="flex justify-between items-center mt-3">
+          <p class="text-tertiary font-bold" style="font-size:14px;">Rs. ${(c.price*c.qty).toFixed(2)}</p>
+          <div class="flex items-center gap-3">
+            <button onclick="adjustQty(${c.id},'${c.size}',-1)" class="w-6 h-6 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors text-on-surface-variant hover:text-white" style="font-size:14px;">−</button>
+            <span style="font-size:13px;">${c.qty}</span>
+            <button onclick="adjustQty(${c.id},'${c.size}',1)" class="w-6 h-6 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors text-on-surface-variant hover:text-white" style="font-size:14px;">+</button>
+            <button onclick="removeFromCart(${c.id},'${c.size}')" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors ml-1" style="font-size:18px;">delete</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function adjustQty(id, size, delta) {
+  const item = cart.find(c=>c.id===id&&c.size===size);
+  if(!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  saveCart();
+  renderCart();
+  updateBadges();
+}
+
+function openCart() {
+  const drawer = document.getElementById('cart-drawer');
+  const overlay = document.getElementById('cart-overlay');
+  renderCart();
+  drawer.classList.add('open');
+  overlay.style.opacity = '1'; overlay.style.pointerEvents = 'auto';
+  document.body.style.overflow = 'hidden';
+}
+function closeCart() {
+  const drawer = document.getElementById('cart-drawer');
+  const overlay = document.getElementById('cart-overlay');
+  drawer.classList.remove('open');
+  overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none';
+  document.body.style.overflow = '';
+}
+function checkout() {
+  if (cart.length === 0) { showToast('Your cart is empty', 'info'); return; }
+  closeCart();
+  const modal = document.getElementById('checkout-modal');
+  modal.classList.remove('hidden');
+  setTimeout(() => {
+    modal.classList.remove('opacity-0');
+    document.getElementById('checkout-modal-content').classList.remove('scale-95');
+  }, 10);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCheckout() {
+  const modal = document.getElementById('checkout-modal');
+  modal.classList.add('opacity-0');
+  document.getElementById('checkout-modal-content').classList.add('scale-95');
+  setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 300);
+}
+
+function openModal(id) {
+  const modal = document.getElementById(id);
+  if (!modal) return;
+  modal.classList.remove('hidden');
+  setTimeout(() => {
+    modal.classList.remove('opacity-0');
+    const content = document.getElementById(id + '-content');
+    if (content) content.classList.remove('scale-95');
+  }, 10);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  const modal = document.getElementById(id);
+  if (!modal) return;
+  modal.classList.add('opacity-0');
+  const content = document.getElementById(id + '-content');
+  if (content) content.classList.add('scale-95');
+  setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 300);
+}
+
+async function sendOrderNotification(order, customer, cartItems, total) {
+  const orderData = {
+    order_id: String(order.id).substring(0, 8).toUpperCase(),
+    customer_name: `${customer.first_name} ${customer.last_name}`,
+    email: customer.email,
+    phone: customer.phone,
+    address: customer.address,
+    city: 'N/A',
+    items: cartItems.map(c => ({
+      name: c.name,
+      size: c.size,
+      color: c.color || 'N/A',
+      qty: c.qty,
+      price: c.price
+    })),
+    total_amount: total.toFixed(2),
+    payment_method: 'Cash on Delivery',
+    notes: ''
+  };
+
+  let email_status = 'failed';
+  let email_provider = 'none';
+  let email_error = '';
+
+  const isTest = window.IS_LOAD_TEST_MODE || (typeof IS_LOAD_TEST_MODE !== 'undefined' && IS_LOAD_TEST_MODE);
+  if (isTest) {
+    email_status = 'skipped_test_mode';
+    email_provider = 'none';
+  } else {
+    try {
+      // 1. Try Resend via Supabase Edge Function
+      const { data, error } = await dbClient.functions.invoke('send-order-email', {
+        body: { orderData }
+      });
+      
+      if (error) throw new Error(error.message || 'Edge Function Error');
+      if (data && data.error) throw new Error(data.error);
+
+      email_status = 'sent';
+      email_provider = 'resend';
+    } catch (resendErr) {
+      console.warn('Resend failed, trying EmailJS fallback...', resendErr);
+      
+      // 2. Fallback to EmailJS (best effort to owner)
+      try {
+        const orderSummary = cartItems.map(c => `${c.qty}x ${c.name} (Size: ${c.size}) — Rs. ${(c.price * c.qty).toFixed(0)}`).join('\n');
+        await emailjs.send('service_i9tzjls', 'template_7c5tcmd', {
+          to_email: 'Admin', // The template likely has the owner's actual email hardcoded as the recipient in EmailJS dashboard
+          email: customer.email,
+          reply_to: customer.email,
+          to_name: 'Store Owner',
+          order_id: orderData.order_id,
+          order_total: `Rs. ${total.toFixed(0)}`,
+          order_summary: orderSummary,
+          address: customer.address
+        });
+        email_status = 'sent';
+        email_provider = 'emailjs';
+        email_error = resendErr.message || 'Resend failed';
+      } catch (emailjsErr) {
+        console.error('EmailJS fallback also failed:', emailjsErr);
+        email_status = 'failed';
+        email_provider = 'none';
+        email_error = `Resend: ${resendErr.message || 'Failed'}. EmailJS: ${emailjsErr.text || 'Failed'}`;
+      }
+    }
+  }
+
+  // 3. Update order in Supabase with email tracking status
+  try {
+    await dbClient.from('orders').update({
+      email_status,
+      email_provider,
+      email_error: email_error ? email_error.substring(0, 250) : null
+    }).eq('id', order.id);
+  } catch (dbErr) {
+    console.warn('Failed to update email status on order:', dbErr);
+  }
+
+  return { email_status, email_provider };
+}
+
+async function processCheckout(e) {
+  e.preventDefault();
+  const fname = document.getElementById('co-fname').value;
+  const lname = document.getElementById('co-lname').value;
+  const email = document.getElementById('co-email').value;
+  const phone = document.getElementById('co-phone').value;
+  const address = document.getElementById('co-address').value;
+  const total = cart.reduce((s,c) => s + c.price * c.qty, 0);
+
+  const isTest = window.IS_LOAD_TEST_MODE || (typeof IS_LOAD_TEST_MODE !== 'undefined' && IS_LOAD_TEST_MODE);
+  const checkoutEmail = isTest ? `loadtest+${Math.floor(Math.random() * 10000000)}@example.com` : email;
+
+  const submitText = document.getElementById('co-submit-text');
+  const spinner = document.getElementById('co-spinner');
+  const submitBtn = document.getElementById('co-submit-btn');
+  submitText.classList.add('invisible');
+  spinner.classList.remove('hidden');
+  submitBtn.disabled = true;
+
+  try {
+    // Upsert customer
+    let customerId;
+    let customerData = { email: checkoutEmail, phone, first_name: fname, last_name: lname, address };
+    
+    const { data: existing } = await dbClient.from('customers').select('id').eq('email', checkoutEmail).maybeSingle();
+    if (existing) {
+      customerId = existing.id;
+    } else {
+      const { data: newCust, error: custErr } = await dbClient.from('customers')
+        .insert([customerData])
+        .select('id').single();
+      if (custErr) throw custErr;
+      customerId = newCust.id;
+    }
+
+    // Validate Deals — batch query instead of N+1
+    const dealIds = cart.filter(c => c.color === 'DEAL' && c.deal_id).map(c => c.deal_id);
+    if (dealIds.length > 0) {
+      const { data: activeDeals } = await dbClient.from('deals').select('id, is_active').in('id', dealIds);
+      for (const c of cart) {
+        if (c.color === 'DEAL' && c.deal_id) {
+          const d = activeDeals ? activeDeals.find(x => String(x.id) === String(c.deal_id)) : null;
+          if (!d || !d.is_active) throw new Error(`The deal "${c.name}" is no longer active.`);
+        }
+      }
+    }
+
+    // Create order
+    const orderData = { customer_id: customerId, total_amount: total, status: 'Pending' };
+    if (isTest) {
+      orderData.is_test_order = true;
+      console.log('[LoadTest] Creating test order with payload:', orderData);
+    }
+    const { data: order, error: orderErr } = await dbClient.from('orders')
+      .insert([orderData])
+      .select('id').single();
+    if (orderErr) {
+      if (isTest) console.error('[LoadTest] Order creation failed:', orderErr);
+      throw orderErr;
+    }
+    if (isTest) {
+      console.log('[LoadTest] Created customerId:', customerId);
+      console.log('[LoadTest] Created orderId:', order.id);
+    }
+
+    // Create order items — get fallback product ID once before loop
+    let fallbackProductId = null;
+    const hasUuidItems = cart.some(c => typeof c.id === 'string' && isNaN(c.id));
+    if (hasUuidItems) {
+      const { data: anyProd } = await dbClient.from('products').select('id').limit(1).maybeSingle();
+      if (anyProd) fallbackProductId = anyProd.id;
+    }
+
+    const items = [];
+    for (const c of cart) {
+      let pId = c.id;
+      // If pId is a UUID string (Deal without linked product)
+      if (typeof pId === 'string' && isNaN(pId)) {
+        pId = fallbackProductId;
+      }
+      items.push({
+        order_id: order.id,
+        product_id: pId,
+        size: c.size || 'M', // Ensure size is never null/empty
+        quantity: c.qty || 1, // Ensure quantity is never null/empty
+        price_at_purchase: c.price
+      });
+    }
+
+    if (isTest) {
+      console.log('[LoadTest] Mapped orderItems payload:', items);
+    }
+
+    if (items.length > 0) {
+      const { error: itemsErr } = await dbClient.from('order_items').insert(items);
+      if (itemsErr) {
+        if (isTest) {
+          console.error('[LoadTest] order_items insert failed:', itemsErr);
+          // Rollback the created order to avoid orphans
+          console.log('[LoadTest] Rolling back created test order:', order.id);
+          await dbClient.from('orders').delete().eq('id', order.id);
+          console.log('[LoadTest] Test order rolled back successfully.');
+        }
+        throw itemsErr;
+      }
+      if (isTest) {
+        console.log('[LoadTest] order_items inserted successfully.');
+      }
+    }
+
+    // Trigger Notification Flow (Resend -> EmailJS fallback)
+    await sendOrderNotification(order, customerData, cart, total);
+
+    cart = [];
+    saveCart();
+    renderCart();
+    updateBadges();
+    closeCheckout();
+    showToast('Order placed successfully!', 'success');
+
+  } catch (err) {
+    console.error('Checkout error:', err);
+    const msg = err instanceof Error ? err.message : 'Checkout failed. Please try again.';
+    showToast(msg, 'error');
+  } finally {
+    submitText.classList.remove('invisible');
+    spinner.classList.add('hidden');
+    submitBtn.disabled = false;
+  }
+}
+
+function updateBadges() {
+  const total = cart.reduce((s,c)=>s+c.qty,0);
+  const cc = document.getElementById('cart-count');
+  cc.textContent = total; cc.classList.toggle('hidden', total===0);
+  const wc = document.getElementById('wishlist-count');
+  wc.textContent = wishlist.size; wc.classList.toggle('hidden', wishlist.size===0);
+}
+
+// ═══════════════════════════════════════════
+//  QUICK VIEW MODAL
+// ═══════════════════════════════════════════
+function quickView(id) {
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  const sizes = ['XS','S','M','L','XL','XXL'];
+  document.getElementById('qv-content').innerHTML = `
+    <div class="flex flex-col sm:flex-row">
+      <div class="sm:w-1/2 img-zoom" style="aspect-ratio:3/4;max-height:50vh;overflow:hidden;">
+        <img src="${p.img}" alt="${p.name}" class="product-img w-full h-full object-cover"/>
+      </div>
+      <div class="sm:w-1/2 p-6 lg:p-8 flex flex-col">
+        <div class="flex justify-between items-start mb-1">
+          <span class="text-on-surface-variant uppercase" style="font-size:10px;letter-spacing:0.15em;">${p.category}</span>
+          <button onclick="closeQV()" class="material-symbols-outlined text-on-surface-variant hover:text-white transition-colors">close</button>
+        </div>
+        <h3 class="text-white uppercase mb-1 mt-2" style="font-family:Anton,sans-serif;font-size:26px;letter-spacing:0.04em;">${p.name}</h3>
+        <p class="text-on-surface-variant mb-4" style="font-size:13px;">${p.color}</p>
+        <p class="text-tertiary font-bold mb-6" style="font-size:24px;font-family:Anton,sans-serif;">Rs. ${p.price}.00</p>
+        <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">SELECT SIZE</p>
+        <div class="flex flex-wrap gap-2 mb-6" id="qv-sizes">
+          ${sizes.map((s,i)=>`<button onclick="selectSize(this)" data-size="${s}" class="size-btn border border-white/20 px-3 py-2 text-on-surface-variant hover:border-white hover:text-white transition-colors ${i===2?'border-tertiary text-tertiary':''}" style="font-size:10px;letter-spacing:0.1em;">${s}</button>`).join('')}
+        </div>
+        <div class="flex gap-3 mt-auto">
+          <button onclick="addFromQV(${p.id})" class="flex-1 bg-white text-black py-4 hover:bg-tertiary transition-all" style="font-size:11px;letter-spacing:0.15em;">ADD TO CART</button>
+          <button onclick="toggleWishlist(${p.id},event)" class="wishlist-btn w-12 border border-white/20 hover:border-tertiary transition-colors flex items-center justify-center" id="qv-wl-${p.id}">
+            <span class="material-symbols-outlined" style="font-size:20px;">favorite</span>
+          </button>
+        </div>
+      </div>
+    </div>`;
+  const modal = document.getElementById('qv-modal');
+  modal.classList.remove('modal-hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeQV() {
+  document.getElementById('qv-modal').classList.add('modal-hidden');
+  document.body.style.overflow = '';
+}
+function selectSize(btn) {
+  document.querySelectorAll('.size-btn').forEach(b => {
+    b.className = `size-btn border border-white/20 px-3 py-2 text-on-surface-variant hover:border-white hover:text-white transition-colors`;
+    b.style.fontSize='10px'; b.style.letterSpacing='0.1em';
+  });
+  btn.className = 'size-btn border border-tertiary px-3 py-2 text-tertiary transition-colors';
+  btn.style.fontSize='10px'; btn.style.letterSpacing='0.1em';
+}
+
+function quickViewDeal(id) {
+  const d = DEALS.find(x => String(x.id) === String(id));
+  if(!d) return;
+  // If it's linked to a product, show the actual product instead
+  if(d.product_id) {
+    const p = PRODUCTS.find(x => String(x.id) === String(d.product_id));
+    if(p) {
+      // Create a temporary product object with deal price
+      const dealProduct = { ...p, price: d.deal_price };
+      // Push temporarily to PRODUCTS so quickView can find it if needed, or we just rewrite quickView logic.
+      // Easiest is to manually render the modal for the deal.
+    }
+  }
+
+  const sizes = ['XS','S','M','L','XL','XXL'];
+  document.getElementById('qv-content').innerHTML = `
+    <div class="flex flex-col sm:flex-row">
+      <div class="sm:w-1/2 img-zoom" style="aspect-ratio:3/4;max-height:50vh;overflow:hidden;">
+        <img src="${d.image_url || 'https://via.placeholder.com/400x500?text=No+Image'}" alt="${d.title}" class="product-img w-full h-full object-cover"/>
+      </div>
+      <div class="sm:w-1/2 p-6 lg:p-8 flex flex-col">
+        <div class="flex justify-between items-start mb-1">
+          <span class="text-on-surface-variant uppercase" style="font-size:10px;letter-spacing:0.15em;">SPECIAL DEAL</span>
+          <button onclick="closeQV()" class="material-symbols-outlined text-on-surface-variant hover:text-white transition-colors">close</button>
+        </div>
+        <h3 class="text-white uppercase mb-1 mt-2" style="font-family:Anton,sans-serif;font-size:26px;letter-spacing:0.04em;">${d.title}</h3>
+        <p class="text-on-surface-variant mb-4" style="font-size:13px;">${d.description || 'Exclusive Promotion'}</p>
+        <div class="flex gap-3 items-end mb-6">
+          <p class="text-tertiary font-bold" style="font-size:24px;font-family:Anton,sans-serif;">Rs. ${d.deal_price}</p>
+          <p class="text-on-surface-variant line-through mb-1" style="font-size:14px;">Rs. ${d.original_price}</p>
+        </div>
+        <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">SELECT SIZE</p>
+        <div class="flex flex-wrap gap-2 mb-6" id="qv-sizes">
+          ${sizes.map((s,i)=>`<button onclick="selectSize(this)" data-size="${s}" class="size-btn border border-white/20 px-3 py-2 text-on-surface-variant hover:border-white hover:text-white transition-colors ${i===2?'border-tertiary text-tertiary':''}" style="font-size:10px;letter-spacing:0.1em;">${s}</button>`).join('')}
+        </div>
+        <div class="flex gap-3 mt-auto">
+          <button onclick="addDealToCart('${d.id}')" class="flex-1 bg-white text-black py-4 hover:bg-tertiary transition-all" style="font-size:11px;letter-spacing:0.15em;">ADD TO CART</button>
+        </div>
+      </div>
+    </div>`;
+  const modal = document.getElementById('qv-modal');
+  modal.classList.remove('modal-hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function addDealToCart(id) {
+  const d = DEALS.find(x => String(x.id) === String(id));
+  if(!d) return;
+  const activeSize = document.querySelector('.size-btn.border-tertiary');
+  const size = activeSize ? activeSize.dataset.size : 'M';
+  
+  const pseudoProduct = {
+    id: d.product_id || d.id, // using linked product id if available, else deal id
+    deal_id: d.id,
+    name: d.title,
+    price: parseFloat(d.deal_price),
+    img: d.image_url || 'https://via.placeholder.com/400x500?text=No+Image',
+    size: size,
+    color: 'DEAL',
+    qty: 1
+  };
+  
+  const ex = cart.find(x => x.id === pseudoProduct.id && x.size === size);
+  if(ex) ex.qty++;
+  else cart.push(pseudoProduct);
+  
+  saveCart();
+  
+  closeQV();
+  openCart();
+}
+
+function addFromQV(id) {
+  const activeSize = document.querySelector('.size-btn.border-tertiary');
+  const size = activeSize ? activeSize.dataset.size : 'M';
+  addToCart(id, size);
+  closeQV();
+  openCart();
+}
+// Close QV on backdrop
+document.getElementById('qv-modal').addEventListener('click', e => {
+  if(e.target === document.getElementById('qv-modal')) closeQV();
+});
+
+// ═══════════════════════════════════════════
+//  NEWSLETTER
+// ═══════════════════════════════════════════
+async function subscribeNewsletter(e) {
+  e.preventDefault();
+  const email = document.getElementById('nl-email').value;
+  try {
+    await dbClient.from('subscribers').insert([{ email }]);
+  } catch (err) {
+    console.warn('Could not save to subscribers table', err);
+  }
+  document.getElementById('nl-success').classList.remove('hidden');
+  document.getElementById('nl-form').style.opacity = '0.4';
+  document.getElementById('nl-form').style.pointerEvents = 'none';
+  showToast(`Subscribed! Check ${email} for confirmation.`,'success');
+}
+
+// ═══════════════════════════════════════════
+//  ACCOUNT
+// ═══════════════════════════════════════════
+function openAccount() {
+  showToast('Sign in coming soon','info');
+}
+
+// ═══════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════
+let toastTimer;
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  const icon = document.getElementById('toast-icon');
+  document.getElementById('toast-msg').textContent = msg;
+  const cfg = {success:['check_circle','#e9c349'],error:['error','#ffb4ab'],info:['info','#c6c6c6']};
+  icon.textContent = cfg[type][0]; icon.style.color = cfg[type][1];
+  t.style.borderColor = cfg[type][1]+'40';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════
+//  EXPOSE GLOBALS
+// ═══════════════════════════════════════════
+window.toggleMobileMenu = toggleMobileMenu;
+window.setFilter = setFilter;
+window.filterCategory = filterCategory;
+window.scrollToProducts = scrollToProducts;
+window.quickView = quickView;
+window.closeQV = closeQV;
+window.selectSize = selectSize;
+window.quickViewDeal = quickViewDeal;
+window.addDealToCart = addDealToCart;
+window.addFromQV = addFromQV;
+window.toggleWishlist = toggleWishlist;
+window.openWishlist = openWishlist;
+window.openCart = openCart;
+window.closeCart = closeCart;
+window.addToCart = addToCart;
+window.removeFromCart = removeFromCart;
+window.adjustQty = adjustQty;
+window.checkout = checkout;
+window.openAccount = openAccount;
+window.subscribeNewsletter = subscribeNewsletter;
+window.openModal = openModal;
+window.closeModal = closeModal;
+</script>
+
+<!-- Checkout Modal -->
+<div id="checkout-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+  <div class="bg-surface-container w-full max-w-md p-8 border border-white/10 relative transform scale-95 transition-transform duration-300" id="checkout-modal-content">
+    <button onclick="closeCheckout()" class="absolute top-6 right-6 text-on-surface-variant hover:text-white transition-colors">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <h2 class="text-2xl text-white font-bold mb-6" style="font-family:Anton,sans-serif;letter-spacing:0.05em;">CHECKOUT</h2>
+    <form id="checkout-form" onsubmit="processCheckout(event)" class="space-y-4">
+      <div>
+        <label class="block text-[11px] font-bold text-on-surface-variant mb-1 tracking-widest">FIRST NAME</label>
+        <input type="text" id="co-fname" required class="w-full bg-transparent border border-white/20 text-white px-4 py-3 focus:border-tertiary focus:outline-none transition-colors" />
+      </div>
+      <div>
+        <label class="block text-[11px] font-bold text-on-surface-variant mb-1 tracking-widest">LAST NAME</label>
+        <input type="text" id="co-lname" required class="w-full bg-transparent border border-white/20 text-white px-4 py-3 focus:border-tertiary focus:outline-none transition-colors" />
+      </div>
+      <div>
+        <label class="block text-[11px] font-bold text-on-surface-variant mb-1 tracking-widest">EMAIL</label>
+        <input type="email" id="co-email" required class="w-full bg-transparent border border-white/20 text-white px-4 py-3 focus:border-tertiary focus:outline-none transition-colors" />
+      </div>
+      <div>
+        <label class="block text-[11px] font-bold text-on-surface-variant mb-1 tracking-widest">PHONE NUMBER</label>
+        <input type="tel" id="co-phone" required class="w-full bg-transparent border border-white/20 text-white px-4 py-3 focus:border-tertiary focus:outline-none transition-colors" />
+      </div>
+      <div>
+        <label class="block text-[11px] font-bold text-on-surface-variant mb-1 tracking-widest">ADDRESS</label>
+        <input type="text" id="co-address" required class="w-full bg-transparent border border-white/20 text-white px-4 py-3 focus:border-tertiary focus:outline-none transition-colors" />
+      </div>
+      <button type="submit" id="co-submit-btn" class="w-full bg-tertiary text-black py-4 mt-6 font-bold tracking-widest hover:bg-white transition-colors relative">
+        <span id="co-submit-text">PLACE ORDER</span>
+        <div id="co-spinner" class="absolute inset-0 flex items-center justify-center hidden">
+          <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        </div>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Policy Modals -->
+<div id="privacy-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+  <div class="bg-surface-container w-full max-w-2xl p-8 border border-white/10 relative transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto" id="privacy-modal-content">
+    <button onclick="closeModal('privacy-modal')" class="absolute top-6 right-6 text-on-surface-variant hover:text-white transition-colors">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <h2 class="text-2xl text-white font-bold mb-6 uppercase" style="font-family:Anton,sans-serif;letter-spacing:0.05em;">Privacy Policy</h2>
+    <div class="text-on-surface-variant space-y-4 text-sm leading-relaxed">
+      <p>Your privacy is important to us. This policy outlines how we handle your data at MK Rockstar.</p>
+      <ul class="list-disc pl-5 space-y-2">
+        <li>Customer information is used strictly for order processing and direct communication regarding your purchase.</li>
+        <li>Customer data will not be sold, traded, or otherwise shared unnecessarily with any third parties.</li>
+        <li><strong>Please note:</strong> Products once shipped will not be returned.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="terms-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+  <div class="bg-surface-container w-full max-w-2xl p-8 border border-white/10 relative transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto" id="terms-modal-content">
+    <button onclick="closeModal('terms-modal')" class="absolute top-6 right-6 text-on-surface-variant hover:text-white transition-colors">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <h2 class="text-2xl text-white font-bold mb-6 uppercase" style="font-family:Anton,sans-serif;letter-spacing:0.05em;">Terms of Service</h2>
+    <div class="text-on-surface-variant space-y-4 text-sm leading-relaxed">
+      <ul class="list-disc pl-5 space-y-2">
+        <li>Prices for our products can change without notice.</li>
+        <li>All orders are subject to confirmation and availability.</li>
+        <li>Incorrect or incomplete delivery details provided by the customer may delay the order processing and delivery.</li>
+        <li>MK Rockstar reserves the right to cancel any suspicious, fraudulent, or invalid orders at our sole discretion.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="shipping-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+  <div class="bg-surface-container w-full max-w-2xl p-8 border border-white/10 relative transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto" id="shipping-modal-content">
+    <button onclick="closeModal('shipping-modal')" class="absolute top-6 right-6 text-on-surface-variant hover:text-white transition-colors">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <h2 class="text-2xl text-white font-bold mb-6 uppercase" style="font-family:Anton,sans-serif;letter-spacing:0.05em;">Shipping & Returns</h2>
+    <div class="text-on-surface-variant space-y-4 text-sm leading-relaxed">
+      <ul class="list-disc pl-5 space-y-2">
+        <li>Delivery is available nationwide across Pakistan.</li>
+        <li>Delivery time depends on the destination city and location. Standard shipping applies.</li>
+        <li><strong>Return Policy:</strong> Once the product is shipped, it will not be returned or exchanged. Please ensure your order is final before placing it.</li>
+        <li>The customer must provide a correct, active phone number and an accurate delivery address to ensure seamless delivery.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>
+
+
+

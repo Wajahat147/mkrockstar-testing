@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MK Rockstar | ROCKSTAR OVERSIZED HOODIE</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode:"class",
+    theme:{extend:{
+      colors:{
+        "secondary":"#c6c6c7","inverse-primary":"#5e5e5e","tertiary-container":"#000000",
+        "surface-bright":"#393939","error":"#ffb4ab","on-surface-variant":"#cfc4c5",
+        "primary":"#c6c6c6","on-primary-fixed-variant":"#474747","outline-variant":"#4c4546",
+        "on-primary-container":"#757575","primary-fixed":"#e2e2e2","on-primary":"#303030",
+        "on-tertiary":"#3c2f00","on-error":"#690005","surface-tint":"#c6c6c6",
+        "surface-container":"#201f1f","tertiary":"#e9c349","on-error-container":"#ffdad6",
+        "inverse-on-surface":"#313030","secondary-container":"#454747","on-secondary":"#2f3131",
+        "on-background":"#e5e2e1","on-primary-fixed":"#1b1b1b","secondary-fixed":"#e2e2e2",
+        "surface-container-low":"#1c1b1b","primary-container":"#000000","error-container":"#93000a",
+        "inverse-surface":"#e5e2e1","on-tertiary-container":"#8f7200","surface-container-high":"#2a2a2a",
+        "on-surface":"#e5e2e1","outline":"#988e90","surface-dim":"#131313",
+        "surface-container-lowest":"#0e0e0e","background":"#131313","on-secondary-container":"#b4b5b5",
+        "surface-container-highest":"#353534","tertiary-fixed":"#ffe088","surface-variant":"#353534",
+        "tertiary-fixed-dim":"#e9c349","surface":"#131313"
+      },
+      spacing:{
+        "gutter":"24px","margin-desktop":"64px","margin-mobile":"20px",
+        "unit":"8px","container-max":"1440px"
+      }
+    }}
+  }
+</script>
+<style>
+  *{box-sizing:border-box;}
+  body{background:#131313;color:#e5e2e1;font-family:'Hanken Grotesk',sans-serif;overflow-x:hidden;scroll-behavior:smooth;}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;user-select:none;}
+
+  /* NAV glass */
+  .nav-glass{background:rgba(19,19,19,0.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.08);transition:padding 0.3s;}
+
+  /* Mobile menu */
+  #mobile-menu{transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);}
+  #mobile-menu.open{transform:translateX(0);}
+  #mobile-overlay{transition:opacity 0.35s ease;}
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar{width:5px;height:5px;}
+  ::-webkit-scrollbar-track{background:#131313;}
+  ::-webkit-scrollbar-thumb{background:#2a2a2a;}
+
+  /* Cart drawer */
+  #cart-drawer{transform:translateX(110%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);}
+  #cart-drawer.open{transform:translateX(0);}
+
+  /* Toast */
+  #toast{transform:translateY(100px);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1),opacity 0.35s;}
+  #toast.show{transform:translateY(0);}
+
+  /* Accordion details */
+  details > summary { list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+</style>
+</head>
+<body class="overflow-x-hidden">
+
+<!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
+<nav id="navbar" class="nav-glass fixed top-0 w-full z-50 py-5">
+  <div class="max-w-[1440px] mx-auto px-5 lg:px-16 flex justify-between items-center">
+    <a href="../mk_rockstar_home/code.html" style="font-family:Anton,sans-serif;font-size:26px;letter-spacing:-0.01em;" class="text-on-surface hover:text-tertiary transition-colors">MK Rockstar</a>
+    <div class="hidden md:flex gap-8 items-center">
+      <a href="../shop_all_mk_rockstar/code.html" class="text-primary border-b border-primary pb-0.5" style="font-size:11px;letter-spacing:0.15em;">SHOP</a>
+      <a href="#" class="text-on-surface-variant hover:text-on-surface transition-colors" style="font-size:11px;letter-spacing:0.15em;">CATEGORIES</a>
+      <a href="#" class="text-on-surface-variant hover:text-on-surface transition-colors" style="font-size:11px;letter-spacing:0.15em;">NEW ARRIVALS</a>
+      <a href="#" class="text-on-surface-variant hover:text-on-surface transition-colors" style="font-size:11px;letter-spacing:0.15em;">DEALS</a>
+    </div>
+    <div class="flex items-center gap-4 lg:gap-5">
+      <button onclick="openWishlist()" class="relative material-symbols-outlined text-on-surface hover:text-tertiary transition-colors hidden sm:block" title="Wishlist">favorite
+        <span id="wishlist-count" class="absolute -top-1.5 -right-1.5 bg-tertiary text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+      </button>
+      <button onclick="openCart()" class="relative material-symbols-outlined text-on-surface hover:text-tertiary transition-colors" title="Cart">shopping_cart
+        <span id="cart-count" class="absolute -top-1.5 -right-1.5 bg-tertiary text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+      </button>
+      <button onclick="showToast('Sign in coming soon','info')" class="material-symbols-outlined text-on-surface hover:text-tertiary transition-colors hidden sm:block" title="Account">person</button>
+      <button onclick="toggleMobileMenu()" class="md:hidden material-symbols-outlined text-on-surface hover:text-tertiary transition-colors">menu</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ MOBILE MENU ═══════════════════════ -->
+<div id="mobile-overlay" class="fixed inset-0 z-40 bg-black/60 opacity-0 pointer-events-none" onclick="closeAllDrawers()"></div>
+<div id="mobile-menu" class="fixed top-0 right-0 h-full w-4/5 max-w-xs z-50 bg-surface-container-low border-l border-white/10 flex flex-col py-8 px-6">
+  <div class="flex justify-between items-center mb-10">
+    <span style="font-family:Anton,sans-serif;font-size:20px;">MK ROCKSTAR</span>
+    <button onclick="toggleMobileMenu()" class="material-symbols-outlined text-on-surface-variant hover:text-white">close</button>
+  </div>
+  <nav class="space-y-1 flex-1">
+    <a href="../shop_all_mk_rockstar/code.html" class="flex items-center gap-3 py-3 border-b border-white/5 text-primary" style="font-size:11px;letter-spacing:0.15em;">
+      <span class="material-symbols-outlined" style="font-size:18px;">storefront</span>SHOP ALL
+    </a>
+    <a href="#" class="flex items-center gap-3 py-3 border-b border-white/5 text-on-surface-variant" style="font-size:11px;letter-spacing:0.15em;">
+      <span class="material-symbols-outlined" style="font-size:18px;">category</span>CATEGORIES
+    </a>
+    <a href="#" onclick="openWishlist();toggleMobileMenu();" class="flex items-center gap-3 py-3 border-b border-white/5 text-on-surface-variant" style="font-size:11px;letter-spacing:0.15em;">
+      <span class="material-symbols-outlined" style="font-size:18px;">favorite</span>WISHLIST
+    </a>
+  </nav>
+  <button onclick="openCart();toggleMobileMenu();" class="w-full bg-on-surface text-background py-4 hover:bg-tertiary transition-all mt-6" style="font-size:11px;letter-spacing:0.15em;">VIEW CART</button>
+</div>
+
+<!-- ═══════════════════════ PRODUCT DETAIL ═══════════════════════ -->
+<main class="pt-32 pb-24 max-w-[1440px] mx-auto px-5 lg:px-16">
+  
+  <!-- Breadcrumbs -->
+  <nav class="flex items-center gap-2 mb-8" style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;">
+    <a href="../mk_rockstar_home/code.html" class="text-on-surface-variant hover:text-white transition-colors">Home</a>
+    <span class="material-symbols-outlined text-on-surface-variant" style="font-size:14px;">chevron_right</span>
+    <a href="../shop_all_mk_rockstar/code.html" class="text-on-surface-variant hover:text-white transition-colors">Shop</a>
+    <span class="material-symbols-outlined text-on-surface-variant" style="font-size:14px;">chevron_right</span>
+    <span class="text-tertiary">Oversized Hoodie</span>
+  </nav>
+
+  <div class="flex flex-col lg:flex-row gap-10 lg:gap-16">
+    
+    <!-- Gallery -->
+    <div class="lg:w-3/5 flex flex-col-reverse md:flex-row gap-4 lg:gap-6">
+      
+      <!-- Thumbnails -->
+      <div class="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto no-scrollbar md:w-20 lg:w-24 shrink-0 pb-2 md:pb-0">
+        <button onclick="changeImage(this, 'https://lh3.googleusercontent.com/aida-public/AB6AXuCzTz1enLv99d0TvkjslfTRnJ8OQdZMluGoj581b9vwlo8NsPEAEnGGm8TsXCewWry2u6a2EblrwS_8ntsrCNVZtZMi2aEhsoSegZ61o68UevrhT-6fB60OcNgMLWRGAp2KtUOGcaHyb_gW1eFBoGsPRXEb6KlnMLeHqaAELoMUHMXMiWuLzp7c8L1z5X72PLW_0-KAvtNnluR4Ut4H6mcbfxGY1jLeMpsw2vSGXMQh2_75y59VR7rt8mmE1rOwnRJFIxT7iBmN4jc')" class="thumb-btn w-16 h-20 md:w-full md:h-28 flex-shrink-0 border-2 border-tertiary overflow-hidden">
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzTz1enLv99d0TvkjslfTRnJ8OQdZMluGoj581b9vwlo8NsPEAEnGGm8TsXCewWry2u6a2EblrwS_8ntsrCNVZtZMi2aEhsoSegZ61o68UevrhT-6fB60OcNgMLWRGAp2KtUOGcaHyb_gW1eFBoGsPRXEb6KlnMLeHqaAELoMUHMXMiWuLzp7c8L1z5X72PLW_0-KAvtNnluR4Ut4H6mcbfxGY1jLeMpsw2vSGXMQh2_75y59VR7rt8mmE1rOwnRJFIxT7iBmN4jc" class="w-full h-full object-cover opacity-100 transition-opacity hover:opacity-80"/>
+        </button>
+        <button onclick="changeImage(this, 'https://lh3.googleusercontent.com/aida-public/AB6AXuBhDhdPDWm47XRCzlFydM_fIPEE_Xcfo7USuFPWqNS4GoEpZsHfF6XJZ5u5ectIJYiiOMm31b8eqKa8YVuW9RSE575m15BwQtpqgdArfS7T_0k1TiGYxqT2QHzbFea6f0gaead131RaaxdLHmOo_2C1LJQ2HAEBmmp15yflqyjbnwtluHRb1EwiTXF1tGgggyMGBKnma1J7Cus28IYdkj8ucI1F01vtx4d---FemMixiU4E2fEL8S2c01JptAMO6wUl4UWR8QB9IMk')" class="thumb-btn w-16 h-20 md:w-full md:h-28 flex-shrink-0 border-2 border-transparent overflow-hidden">
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhDhdPDWm47XRCzlFydM_fIPEE_Xcfo7USuFPWqNS4GoEpZsHfF6XJZ5u5ectIJYiiOMm31b8eqKa8YVuW9RSE575m15BwQtpqgdArfS7T_0k1TiGYxqT2QHzbFea6f0gaead131RaaxdLHmOo_2C1LJQ2HAEBmmp15yflqyjbnwtluHRb1EwiTXF1tGgggyMGBKnma1J7Cus28IYdkj8ucI1F01vtx4d---FemMixiU4E2fEL8S2c01JptAMO6wUl4UWR8QB9IMk" class="w-full h-full object-cover opacity-50 transition-opacity hover:opacity-100"/>
+        </button>
+        <button onclick="changeImage(this, 'https://lh3.googleusercontent.com/aida-public/AB6AXuBcSp9jONKKts4-uxq3ZNGc4qpbyGCmRbxFL2dLe3H_57hA0HYIbRj36w7Gl9gIKntLsGHccPqB9st8nW9k3DUAtX3ibkxg5NPYOEMorm-Yr3wRcx0BEmj7jGeHJrwoHQFVmtaQZS53Yfospuewqxk_b16HTIUFTCk92Gej-mwc2vWOakIkKv9fN-xxI1-v0MoUmCXGwq6AxBN4NpusK9lMPdE51SXzSJ3AWlyEb8YTGFFXDfWsYrt-MxUlgFdMlV1XDny408JbrFo')" class="thumb-btn w-16 h-20 md:w-full md:h-28 flex-shrink-0 border-2 border-transparent overflow-hidden">
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcSp9jONKKts4-uxq3ZNGc4qpbyGCmRbxFL2dLe3H_57hA0HYIbRj36w7Gl9gIKntLsGHccPqB9st8nW9k3DUAtX3ibkxg5NPYOEMorm-Yr3wRcx0BEmj7jGeHJrwoHQFVmtaQZS53Yfospuewqxk_b16HTIUFTCk92Gej-mwc2vWOakIkKv9fN-xxI1-v0MoUmCXGwq6AxBN4NpusK9lMPdE51SXzSJ3AWlyEb8YTGFFXDfWsYrt-MxUlgFdMlV1XDny408JbrFo" class="w-full h-full object-cover opacity-50 transition-opacity hover:opacity-100"/>
+        </button>
+        <button onclick="changeImage(this, 'https://lh3.googleusercontent.com/aida-public/AB6AXuAW7SExkx2rtvBuvDWmtmNgulG2TpBla9ksA-lTnBJPYtGyVTLCUkTnErklTpMipUxfGkiYBQqthGQMkGsIV712sLkFNcXfBDWcoWp61YjbmJp1iBhz7F0GVidNEotoXLAUK4Qyt9nM26fLhyXqu4Lwy3344Y3lXst6wcBIMSgn1uBxaRun58xS7WK740ZYptsqTbFIsz-dNahhGd8ZDzsus7WFCgkkkeAvobUEAJWUODiIKyr9g6j3Z2MIfApOMw8Uv6i9HEkHq24')" class="thumb-btn w-16 h-20 md:w-full md:h-28 flex-shrink-0 border-2 border-transparent overflow-hidden">
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW7SExkx2rtvBuvDWmtmNgulG2TpBla9ksA-lTnBJPYtGyVTLCUkTnErklTpMipUxfGkiYBQqthGQMkGsIV712sLkFNcXfBDWcoWp61YjbmJp1iBhz7F0GVidNEotoXLAUK4Qyt9nM26fLhyXqu4Lwy3344Y3lXst6wcBIMSgn1uBxaRun58xS7WK740ZYptsqTbFIsz-dNahhGd8ZDzsus7WFCgkkkeAvobUEAJWUODiIKyr9g6j3Z2MIfApOMw8Uv6i9HEkHq24" class="w-full h-full object-cover opacity-50 transition-opacity hover:opacity-100"/>
+        </button>
+        <button onclick="changeImage(this, 'https://lh3.googleusercontent.com/aida-public/AB6AXuBSbkQyfvRdS7PtbTBfC3eifSCg1hDZz4l_K3jpLytXvnDwGUCongGeCHRihqM2eDKl23oaxTMQL8ttOwt6aWJ0JTb53tkS3MeXziR2N_E3Nt_BMlJMVjrBb6rUuNnCE1znr5cdD5oaVcVBlCbOG0g-Z_ZhQRtGeIBGwx2V729HCXT3Y6EsiVjoBvSyuX1ZdV39GZGhjo8_oPOPeWFa4rZwzHQrTpPIdCuRPCZfzA9SkvCEdlk5aCn-6vkfa1ebA3MROL8dpETnk_4')" class="thumb-btn w-16 h-20 md:w-full md:h-28 flex-shrink-0 border-2 border-transparent overflow-hidden">
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSbkQyfvRdS7PtbTBfC3eifSCg1hDZz4l_K3jpLytXvnDwGUCongGeCHRihqM2eDKl23oaxTMQL8ttOwt6aWJ0JTb53tkS3MeXziR2N_E3Nt_BMlJMVjrBb6rUuNnCE1znr5cdD5oaVcVBlCbOG0g-Z_ZhQRtGeIBGwx2V729HCXT3Y6EsiVjoBvSyuX1ZdV39GZGhjo8_oPOPeWFa4rZwzHQrTpPIdCuRPCZfzA9SkvCEdlk5aCn-6vkfa1ebA3MROL8dpETnk_4" class="w-full h-full object-cover opacity-50 transition-opacity hover:opacity-100"/>
+        </button>
+      </div>
+
+      <!-- Main Image -->
+      <div class="flex-grow aspect-[4/5] sm:aspect-auto sm:h-[650px] relative bg-surface-container overflow-hidden">
+        <img id="main-product-img" class="w-full h-full object-cover transition-opacity duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzTz1enLv99d0TvkjslfTRnJ8OQdZMluGoj581b9vwlo8NsPEAEnGGm8TsXCewWry2u6a2EblrwS_8ntsrCNVZtZMi2aEhsoSegZ61o68UevrhT-6fB60OcNgMLWRGAp2KtUOGcaHyb_gW1eFBoGsPRXEb6KlnMLeHqaAELoMUHMXMiWuLzp7c8L1z5X72PLW_0-KAvtNnluR4Ut4H6mcbfxGY1jLeMpsw2vSGXMQh2_75y59VR7rt8mmE1rOwnRJFIxT7iBmN4jc"/>
+      </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="lg:w-2/5 flex flex-col pt-2 lg:pt-0">
+      
+      <span class="text-tertiary mb-2 uppercase block" style="font-size:10px;letter-spacing:0.15em;">SIGNATURE SERIES</span>
+      <h1 class="uppercase text-white mb-3" style="font-family:Anton,sans-serif;font-size:clamp(32px,4vw,42px);line-height:1.1;letter-spacing:0.02em;">ROCKSTAR OVERSIZED HOODIE</h1>
+      <p class="text-white mb-8" style="font-family:Anton,sans-serif;font-size:32px;">$120.00</p>
+
+      <!-- Color Selection -->
+      <div class="mb-8">
+        <p class="mb-3 uppercase" style="font-size:10px;letter-spacing:0.15em;">COLOR: <span id="color-label" class="text-on-surface-variant ml-1">MIDNIGHT BLACK</span></p>
+        <div class="flex gap-4">
+          <button onclick="selectColor(this, 'MIDNIGHT BLACK')" class="color-btn w-10 h-10 rounded-full border border-tertiary p-1 relative" style="background:#000000;"></button>
+          <button onclick="selectColor(this, 'SLATE GRAY')" class="color-btn w-10 h-10 rounded-full border border-white/20 hover:border-white transition-colors" style="background:#2F3131;"></button>
+          <button onclick="selectColor(this, 'BONE WHITE')" class="color-btn w-10 h-10 rounded-full border border-white/20 hover:border-white transition-colors" style="background:#E5E2E1;"></button>
+        </div>
+      </div>
+
+      <!-- Size Selection -->
+      <div class="mb-8">
+        <div class="flex justify-between items-end mb-3">
+          <p class="uppercase" style="font-size:10px;letter-spacing:0.15em;">SELECT SIZE</p>
+          <button onclick="showToast('Size guide coming soon', 'info')" class="text-on-surface-variant hover:text-white underline transition-colors" style="font-size:10px;letter-spacing:0.1em;">SIZE GUIDE</button>
+        </div>
+        <div class="grid grid-cols-4 gap-3" id="size-options">
+          <button onclick="selectSize(this, 'S')" class="size-btn py-3 border border-white/20 hover:border-white transition-colors text-white font-bold" style="font-size:11px;letter-spacing:0.15em;">S</button>
+          <button onclick="selectSize(this, 'M')" class="size-btn py-3 border border-tertiary text-tertiary transition-colors font-bold" style="font-size:11px;letter-spacing:0.15em;">M</button>
+          <button onclick="selectSize(this, 'L')" class="size-btn py-3 border border-white/20 hover:border-white transition-colors text-white font-bold" style="font-size:11px;letter-spacing:0.15em;">L</button>
+          <button onclick="selectSize(this, 'XL')" class="size-btn py-3 border border-white/20 hover:border-white transition-colors text-white font-bold" style="font-size:11px;letter-spacing:0.15em;">XL</button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col gap-3 mb-10">
+        <button onclick="addMainItemToCart()" class="w-full bg-white text-black py-5 hover:bg-tertiary transition-colors font-bold uppercase" style="font-size:12px;letter-spacing:0.15em;">ADD TO CART</button>
+        <button onclick="showToast('Shop Pay flow initiated', 'success')" class="w-full border border-white/40 text-white py-5 hover:border-white hover:bg-white/5 transition-all font-bold uppercase" style="font-size:12px;letter-spacing:0.15em;">BUY WITH SHOP PAY</button>
+      </div>
+
+      <!-- Accordions -->
+      <div class="border-t border-white/10">
+        <details class="group border-b border-white/10" open>
+          <summary class="flex justify-between items-center py-6 cursor-pointer outline-none">
+            <span class="uppercase font-bold text-white" style="font-size:11px;letter-spacing:0.15em;">FABRIC & FIT</span>
+            <span class="material-symbols-outlined transition-transform duration-300 group-open:rotate-180 text-on-surface-variant">expand_more</span>
+          </summary>
+          <div class="pb-6 text-on-surface-variant space-y-4" style="font-size:14px;line-height:1.7;">
+            <p>Crafted from 480GSM heavy-weight French Terry cotton for a structured, luxury feel. Designed with dropped shoulders and a boxy silhouette that commands attention.</p>
+            <ul class="list-disc pl-5 space-y-1">
+              <li>100% Organic Cotton</li>
+              <li>Pre-shrunk for the perfect fit</li>
+              <li>Double-stitched structural seams</li>
+              <li>Made in Portugal</li>
+            </ul>
+          </div>
+        </details>
+        <details class="group border-b border-white/10">
+          <summary class="flex justify-between items-center py-6 cursor-pointer outline-none">
+            <span class="uppercase font-bold text-white" style="font-size:11px;letter-spacing:0.15em;">SHIPPING & RETURNS</span>
+            <span class="material-symbols-outlined transition-transform duration-300 group-open:rotate-180 text-on-surface-variant">expand_more</span>
+          </summary>
+          <div class="pb-6 text-on-surface-variant" style="font-size:14px;line-height:1.7;">
+            <p>Free express shipping on all orders over $200. Returns accepted within 14 days of delivery for store credit or refund.</p>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bundle Section -->
+  <section class="mt-24 lg:mt-32 border-t border-white/10 pt-20">
+    <h2 class="uppercase text-center mb-12 text-white" style="font-family:Anton,sans-serif;font-size:32px;letter-spacing:0.02em;">FREQUENTLY BOUGHT TOGETHER</h2>
+    <div class="glass-card p-6 md:p-12 rounded-xl">
+      <div class="flex flex-col lg:flex-row items-center gap-10">
+        
+        <div class="flex flex-wrap justify-center items-center gap-3 sm:gap-6">
+          <div class="w-24 h-32 sm:w-32 sm:h-40 bg-surface-container overflow-hidden">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzTz1enLv99d0TvkjslfTRnJ8OQdZMluGoj581b9vwlo8NsPEAEnGGm8TsXCewWry2u6a2EblrwS_8ntsrCNVZtZMi2aEhsoSegZ61o68UevrhT-6fB60OcNgMLWRGAp2KtUOGcaHyb_gW1eFBoGsPRXEb6KlnMLeHqaAELoMUHMXMiWuLzp7c8L1z5X72PLW_0-KAvtNnluR4Ut4H6mcbfxGY1jLeMpsw2vSGXMQh2_75y59VR7rt8mmE1rOwnRJFIxT7iBmN4jc"/>
+          </div>
+          <span class="material-symbols-outlined text-white/50" style="font-size:24px;">add</span>
+          <div class="w-24 h-32 sm:w-32 sm:h-40 bg-surface-container overflow-hidden">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEK2jarOHXjEK8fNWx9eMPpRHZud7y7aXKMWac26Pe6_HPQ9FNAOv33k5mgobLHfT-GGELINMo_CBi5yoIo6g3ZLPxGyvNlhxr9bIybPkk3yy1b76boYvS2uwJGFNWzv5raU4-gP9Q6k0s88Ol-wEp4jnNFf2wcO4g1euj6uP5c2zD1N_uB0Tf_x78RuR2IbxAJoMk2GKDdK_AX0-ZFlA9QBl_9heIv1bBnwfDd1Fhn_6bxL5adphD3McxoQmS9XMtw2I8HxEkcws"/>
+          </div>
+          <span class="material-symbols-outlined text-white/50" style="font-size:24px;">add</span>
+          <div class="w-24 h-32 sm:w-32 sm:h-40 bg-surface-container overflow-hidden">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlmuLPqK0vP0GOhyD4Sr2uWCcDwLUN5KnfaRzUNxnzPonf1hu_Ut1P513Q2C3j6kJmhA8zdihBcA02ALE-ljEWDYl8EGBQoWFeO0CGD8sP9cE716FcuGaB9QTD5wiGj9qixhPBms4cfcruWcEGaDCdngXNcs1l3bXgd7e7X6P09YBcflakYA7uChUyYITCyEU519xHqyzOZytZC4uG9vIQYkkChgQ_6NRPkYm4sUaRAju4uly3Q4iu9Z5tITey2VI8X-TMQ65KUDQ"/>
+          </div>
+        </div>
+        
+        <div class="flex-grow flex flex-col items-center lg:items-start text-center lg:text-left">
+          <p class="mb-2" style="font-size:18px;">Bundle Price: <span class="text-tertiary font-bold ml-1">$285.00</span></p>
+          <p class="text-on-surface-variant mb-6 uppercase" style="font-size:10px;letter-spacing:0.1em;">GET THE COMPLETE LOOK</p>
+          <button onclick="addBundleToCart()" class="bg-primary text-black font-bold uppercase py-4 px-8 hover:bg-white transition-colors w-full sm:w-auto" style="font-size:11px;letter-spacing:0.15em;">ADD BUNDLE TO CART</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer class="bg-surface-container-lowest py-16 lg:py-24 border-t border-white/10">
+  <div class="max-w-[1440px] mx-auto px-5 lg:px-16 grid grid-cols-2 md:grid-cols-4 gap-10 lg:gap-12">
+    <div class="col-span-2 md:col-span-1">
+      <span class="block mb-6" style="font-family:Anton,sans-serif;font-size:36px;color:#c6c6c6;">MK Rockstar</span>
+      <p class="text-on-surface-variant mb-8 max-w-xs" style="font-size:14px;line-height:1.7;">Defining the next era of urban luxury. High-end streetwear for the visionaries.</p>
+      <div class="flex gap-5">
+        <a href="https://www.instagram.com/m_k_rockstar?igsh=MTB1NHZsc2gyMW0xcw==" target="_blank" class="text-on-surface-variant hover:text-tertiary transition-colors" title="Instagram">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm3.98-10.834a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/@m_k_rockstar?_r=1&_t=ZS-92R8PqQfa5q" target="_blank" class="text-on-surface-variant hover:text-tertiary transition-colors" title="TikTok">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.22-1.15 4.39-2.9 5.8-1.57 1.25-3.61 1.78-5.6 1.48-1.89-.28-3.6-1.26-4.83-2.73-1.12-1.35-1.74-3.1-1.72-4.87.03-1.77.67-3.5 1.83-4.82 1.24-1.4 3.03-2.28 4.9-2.54.34-.05.69-.07 1.04-.08V13c-.94.01-1.88.24-2.71.71-.62.36-1.16.89-1.48 1.53-.33.68-.39 1.47-.32 2.21.08.83.4 1.63 1.02 2.19.68.61 1.6.93 2.52.85 1.02-.09 1.94-.57 2.58-1.35.48-.59.74-1.34.75-2.1.02-4.81.01-9.61.02-14.42z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div>
+      <h6 class="text-white mb-6 tracking-widest uppercase" style="font-size:11px;letter-spacing:0.2em;">Shop</h6>
+      <ul class="space-y-3">
+        <li><a href="../shop_all_mk_rockstar/code.html" class="text-on-surface-variant hover:text-white transition-colors" style="font-size:14px;">All Products</a></li>
+        <li><a href="#" class="text-on-surface-variant hover:text-white transition-colors" style="font-size:14px;">Outerwear</a></li>
+      </ul>
+    </div>
+    <div>
+      <h6 class="text-white mb-6 tracking-widest uppercase" style="font-size:11px;letter-spacing:0.2em;">Support</h6>
+      <ul class="space-y-3">
+        <li><a href="#" class="text-on-surface-variant hover:text-white transition-colors" style="font-size:14px;">Shipping & Returns</a></li>
+      </ul>
+    </div>
+    <div>
+      <h6 class="text-white mb-6 tracking-widest uppercase" style="font-size:11px;letter-spacing:0.2em;">Visit</h6>
+      <p class="text-on-surface-variant" style="font-size:14px;line-height:1.9;">
+        Rockstar Garments Commercial Market Rawalpindi<br/>
+        Commercial Market Rd, B-Block<br/>
+        Satellite Town, Rawalpindi, 44000<br/>
+        Pakistan
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════ WISHLIST DRAWER ═══════════════════════ -->
+<div id="wishlist-overlay" class="fixed inset-0 z-40 bg-black/60 opacity-0 pointer-events-none transition-opacity" onclick="closeWishlist()"></div>
+<div id="wishlist-drawer" class="fixed top-0 right-0 h-full w-full sm:w-96 z-50 bg-surface-container-low border-l border-white/10 flex flex-col translate-x-full transition-transform duration-300">
+  <div class="p-6 border-b border-white/10 flex justify-between items-center bg-surface-container">
+    <h3 class="text-xl text-white font-bold tracking-widest uppercase" style="font-family:Anton,sans-serif;letter-spacing:0.05em;">WISHLIST</h3>
+    <button onclick="closeWishlist()" class="text-on-surface-variant hover:text-white transition-colors">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div id="wishlist-items" class="flex-1 overflow-y-auto p-6 space-y-6">
+    <!-- Wishlist items injected here -->
+  </div>
+</div>
+
+<!-- ═══════════════════════ CART DRAWER ═══════════════════════ -->
+<div id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-96 z-50 bg-surface-container-low border-l border-white/10 flex flex-col">
+  <div class="flex justify-between items-center px-6 py-5 border-b border-white/10">
+    <h3 style="font-family:Anton,sans-serif;font-size:22px;letter-spacing:0.05em;">CART <span id="cart-header-count" class="text-tertiary text-lg">(0)</span></h3>
+    <button onclick="closeCart()" class="material-symbols-outlined text-on-surface-variant hover:text-white">close</button>
+  </div>
+  <div id="cart-items" class="flex-1 overflow-y-auto divide-y divide-white/5 px-6"></div>
+  <div class="px-6 py-5 border-t border-white/10">
+    <div class="flex justify-between items-center mb-5">
+      <span style="font-size:11px;letter-spacing:0.15em;" class="text-on-surface-variant">SUBTOTAL</span>
+      <span id="cart-total" style="font-family:Anton,sans-serif;font-size:24px;">$0.00</span>
+    </div>
+    <button onclick="showToast('Checkout flow initiated','success')" class="w-full bg-on-surface text-background py-4 hover:bg-tertiary transition-all mb-3" style="font-size:11px;letter-spacing:0.15em;">CHECKOUT</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TOAST ═══════════════════════ -->
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-5 py-3 border min-w-[220px] max-w-xs" style="background:rgba(25,24,24,0.97);backdrop-filter:blur(12px);">
+  <span id="toast-icon" class="material-symbols-outlined text-lg">check_circle</span>
+  <span id="toast-msg" style="font-size:13px;"></span>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  STATE & DATA
+// ═══════════════════════════════════════════
+let cart = JSON.parse(localStorage.getItem('mkr_cart') || '[]');
+let wishlist = new Set();
+
+function saveCart() {
+  localStorage.setItem('mkr_cart', JSON.stringify(cart));
+}
+
+const currentProduct = {
+  id: 107,
+  name: 'ROCKSTAR OVERSIZED HOODIE',
+  price: 120,
+  img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCzTz1enLv99d0TvkjslfTRnJ8OQdZMluGoj581b9vwlo8NsPEAEnGGm8TsXCewWry2u6a2EblrwS_8ntsrCNVZtZMi2aEhsoSegZ61o68UevrhT-6fB60OcNgMLWRGAp2KtUOGcaHyb_gW1eFBoGsPRXEb6KlnMLeHqaAELoMUHMXMiWuLzp7c8L1z5X72PLW_0-KAvtNnluR4Ut4H6mcbfxGY1jLeMpsw2vSGXMQh2_75y59VR7rt8mmE1rOwnRJFIxT7iBmN4jc'
+};
+
+const bundleItems = [
+  {id:107, name:'ROCKSTAR OVERSIZED HOODIE', price:120, size:'M', color:'MIDNIGHT BLACK', img: currentProduct.img},
+  {id:901, name:'SIGNATURE SWEATPANTS', price:95, size:'M', color:'MIDNIGHT BLACK', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCEK2jarOHXjEK8fNWx9eMPpRHZud7y7aXKMWac26Pe6_HPQ9FNAOv33k5mgobLHfT-GGELINMo_CBi5yoIo6g3ZLPxGyvNlhxr9bIybPkk3yy1b76boYvS2uwJGFNWzv5raU4-gP9Q6k0s88Ol-wEp4jnNFf2wcO4g1euj6uP5c2zD1N_uB0Tf_x78RuR2IbxAJoMk2GKDdK_AX0-ZFlA9QBl_9heIv1bBnwfDd1Fhn_6bxL5adphD3McxoQmS9XMtw2I8HxEkcws'},
+  {id:902, name:'3-PACK HEAVY TEE', price:70, size:'M', color:'WHITE', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDlmuLPqK0vP0GOhyD4Sr2uWCcDwLUN5KnfaRzUNxnzPonf1hu_Ut1P513Q2C3j6kJmhA8zdihBcA02ALE-ljEWDYl8EGBQoWFeO0CGD8sP9cE716FcuGaB9QTD5wiGj9qixhPBms4cfcruWcEGaDCdngXNcs1l3bXgd7e7X6P09YBcflakYA7uChUyYITCyEU519xHqyzOZytZC4uG9vIQYkkChgQ_6NRPkYm4sUaRAju4uly3Q4iu9Z5tITey2VI8X-TMQ65KUDQ'}
+];
+
+let selectedColor = 'MIDNIGHT BLACK';
+let selectedSize = 'M';
+
+// ═══════════════════════════════════════════
+//  PRODUCT LOGIC
+// ═══════════════════════════════════════════
+function changeImage(btn, src) {
+  const mainImg = document.getElementById('main-product-img');
+  mainImg.style.opacity = '0';
+  setTimeout(() => {
+    mainImg.src = src;
+    mainImg.style.opacity = '1';
+  }, 150);
+
+  document.querySelectorAll('.thumb-btn').forEach(b => {
+    b.classList.remove('border-tertiary');
+    b.classList.add('border-transparent');
+    b.querySelector('img').classList.remove('opacity-100');
+    b.querySelector('img').classList.add('opacity-50');
+  });
+  
+  btn.classList.remove('border-transparent');
+  btn.classList.add('border-tertiary');
+  btn.querySelector('img').classList.remove('opacity-50');
+  btn.querySelector('img').classList.add('opacity-100');
+}
+
+function selectColor(btn, colorName) {
+  selectedColor = colorName;
+  document.getElementById('color-label').textContent = colorName;
+  document.querySelectorAll('.color-btn').forEach(b => {
+    b.classList.remove('border-tertiary', 'p-1');
+    b.classList.add('border-white/20');
+  });
+  btn.classList.remove('border-white/20');
+  btn.classList.add('border-tertiary', 'p-1');
+}
+
+function selectSize(btn, size) {
+  selectedSize = size;
+  document.querySelectorAll('.size-btn').forEach(b => {
+    b.classList.remove('border-tertiary', 'text-tertiary');
+    b.classList.add('border-white/20', 'text-white');
+  });
+  btn.classList.remove('border-white/20', 'text-white');
+  btn.classList.add('border-tertiary', 'text-tertiary');
+}
+
+function addMainItemToCart() {
+  const item = { ...currentProduct, color: selectedColor, size: selectedSize };
+  addToCart(item);
+  openCart();
+}
+
+function addBundleToCart() {
+  bundleItems.forEach(item => {
+    addToCart(item, true); // true = silent add
+  });
+  // Apply a discount or just add them. We'll just add them individually for the demo
+  showToast('Bundle added to cart', 'success');
+  renderCart();
+  updateBadges();
+  openCart();
+}
+
+// ═══════════════════════════════════════════
+//  CART LOGIC
+// ═══════════════════════════════════════════
+function addToCart(item, silent=false) {
+  const existing = cart.find(c => c.id === item.id && c.size === item.size && c.color === item.color);
+  if(existing) existing.qty++;
+  else cart.push({...item, qty:1});
+  
+  saveCart();
+  
+  if(!silent) {
+    renderCart();
+    updateBadges();
+    showToast(`${item.name} added to cart`,'success');
+  }
+}
+function removeFromCart(id, size, color) {
+  cart = cart.filter(c => !(c.id === id && c.size === size && c.color === color));
+  saveCart();
+  renderCart();
+  updateBadges();
+  showToast('Item removed','info');
+}
+function adjustQty(id, size, color, delta) {
+  const item = cart.find(c => c.id === id && c.size === size && c.color === color);
+  if(!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  saveCart();
+  renderCart();
+  updateBadges();
+}
+function renderCart() {
+  const container = document.getElementById('cart-items');
+  const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
+  document.getElementById('cart-total').textContent = '$'+total.toFixed(2);
+  document.getElementById('cart-header-count').textContent = `(${cart.reduce((s,c)=>s+c.qty,0)})`;
+  if(!cart.length) {
+    container.innerHTML = `<div class="py-20 text-center text-on-surface-variant">Your cart is empty.</div>`;
+    return;
+  }
+  container.innerHTML = cart.map(c=>`
+    <div class="py-5 flex gap-4">
+      <div class="w-20 h-24 flex-shrink-0 overflow-hidden bg-surface-container">
+        <img src="${c.img}" alt="${c.name}" class="w-full h-full object-cover"/>
+      </div>
+      <div class="flex-1 min-w-0 flex flex-col">
+        <p style="font-size:12px;letter-spacing:0.08em;font-weight:700;" class="text-white uppercase truncate">${c.name}</p>
+        <p class="text-on-surface-variant mt-1" style="font-size:11px;">${c.color} · Size ${c.size}</p>
+        <div class="flex justify-between items-end mt-auto">
+          <p class="text-tertiary font-bold" style="font-size:15px;">Rs. ${(c.price*c.qty).toFixed(2)}</p>
+          <div class="flex items-center gap-2">
+            <button onclick="adjustQty(${c.id},'${c.size}','${c.color}',-1)" class="w-7 h-7 flex items-center justify-center border border-white/20 hover:border-white/50 text-white">−</button>
+            <span style="font-size:13px;width:20px;text-align:center;">${c.qty}</span>
+            <button onclick="adjustQty(${c.id},'${c.size}','${c.color}',1)" class="w-7 h-7 flex items-center justify-center border border-white/20 hover:border-white/50 text-white">+</button>
+            <button onclick="removeFromCart(${c.id},'${c.size}','${c.color}')" class="material-symbols-outlined text-on-surface-variant hover:text-error ml-2" style="font-size:18px;">delete</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openCart() {
+  renderCart();
+  document.getElementById('cart-drawer').classList.add('open');
+  const ov = document.getElementById('mobile-overlay');
+  ov.style.opacity = '1'; ov.style.pointerEvents = 'auto';
+  document.body.style.overflow = 'hidden';
+}
+function closeCart() {
+  document.getElementById('cart-drawer').classList.remove('open');
+  if(!document.getElementById('mobile-menu').classList.contains('open')) {
+    const ov = document.getElementById('mobile-overlay');
+    ov.style.opacity = '0'; ov.style.pointerEvents = 'none';
+    document.body.style.overflow = '';
+  }
+}
+
+function updateBadges() {
+  const total = cart.reduce((s,c)=>s+c.qty,0);
+  const cc = document.getElementById('cart-count');
+  cc.textContent = total; cc.classList.toggle('hidden', total===0);
+}
+
+// ═══════════════════════════════════════════
+//  WISHLIST
+// ═══════════════════════════════════════════
+function toggleWishlist(id) {
+  if(wishlist.has(id)) {
+    wishlist.delete(id);
+    showToast(`Removed from wishlist`,'info');
+  } else {
+    wishlist.add(id);
+    showToast(`Added to wishlist`,'success');
+  }
+  const wc = document.getElementById('wishlist-count');
+  wc.textContent = wishlist.size; wc.classList.toggle('hidden', wishlist.size===0);
+}
+function openWishlist() {
+  renderWishlist();
+  document.getElementById('wishlist-overlay').classList.remove('opacity-0', 'pointer-events-none');
+  document.getElementById('wishlist-drawer').classList.remove('translate-x-full');
+}
+
+function closeWishlist() {
+  document.getElementById('wishlist-overlay').classList.add('opacity-0', 'pointer-events-none');
+  document.getElementById('wishlist-drawer').classList.add('translate-x-full');
+}
+
+function renderWishlist() {
+  const wlContainer = document.getElementById('wishlist-items');
+  if(!wishlist.size) {
+    wlContainer.innerHTML = '<p class="text-on-surface-variant text-center mt-10" style="font-size:14px;">Your wishlist is empty.</p>';
+    return;
+  }
+  let html = '';
+  wishlist.forEach(id => {
+    let p = null;
+    if (id == currentProduct.id) p = currentProduct;
+    else p = bundleItems.find(x => x.id == id);
+    if(p) {
+      html += `
+      <div class="flex gap-4 border-b border-white/5 pb-4">
+        <img src="${p.img}" class="w-20 h-24 object-cover" alt="${p.name}">
+        <div class="flex-1 flex flex-col justify-between">
+          <div>
+            <h4 class="text-white text-sm font-bold uppercase tracking-wider">${p.name}</h4>
+            <p class="text-on-surface-variant text-xs mt-1">Rs. ${p.price}</p>
+          </div>
+          <div class="flex gap-3 mt-2">
+            <button onclick="toggleWishlist(${p.id});renderWishlist()" class="text-[10px] tracking-widest text-error hover:text-red-400 transition-colors uppercase font-bold">REMOVE</button>
+          </div>
+        </div>
+      </div>
+      `;
+    }
+  });
+  wlContainer.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════
+//  GLOBAL UTILS
+// ═══════════════════════════════════════════
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const overlay = document.getElementById('mobile-overlay');
+  const isOpen = menu.classList.contains('open');
+  menu.classList.toggle('open', !isOpen);
+  overlay.style.opacity = isOpen ? '0' : '1';
+  overlay.style.pointerEvents = isOpen ? 'none' : 'auto';
+  document.body.style.overflow = isOpen ? '' : 'hidden';
+}
+function closeAllDrawers() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('cart-drawer').classList.remove('open');
+  const ov = document.getElementById('mobile-overlay');
+  ov.style.opacity = '0'; ov.style.pointerEvents = 'none';
+  document.body.style.overflow = '';
+}
+
+let toastTimer;
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  const icon = document.getElementById('toast-icon');
+  document.getElementById('toast-msg').textContent = msg;
+  const cfg = {success:['check_circle','#e9c349'],error:['error','#ffb4ab'],info:['info','#c6c6c6']};
+  icon.textContent = cfg[type][0]; icon.style.color = cfg[type][1];
+  t.style.borderColor = cfg[type][1]+'40';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Ensure only one accordion is open at a time
+document.querySelectorAll('details').forEach((el) => {
+  el.addEventListener('click', (e) => {
+    if (!el.open) {
+      document.querySelectorAll('details').forEach(other => {
+        if (other !== el) other.open = false;
+      });
+    }
+  });
+});
+</script>
+</body>
+</html>
+
+
+

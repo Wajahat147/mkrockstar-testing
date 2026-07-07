@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Shop All | MK Rockstar</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@300;400;500;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "secondary": "#c6c6c7", "inverse-primary": "#5e5e5e", "tertiary-container": "#000000",
+            "surface-bright": "#393939", "error": "#ffb4ab", "on-surface-variant": "#cfc4c5",
+            "primary": "#c6c6c6", "on-primary-fixed-variant": "#474747", "outline-variant": "#4c4546",
+            "on-primary-container": "#757575", "primary-fixed": "#e2e2e2", "on-primary": "#303030",
+            "on-tertiary": "#3c2f00", "on-error": "#690005", "surface-tint": "#c6c6c6",
+            "surface-container": "#201f1f", "tertiary": "#e9c349", "on-error-container": "#ffdad6",
+            "inverse-on-surface": "#313030", "secondary-container": "#454747", "on-secondary": "#2f3131",
+            "on-background": "#e5e2e1", "on-primary-fixed": "#1b1b1b", "secondary-fixed": "#e2e2e2",
+            "surface-container-low": "#1c1b1b", "primary-container": "#000000", "error-container": "#93000a",
+            "inverse-surface": "#e5e2e1", "on-tertiary-container": "#8f7200", "surface-container-high": "#2a2a2a",
+            "on-surface": "#e5e2e1", "outline": "#988e90", "surface-dim": "#131313",
+            "surface-container-lowest": "#0e0e0e", "background": "#131313", "on-secondary-container": "#b4b5b5",
+            "surface-container-highest": "#353534", "tertiary-fixed": "#ffe088", "surface-variant": "#353534",
+            "tertiary-fixed-dim": "#e9c349", "surface": "#131313"
+          },
+          spacing: {
+            "gutter": "24px", "margin-desktop": "64px", "margin-mobile": "20px",
+            "unit": "8px", "container-max": "1440px"
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #131313;
+      color: #e5e2e1;
+      font-family: 'Hanken Grotesk', sans-serif;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      user-select: none;
+    }
+
+    /* NAV glass */
+    .nav-glass {
+      background: rgba(19, 19, 19, 0.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      transition: padding 0.3s;
+    }
+
+    /* Mobile menu */
+    #mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* Mobile Filters */
+    #mobile-filters {
+      transform: translateX(-100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #mobile-filters.open {
+      transform: translateX(0);
+    }
+
+    #mobile-overlay {
+      transition: opacity 0.35s ease;
+    }
+
+    /* Image zoom */
+    .img-zoom {
+      overflow: hidden;
+    }
+
+    .img-zoom img {
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .img-zoom:hover img {
+      transform: scale(1.06);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #131313;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #2a2a2a;
+    }
+
+    /* Product card hover slide-up */
+    .product-card .quick-view {
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .product-card:hover .quick-view {
+      transform: translateY(0);
+    }
+
+    .product-card .product-img {
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .product-card:hover .product-img {
+      transform: scale(1.08);
+    }
+
+    /* Wishlist heart active */
+    .wishlist-btn.active .material-symbols-outlined {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      color: #e9c349;
+    }
+
+    /* Toast */
+    #toast {
+      transform: translateY(100px);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s;
+    }
+
+    #toast.show {
+      transform: translateY(0);
+    }
+
+    /* Cart drawer */
+    #cart-drawer {
+      transform: translateX(110%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #cart-drawer.open {
+      transform: translateX(0);
+    }
+
+    /* Quick view modal */
+    .modal-bg {
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-box {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+    }
+
+    .modal-hidden .modal-box {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+
+    .modal-hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Range Slider */
+    .slider-range {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      outline: none;
+      border-radius: 2px;
+    }
+
+    .slider-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #e9c349;
+      cursor: pointer;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+      (function () {
+        emailjs.init("2OKrNi3XdtW_PWkxa");
+      })();
+  </script>
+</head>
+
+<body class="overflow-x-hidden">
+
+  <!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
+  <nav id="navbar" class="nav-glass fixed top-0 w-full z-50 py-5">
+    <div class="max-w-[1440px] mx-auto px-5 lg:px-16 flex justify-between items-center">
+      <!-- Logo + Desktop Links -->
+      <div class="flex items-center gap-10">
+        <a href="../mk_rockstar_home/code.html"
+          style="font-family:Anton,sans-serif;font-size:26px;letter-spacing:-0.01em;"
+          class="text-on-surface hover:text-tertiary transition-colors">MK Rockstar</a>
+        <div class="hidden md:flex gap-8 items-center">
+          <a href="#"
+            class="text-primary border-b border-primary pb-0.5 hover:text-tertiary hover:border-tertiary transition-colors"
+            style="font-size:11px;letter-spacing:0.15em;">SHOP</a>
+          <a href="#" class="text-on-surface-variant hover:text-on-surface transition-colors"
+            style="font-size:11px;letter-spacing:0.15em;">CATEGORIES</a>
+          <a href="#" class="text-on-surface-variant hover:text-on-surface transition-colors"
+            style="font-size:11px;letter-spacing:0.15em;">NEW ARRIVALS</a>
+          <a href="#" class="text-on-surface-variant hover:text-on-surface transition-colors"
+            style="font-size:11px;letter-spacing:0.15em;">DEALS</a>
+        </div>
+      </div>
+      <!-- Icons -->
+      <div class="flex items-center gap-4 lg:gap-5">
+        <!-- Search -->
+        <div
+          class="hidden lg:flex items-center border-b border-white/20 pb-1 focus-within:border-tertiary transition-colors mr-4">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px;">search</span>
+          <input type="text" id="search-input" placeholder="SEARCH COLLECTION"
+            class="bg-transparent border-none focus:ring-0 text-white w-40 ml-2"
+            style="font-size:10px;letter-spacing:0.15em;outline:none;" oninput="applyFilters()">
+        </div>
+        <!-- Wishlist -->
+        <button onclick="openWishlist()"
+          class="wishlist-btn relative material-symbols-outlined text-on-surface hover:text-tertiary transition-colors hidden sm:block"
+          title="Wishlist">favorite
+          <span id="wishlist-count"
+            class="absolute -top-1.5 -right-1.5 bg-tertiary text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+        </button>
+        <!-- Cart -->
+        <button onclick="openCart()"
+          class="relative material-symbols-outlined text-on-surface hover:text-tertiary transition-colors"
+          title="Cart">shopping_cart
+          <span id="cart-count"
+            class="absolute -top-1.5 -right-1.5 bg-tertiary text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+        </button>
+        <!-- Account -->
+        <button onclick="showToast('Sign in coming soon','info')"
+          class="material-symbols-outlined text-on-surface hover:text-tertiary transition-colors hidden sm:block"
+          title="Account">person</button>
+        <!-- Mobile hamburger -->
+        <button onclick="toggleMobileMenu()"
+          class="md:hidden material-symbols-outlined text-on-surface hover:text-tertiary transition-colors"
+          title="Menu">menu</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════ MOBILE MENUS ═══════════════════════ -->
+  <div id="mobile-overlay" class="fixed inset-0 z-40 bg-black/60 opacity-0 pointer-events-none"
+    onclick="closeAllDrawers()"></div>
+
+  <!-- Nav Menu -->
+  <div id="mobile-menu"
+    class="fixed top-0 right-0 h-full w-4/5 max-w-xs z-50 bg-surface-container-low border-l border-white/10 flex flex-col py-8 px-6">
+    <div class="flex justify-between items-center mb-10">
+      <span style="font-family:Anton,sans-serif;font-size:20px;">MK ROCKSTAR</span>
+      <button onclick="toggleMobileMenu()"
+        class="material-symbols-outlined text-on-surface-variant hover:text-white">close</button>
+    </div>
+    <nav class="space-y-1 flex-1">
+      <a href="#" class="flex items-center gap-3 py-3 border-b border-white/5 text-primary"
+        style="font-size:11px;letter-spacing:0.15em;">
+        <span class="material-symbols-outlined" style="font-size:18px;">storefront</span>SHOP ALL
+      </a>
+      <a href="#" class="flex items-center gap-3 py-3 border-b border-white/5 text-on-surface-variant"
+        style="font-size:11px;letter-spacing:0.15em;">
+        <span class="material-symbols-outlined" style="font-size:18px;">category</span>CATEGORIES
+      </a>
+      <a href="#" class="flex items-center gap-3 py-3 border-b border-white/5 text-on-surface-variant"
+        style="font-size:11px;letter-spacing:0.15em;">
+        <span class="material-symbols-outlined" style="font-size:18px;">local_fire_department</span>NEW ARRIVALS
+      </a>
+      <a href="#" onclick="openWishlist();toggleMobileMenu();"
+        class="flex items-center gap-3 py-3 border-b border-white/5 text-on-surface-variant"
+        style="font-size:11px;letter-spacing:0.15em;">
+        <span class="material-symbols-outlined" style="font-size:18px;">favorite</span>WISHLIST
+      </a>
+    </nav>
+    <button onclick="openCart();toggleMobileMenu();"
+      class="w-full bg-on-surface text-background py-4 hover:bg-tertiary transition-all mt-6"
+      style="font-size:11px;letter-spacing:0.15em;">VIEW CART</button>
+  </div>
+
+  <!-- Filters Menu (Mobile) -->
+  <div id="mobile-filters"
+    class="fixed top-0 left-0 h-full w-4/5 max-w-xs z-50 bg-surface-container-low border-r border-white/10 flex flex-col py-8 px-6 overflow-y-auto">
+    <div class="flex justify-between items-center mb-8">
+      <h3 style="font-family:Anton,sans-serif;font-size:22px;letter-spacing:0.05em;">FILTERS</h3>
+      <button onclick="toggleMobileFilters()"
+        class="material-symbols-outlined text-on-surface-variant hover:text-white">close</button>
+    </div>
+    <div id="mobile-filters-container"></div>
+    <button onclick="toggleMobileFilters()" class="w-full bg-white text-black py-4 mt-8"
+      style="font-size:11px;letter-spacing:0.15em;">APPLY FILTERS</button>
+  </div>
+
+  <!-- ═══════════════════════ MAIN CONTENT ═══════════════════════ -->
+  <main class="pt-32 pb-24 px-5 lg:px-16 max-w-[1440px] mx-auto">
+
+    <!-- Header -->
+    <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div>
+        <span class="text-tertiary mb-2 block uppercase" style="font-size:10px;letter-spacing:0.2em;">DROP 04 //
+          AW24</span>
+        <h1 class="uppercase text-white"
+          style="font-family:Anton,sans-serif;font-size:clamp(40px,5vw,64px);line-height:1;letter-spacing:0.02em;">NEW
+          ARRIVALS</h1>
+      </div>
+
+      <div class="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto">
+        <!-- Mobile Filter Trigger -->
+        <button onclick="toggleMobileFilters()"
+          class="lg:hidden flex items-center gap-2 border border-white/20 px-4 py-2 text-white"
+          style="font-size:10px;letter-spacing:0.15em;">
+          <span class="material-symbols-outlined" style="font-size:16px;">tune</span> FILTERS
+        </button>
+
+        <!-- Sort Dropdown -->
+        <div class="flex items-center gap-3">
+          <span class="text-on-surface-variant hidden sm:inline" style="font-size:10px;letter-spacing:0.15em;">SORT
+            BY</span>
+          <select id="sort-select" onchange="applyFilters()"
+            class="bg-transparent border-b border-white/20 text-white pb-1 focus:outline-none focus:border-tertiary cursor-pointer appearance-none pr-6"
+            style="font-size:10px;letter-spacing:0.15em;background:url('data:image/svg+xml;utf8,<svg fill=\" white\"
+            viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" xmlns=\"http://www.w3.org/2000/svg\">
+            <path d=\"M7 10l5 5 5-5z\" /></svg>') no-repeat right 0 center;">
+            <option value="newest" class="bg-surface text-white">NEWEST</option>
+            <option value="price-low" class="bg-surface text-white">PRICE: LOW TO HIGH</option>
+            <option value="price-high" class="bg-surface text-white">PRICE: HIGH TO LOW</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-col lg:flex-row gap-12 lg:gap-16">
+
+      <!-- Desktop Sidebar Filters -->
+      <aside class="hidden lg:block w-64 flex-shrink-0">
+        <div class="sticky top-32 space-y-10" id="desktop-filters-container">
+          <!-- Injected via JS to keep sync with mobile -->
+        </div>
+      </aside>
+
+      <!-- Product Grid -->
+      <section class="flex-grow min-h-[500px]">
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-y-12 gap-x-6 sm:gap-x-8">
+          <!-- Products injected here -->
+        </div>
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 text-center">
+          <span class="material-symbols-outlined text-white/20 mb-4" style="font-size:48px;">inventory_2</span>
+          <h3 class="text-white text-xl mb-2 font-bold">No products found</h3>
+          <p class="text-on-surface-variant mb-6" style="font-size:14px;">Try adjusting your filters to find what you're
+            looking for.</p>
+          <button onclick="resetFilters()"
+            class="border border-white/20 px-6 py-2 text-white hover:border-white transition-colors"
+            style="font-size:10px;letter-spacing:0.15em;">CLEAR ALL FILTERS</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+  <footer class="bg-surface-container-lowest py-16 lg:py-24 border-t border-white/10">
+    <div class="max-w-[1440px] mx-auto px-5 lg:px-16 grid grid-cols-2 md:grid-cols-4 gap-10 lg:gap-12">
+      <div class="col-span-2 md:col-span-1">
+        <span class="block mb-6" style="font-family:Anton,sans-serif;font-size:36px;color:#c6c6c6;">MK Rockstar</span>
+        <p class="text-on-surface-variant mb-8 max-w-xs" style="font-size:14px;line-height:1.7;">Defining the next era
+          of urban luxury. High-end streetwear for the visionaries.</p>
+        <div class="flex gap-5">
+          <a href="https://www.instagram.com/m_k_rockstar?igsh=MTB1NHZsc2gyMW0xcw==" target="_blank"
+            class="text-on-surface-variant hover:text-tertiary transition-colors" title="Instagram">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm3.98-10.834a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z" />
+            </svg>
+          </a>
+          <a href="https://www.tiktok.com/@m_k_rockstar?_r=1&_t=ZS-92R8PqQfa5q" target="_blank"
+            class="text-on-surface-variant hover:text-tertiary transition-colors" title="TikTok">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path
+                d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.22-1.15 4.39-2.9 5.8-1.57 1.25-3.61 1.78-5.6 1.48-1.89-.28-3.6-1.26-4.83-2.73-1.12-1.35-1.74-3.1-1.72-4.87.03-1.77.67-3.5 1.83-4.82 1.24-1.4 3.03-2.28 4.9-2.54.34-.05.69-.07 1.04-.08V13c-.94.01-1.88.24-2.71.71-.62.36-1.16.89-1.48 1.53-.33.68-.39 1.47-.32 2.21.08.83.4 1.63 1.02 2.19.68.61 1.6.93 2.52.85 1.02-.09 1.94-.57 2.58-1.35.48-.59.74-1.34.75-2.1.02-4.81.01-9.61.02-14.42z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h6 class="text-white mb-6 tracking-widest uppercase" style="font-size:11px;letter-spacing:0.2em;">Shop</h6>
+        <ul class="space-y-3">
+          <li><a href="#" class="text-on-surface-variant hover:text-white transition-colors" style="font-size:14px;">All
+              Products</a></li>
+          <li><a href="#" class="text-on-surface-variant hover:text-white transition-colors"
+              style="font-size:14px;">Outerwear</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6 class="text-white mb-6 tracking-widest uppercase" style="font-size:11px;letter-spacing:0.2em;">Support</h6>
+        <ul class="space-y-3">
+          <li><a href="#" class="text-on-surface-variant hover:text-white transition-colors"
+              style="font-size:14px;">Shipping & Returns</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6 class="text-white mb-6 tracking-widest uppercase" style="font-size:11px;letter-spacing:0.2em;">Visit</h6>
+        <p class="text-on-surface-variant" style="font-size:14px;line-height:1.9;">
+          Rockstar Garments Commercial Market Rawalpindi<br />
+          Commercial Market Rd, B-Block<br />
+          Satellite Town, Rawalpindi, 44000<br />
+          Pakistan
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════ WISHLIST DRAWER ═══════════════════════ -->
+  <div id="wishlist-overlay" class="fixed inset-0 z-40 bg-black/60 opacity-0 pointer-events-none transition-opacity"
+    onclick="closeWishlist()"></div>
+  <div id="wishlist-drawer"
+    class="fixed top-0 right-0 h-full w-full sm:w-96 z-50 bg-surface-container-low border-l border-white/10 flex flex-col translate-x-full transition-transform duration-300">
+    <div class="p-6 border-b border-white/10 flex justify-between items-center bg-surface-container">
+      <h3 class="text-xl text-white font-bold tracking-widest uppercase"
+        style="font-family:Anton,sans-serif;letter-spacing:0.05em;">WISHLIST</h3>
+      <button onclick="closeWishlist()" class="text-on-surface-variant hover:text-white transition-colors">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div id="wishlist-items" class="flex-1 overflow-y-auto p-6 space-y-6">
+      <!-- Wishlist items injected here -->
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ CART DRAWER ═══════════════════════ -->
+  <div id="cart-drawer"
+    class="fixed top-0 right-0 h-full w-full sm:w-96 z-50 bg-surface-container-low border-l border-white/10 flex flex-col">
+    <div class="flex justify-between items-center px-6 py-5 border-b border-white/10">
+      <h3 style="font-family:Anton,sans-serif;font-size:22px;letter-spacing:0.05em;">CART <span id="cart-header-count"
+          class="text-tertiary text-lg">(0)</span></h3>
+      <button onclick="closeCart()"
+        class="material-symbols-outlined text-on-surface-variant hover:text-white">close</button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto divide-y divide-white/5 px-6"></div>
+    <div class="px-6 py-5 border-t border-white/10">
+      <div class="flex justify-between items-center mb-5">
+        <span style="font-size:11px;letter-spacing:0.15em;" class="text-on-surface-variant">SUBTOTAL</span>
+        <span id="cart-total" style="font-family:Anton,sans-serif;font-size:24px;">$0.00</span>
+      </div>
+      <button onclick="checkout()"
+        class="w-full bg-on-surface text-background py-4 hover:bg-tertiary transition-all mb-3"
+        style="font-size:11px;letter-spacing:0.15em;">CHECKOUT</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ QUICK VIEW MODAL ═══════════════════════ -->
+  <div id="qv-modal"
+    class="modal-hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 modal-bg bg-black/70">
+    <div
+      class="modal-box bg-surface-container-low border border-white/10 w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto relative">
+      <div id="qv-content"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ TOAST ═══════════════════════ -->
+  <div id="toast"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-5 py-3 border min-w-[220px] max-w-xs"
+    style="background:rgba(25,24,24,0.97);backdrop-filter:blur(12px);">
+    <span id="toast-icon" class="material-symbols-outlined text-lg">check_circle</span>
+    <span id="toast-msg" style="font-size:13px;"></span>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════
+    //  DATA
+    // ═══════════════════════════════════════════
+
+    const supabaseUrl = 'https://aigyflxgtbkwhlhkdznd.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpZ3lmbHhndGJrd2hsaGtkem5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MDE2MDAsImV4cCI6MjA5ODM3NzYwMH0.S-9Ti5SyZ0_bpc0RKcM28eDY8okWmte3O-ePP_RGCT4';
+    const dbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Explicit column list — never use select('*')
+    const PRODUCT_COLS = 'id, name, category, color, price, badge, img_url, hex_color, is_new_arrival, created_at';
+
+    let PRODUCTS = [];
+
+    let cart = JSON.parse(localStorage.getItem('mkr_cart') || '[]');
+    let wishlist = new Set();
+    let activeFilters = { categories: [], sizes: [], colors: [], priceMax: 2500, search: '' };
+    let defaultMaxPrice = 2500;
+    let IS_LOAD_TEST_MODE = new URLSearchParams(window.location.search).has('loadtest') || window.IS_LOAD_TEST_MODE || false;
+
+    function saveCart() {
+      localStorage.setItem('mkr_cart', JSON.stringify(cart));
+    }
+
+    // ═══════════════════════════════════════════
+    //  CACHE (sessionStorage, 5-min TTL)
+    // ═══════════════════════════════════════════
+    const CACHE_TTL = 5 * 60 * 1000;
+
+    function getCached(key) {
+      try {
+        const raw = sessionStorage.getItem(key);
+        if (!raw) return null;
+        const { data, ts } = JSON.parse(raw);
+        if (Date.now() - ts > CACHE_TTL) { sessionStorage.removeItem(key); return null; }
+        return data;
+      } catch { return null; }
+    }
+
+    function setCache(key, data) {
+      try { sessionStorage.setItem(key, JSON.stringify({ data, ts: Date.now() })); } catch { }
+    }
+
+    // ═══════════════════════════════════════════
+    //  INIT
+    // ═══════════════════════════════════════════
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Check cache first
+        const cached = getCached('mk_products_all');
+        let rawData;
+        if (cached) {
+          rawData = cached;
+        } else {
+          const { data, error } = await dbClient.from('products').select(PRODUCT_COLS);
+          if (error) throw error;
+          rawData = data;
+          setCache('mk_products_all', data);
+        }
+
+        PRODUCTS = rawData.map(p => ({
+          ...p,
+          img: p.img_url,
+          hex: p.hex_color
+        }));
+        defaultMaxPrice = Math.max(...PRODUCTS.map(p => p.price), 2500);
+        activeFilters.priceMax = defaultMaxPrice;
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        showToast('Failed to load products', 'error');
+      }
+
+      renderFilters();
+      applyFilters();
+    });
+
+    // ═══════════════════════════════════════════
+    //  FILTERS DOM
+    // ═══════════════════════════════════════════
+    function renderFilters() {
+      const cats = ['Tops', 'Bottoms', 'Apparel'];
+      const sizes = ['S', 'M', 'L', 'XL'];
+      const colors = [{ name: 'Black', hex: '#000000' }, { name: 'Charcoal', hex: '#333333' }, { name: 'White', hex: '#FFFFFF' }, { name: 'Red', hex: '#8B0000' }, { name: 'Gold', hex: '#E9C349' }];
+
+      const filterHTML = `
+    <!-- Category -->
+    <section>
+      <h3 class="font-label-caps text-label-caps text-on-surface border-b border-white/10 pb-4 mb-5 tracking-widest text-[11px]">CATEGORY</h3>
+      <div class="space-y-3">
+        ${cats.map(c => `
+          <label class="flex items-center group cursor-pointer">
+            <input type="checkbox" value="${c}" onchange="toggleFilter('categories','${c}')" class="cat-cb w-4 h-4 rounded-sm bg-transparent border-white/20 text-tertiary focus:ring-0 focus:ring-offset-0 transition-all cursor-pointer"/>
+            <span class="ml-3 text-on-surface-variant group-hover:text-white transition-colors uppercase tracking-wider" style="font-size:13px;">${c}</span>
+          </label>
+        `).join('')}
+      </div>
+    </section>
+    
+    <!-- Price Range -->
+    <section>
+      <h3 class="font-label-caps text-label-caps text-on-surface border-b border-white/10 pb-4 mb-5 tracking-widest text-[11px]">PRICE (UP TO)</h3>
+      <input type="range" min="0" max="${defaultMaxPrice}" step="50" value="${activeFilters.priceMax}" oninput="updatePriceLabel(this.value)" onchange="updatePriceFilter(this.value)" class="slider-range"/>
+      <div class="flex justify-between mt-3 text-on-surface-variant font-bold" style="font-size:12px;">
+        <span>$0</span>
+        <span id="price-lbl" class="text-tertiary">Rs. ${activeFilters.priceMax}</span>
+      </div>
+    </section>
+
+    <!-- Size -->
+    <section>
+      <h3 class="font-label-caps text-label-caps text-on-surface border-b border-white/10 pb-4 mb-5 tracking-widest text-[11px]">SIZE</h3>
+      <div class="grid grid-cols-4 gap-2">
+        ${sizes.map(s => `
+          <button onclick="toggleSizeFilter('${s}', this)" class="size-btn h-10 border border-white/10 flex items-center justify-center font-bold text-[11px] hover:border-tertiary transition-all text-on-surface-variant hover:text-white">${s}</button>
+        `).join('')}
+      </div>
+    </section>
+
+    <!-- Color -->
+    <section>
+      <h3 class="font-label-caps text-label-caps text-on-surface border-b border-white/10 pb-4 mb-5 tracking-widest text-[11px]">COLOR</h3>
+      <div class="flex flex-wrap gap-3">
+        ${colors.map(c => `
+          <button onclick="toggleColorFilter('${c.hex}', this)" class="color-btn w-7 h-7 rounded-full border border-white/20 transition-all hover:scale-110" style="background-color:${c.hex}" title="${c.name}"></button>
+        `).join('')}
+      </div>
+    </section>
+  `;
+      document.getElementById('desktop-filters-container').innerHTML = filterHTML;
+      document.getElementById('mobile-filters-container').innerHTML = filterHTML.replace(/id="price-lbl"/g, 'id="price-lbl-mob"');
+    }
+
+    function toggleFilter(type, val) {
+      const idx = activeFilters[type].indexOf(val);
+      if (idx > -1) activeFilters[type].splice(idx, 1);
+      else activeFilters[type].push(val);
+      syncCheckboxes();
+      applyFilters();
+    }
+    function syncCheckboxes() {
+      document.querySelectorAll('.cat-cb').forEach(cb => {
+        cb.checked = activeFilters.categories.includes(cb.value);
+      });
+    }
+    function updatePriceLabel(val) {
+      const lbl = document.getElementById('price-lbl');
+      const lblM = document.getElementById('price-lbl-mob');
+      if (lbl) lbl.textContent = `Rs. ${val}`;
+      if (lblM) lblM.textContent = `Rs. ${val}`;
+      document.querySelectorAll('.slider-range').forEach(s => { s.value = val; });
+    }
+    function updatePriceFilter(val) {
+      activeFilters.priceMax = parseInt(val);
+      document.querySelectorAll('.slider-range').forEach(s => { s.value = val; });
+      applyFilters();
+    }
+    function toggleSizeFilter(size, btn) {
+      toggleFilter('sizes', size);
+      document.querySelectorAll('#desktop-filters-container .size-btn, #mobile-filters-container .size-btn').forEach(b => {
+        if (b.textContent === size) {
+          if (activeFilters.sizes.includes(size)) { b.classList.add('border-tertiary', 'text-tertiary'); b.classList.remove('border-white/10', 'text-on-surface-variant'); }
+          else { b.classList.remove('border-tertiary', 'text-tertiary'); b.classList.add('border-white/10', 'text-on-surface-variant'); }
+        }
+      });
+    }
+    function toggleColorFilter(hex, btn) {
+      toggleFilter('colors', hex);
+      document.querySelectorAll('.color-btn').forEach(b => {
+        if (b.style.backgroundColor === hex || b.style.backgroundColor === hex.toLowerCase()) {
+          if (activeFilters.colors.includes(hex)) b.classList.add('ring-2', 'ring-tertiary', 'ring-offset-2', 'ring-offset-background');
+          else b.classList.remove('ring-2', 'ring-tertiary', 'ring-offset-2', 'ring-offset-background');
+        }
+      });
+    }
+    function resetFilters() {
+      activeFilters = { categories: [], sizes: [], colors: [], priceMax: defaultMaxPrice, search: '' };
+      document.querySelectorAll('.slider-range').forEach(s => { s.max = defaultMaxPrice; s.value = defaultMaxPrice; updatePriceLabel(defaultMaxPrice); });
+      document.querySelectorAll('#desktop-filters-container .size-btn, #mobile-filters-container .size-btn').forEach(b => { b.classList.remove('border-tertiary', 'text-tertiary'); b.classList.add('border-white/10', 'text-on-surface-variant'); });
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('ring-2', 'ring-tertiary', 'ring-offset-2', 'ring-offset-background'));
+      document.getElementById('search-input').value = '';
+      syncCheckboxes();
+      applyFilters();
+    }
+
+    function toggleMobileFilters() {
+      const drawer = document.getElementById('mobile-filters');
+      const overlay = document.getElementById('mobile-overlay');
+      const isOpen = drawer.classList.contains('open');
+      drawer.classList.toggle('open', !isOpen);
+      overlay.style.opacity = isOpen ? '0' : '1';
+      overlay.style.pointerEvents = isOpen ? 'none' : 'auto';
+      document.body.style.overflow = isOpen ? '' : 'hidden';
+    }
+
+    function applyFilters() {
+      activeFilters.search = (document.getElementById('search-input').value || '').toLowerCase();
+      let res = PRODUCTS.filter(p => {
+        if (activeFilters.categories.length && !activeFilters.categories.includes(p.category)) return false;
+        if (activeFilters.colors.length && (!p.hex || !activeFilters.colors.map(c => c.toLowerCase()).includes(p.hex.toLowerCase()))) return false;
+        if (p.price > activeFilters.priceMax) return false;
+        // Note: sizes aren't in data, assuming all items have all sizes for demo
+        if (activeFilters.search && !p.name.toLowerCase().includes(activeFilters.search) && !p.category.toLowerCase().includes(activeFilters.search)) return false;
+        return true;
+      });
+
+      const sort = document.getElementById('sort-select').value;
+      if (sort === 'price-low') res.sort((a, b) => a.price - b.price);
+      if (sort === 'price-high') res.sort((a, b) => b.price - a.price);
+      if (sort === 'newest') res.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+      renderProducts(res);
+    }
+
+    // ═══════════════════════════════════════════
+    //  PRODUCTS & QUICK VIEW
+    // ═══════════════════════════════════════════
+    function renderProducts(list) {
+      const grid = document.getElementById('products-grid');
+      const empty = document.getElementById('empty-state');
+
+      if (!list.length) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+
+      empty.classList.add('hidden');
+      grid.innerHTML = list.map((p, i) => `
+    <article class="product-card group relative flex flex-col mb-4">
+      <div class="relative aspect-[3/4] bg-surface-container overflow-hidden mb-4 img-zoom">
+        <a href="../oversized_hoodie_mk_rockstar/code.html" class="block w-full h-full">
+          <img class="product-img w-full h-full object-cover" src="${p.img}" alt="${p.name}" loading="lazy"/>
+        </a>
+        <button class="quick-view absolute bottom-0 left-0 w-full bg-white text-black py-4 font-bold" style="font-size:11px;letter-spacing:0.15em;" onclick="quickView(${p.id})">QUICK VIEW</button>
+        <button class="wishlist-btn absolute top-3 right-3 lg:top-4 lg:right-4 w-9 h-9 flex items-center justify-center bg-black/60 backdrop-blur-sm hover:bg-black/90 transition-colors z-10 rounded-full" id="wl-${p.id}" onclick="toggleWishlist(${p.id},event)">
+          <span class="material-symbols-outlined" style="font-size:18px;color:#e5e2e1;">favorite</span>
+        </button>
+        ${p.badge ? `<div class="absolute top-4 left-4"><span class="bg-black/80 text-white px-3 py-1 font-bold" style="font-size:9px;letter-spacing:0.15em;">${p.badge}</span></div>` : ''}
+      </div>
+      <div class="flex justify-between items-start">
+        <div class="pr-2">
+          <a href="../oversized_hoodie_mk_rockstar/code.html" class="hover:text-tertiary transition-colors"><h4 class="text-white mb-1 uppercase" style="font-size:13px;letter-spacing:0.08em;font-weight:700;">${p.name}</h4></a>
+          <p class="text-on-surface-variant uppercase" style="font-size:10px;letter-spacing:0.1em;">${p.color}</p>
+        </div>
+        <p class="text-tertiary font-bold" style="font-size:15px;">Rs. ${p.price}</p>
+      </div>
+    </article>`).join('');
+
+      // Restore wishlist state visually
+      list.forEach(p => {
+        if (wishlist.has(p.id)) {
+          const btn = document.getElementById('wl-' + p.id);
+          if (btn) {
+            btn.querySelector('span').style.fontVariationSettings = "'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24";
+            btn.querySelector('span').style.color = '#e9c349';
+          }
+        }
+      });
+    }
+
+    function quickView(id) {
+      const p = PRODUCTS.find(x => x.id === id);
+      if (!p) return;
+      const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+      document.getElementById('qv-content').innerHTML = `
+    <div class="flex flex-col sm:flex-row">
+      <div class="sm:w-1/2 img-zoom" style="aspect-ratio:3/4;max-height:55vh;overflow:hidden;">
+        <img src="${p.img}" alt="${p.name}" class="product-img w-full h-full object-cover"/>
+      </div>
+      <div class="sm:w-1/2 p-6 lg:p-8 flex flex-col">
+        <div class="flex justify-between items-start mb-1">
+          <span class="text-on-surface-variant uppercase" style="font-size:10px;letter-spacing:0.15em;">${p.category}</span>
+          <button onclick="closeQV()" class="material-symbols-outlined text-on-surface-variant hover:text-white transition-colors">close</button>
+        </div>
+        <h3 class="text-white uppercase mb-1 mt-2" style="font-family:Anton,sans-serif;font-size:28px;letter-spacing:0.04em;line-height:1.1;">${p.name}</h3>
+        <p class="text-on-surface-variant mb-4" style="font-size:13px;">${p.color}</p>
+        <p class="text-tertiary font-bold mb-8" style="font-size:24px;font-family:Anton,sans-serif;">Rs. ${p.price}</p>
+        <p class="text-on-surface-variant mb-2 font-bold" style="font-size:10px;letter-spacing:0.15em;">SELECT SIZE</p>
+        <div class="flex flex-wrap gap-2 mb-8" id="qv-sizes">
+          ${sizes.map((s, i) => `<button onclick="selectSize(this)" data-size="${s}" class="size-btn border border-white/20 px-4 py-2 text-on-surface-variant hover:border-white hover:text-white transition-colors ${i === 2 ? 'border-tertiary text-tertiary' : ''}" style="font-size:11px;letter-spacing:0.1em;font-weight:bold;">${s}</button>`).join('')}
+        </div>
+        <div class="flex gap-3 mt-auto">
+          <button onclick="addFromQV(${p.id})" class="flex-1 bg-white text-black py-4 hover:bg-tertiary transition-all font-bold" style="font-size:11px;letter-spacing:0.15em;">ADD TO CART</button>
+          <a href="../oversized_hoodie_mk_rockstar/code.html" class="w-14 border border-white/20 hover:border-white transition-colors flex items-center justify-center text-white" title="View Full Details">
+            <span class="material-symbols-outlined" style="font-size:20px;">open_in_new</span>
+          </a>
+        </div>
+      </div>
+    </div>`;
+      const modal = document.getElementById('qv-modal');
+      modal.classList.remove('modal-hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeQV() {
+      document.getElementById('qv-modal').classList.add('modal-hidden');
+      document.body.style.overflow = '';
+    }
+    function selectSize(btn) {
+      document.getElementById('qv-sizes').querySelectorAll('.size-btn').forEach(b => {
+        b.className = `size-btn border border-white/20 px-4 py-2 text-on-surface-variant hover:border-white hover:text-white transition-colors`;
+        b.style.fontSize = '11px'; b.style.letterSpacing = '0.1em'; b.style.fontWeight = 'bold';
+      });
+      btn.className = 'size-btn border border-tertiary px-4 py-2 text-tertiary transition-colors';
+      btn.style.fontSize = '11px'; btn.style.letterSpacing = '0.1em'; btn.style.fontWeight = 'bold';
+    }
+    function addFromQV(id) {
+      const activeSize = document.getElementById('qv-sizes').querySelector('.border-tertiary');
+      const size = activeSize ? activeSize.dataset.size : 'M';
+      addToCart(id, size);
+      closeQV();
+      openCart();
+    }
+
+    // ═══════════════════════════════════════════
+    //  WISHLIST
+    // ═══════════════════════════════════════════
+    function toggleWishlist(id, e) {
+      if (e) { e.stopPropagation(); e.preventDefault(); }
+      const p = PRODUCTS.find(x => x.id === id);
+      const wasAdded = !wishlist.has(id);
+
+      if (wasAdded) {
+        wishlist.add(id);
+        showToast(`${p ? p.name : 'Item'} added to wishlist`, 'success');
+      } else {
+        wishlist.delete(id);
+        showToast(`Removed from wishlist`, 'info');
+      }
+
+      updateBadges();
+
+      const btn = document.getElementById('wl-' + id);
+      const qvBtn = document.getElementById('qv-wl-' + id);
+
+      if (btn) {
+        const icon = btn.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.style.fontVariationSettings = wasAdded ? "'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24" : "'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24";
+          icon.style.color = wasAdded ? '#e9c349' : '#e5e2e1';
+        }
+      }
+
+      if (qvBtn) {
+        const qvIcon = qvBtn.querySelector('.material-symbols-outlined');
+        if (qvIcon) {
+          qvIcon.style.fontVariationSettings = wasAdded ? "'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24" : "'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24";
+          qvIcon.style.color = wasAdded ? '#e9c349' : '#e5e2e1';
+        }
+      }
+    }
+    function openWishlist() {
+      renderWishlist();
+      document.getElementById('wishlist-overlay').classList.remove('opacity-0', 'pointer-events-none');
+      document.getElementById('wishlist-drawer').classList.remove('translate-x-full');
+    }
+
+    function closeWishlist() {
+      document.getElementById('wishlist-overlay').classList.add('opacity-0', 'pointer-events-none');
+      document.getElementById('wishlist-drawer').classList.add('translate-x-full');
+    }
+
+    function renderWishlist() {
+      const wlContainer = document.getElementById('wishlist-items');
+      if (!wishlist.size) {
+        wlContainer.innerHTML = '<p class="text-on-surface-variant text-center mt-10" style="font-size:14px;">Your wishlist is empty.</p>';
+        return;
+      }
+      let html = '';
+      wishlist.forEach(id => {
+        const p = PRODUCTS.find(x => x.id == id);
+        if (p) {
+          html += `
+      <div class="flex gap-4 border-b border-white/5 pb-4">
+        <img src="${p.img}" class="w-20 h-24 object-cover" alt="${p.name}">
+        <div class="flex-1 flex flex-col justify-between">
+          <div>
+            <h4 class="text-white text-sm font-bold uppercase tracking-wider">${p.name}</h4>
+            <p class="text-on-surface-variant text-xs mt-1">Rs. ${p.price}</p>
+          </div>
+          <div class="flex gap-3 mt-2">
+            <button onclick="quickView(${p.id});closeWishlist()" class="text-[10px] tracking-widest text-tertiary hover:text-white transition-colors uppercase font-bold">VIEW</button>
+            <button onclick="toggleWishlist(${p.id});renderWishlist()" class="text-[10px] tracking-widest text-error hover:text-red-400 transition-colors uppercase font-bold">REMOVE</button>
+          </div>
+        </div>
+      </div>
+      `;
+        }
+      });
+      wlContainer.innerHTML = html;
+    }
+
+    // ═══════════════════════════════════════════
+    //  CART
+    // ═══════════════════════════════════════════
+    function addToCart(id, size = 'M') {
+      const p = PRODUCTS.find(x => x.id === id);
+      if (!p) return;
+      const existing = cart.find(c => c.id === id && c.size === size);
+      if (existing) existing.qty++;
+      else cart.push({ ...p, size, qty: 1 });
+      saveCart();
+      renderCart();
+      updateBadges();
+      showToast(`${p.name} added to cart`, 'success');
+    }
+    function removeFromCart(id, size) {
+      cart = cart.filter(c => !(c.id === id && c.size === size));
+      saveCart();
+      renderCart();
+      updateBadges();
+      showToast('Item removed', 'info');
+    }
+    function adjustQty(id, size, delta) {
+      const item = cart.find(c => c.id === id && c.size === size);
+      if (!item) return;
+      item.qty = Math.max(1, item.qty + delta);
+      saveCart();
+      renderCart();
+      updateBadges();
+    }
+    function renderCart() {
+      const container = document.getElementById('cart-items');
+      const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+      document.getElementById('cart-total').textContent = '$' + total.toFixed(2);
+      document.getElementById('cart-header-count').textContent = `(${cart.reduce((s, c) => s + c.qty, 0)})`;
+      if (!cart.length) {
+        container.innerHTML = `<div class="py-20 text-center text-on-surface-variant">Your cart is empty.</div>`;
+        return;
+      }
+      container.innerHTML = cart.map(c => `
+    <div class="py-5 flex gap-4">
+      <div class="w-20 h-24 flex-shrink-0 overflow-hidden bg-surface-container">
+        <img src="${c.img}" alt="${c.name}" class="w-full h-full object-cover"/>
+      </div>
+      <div class="flex-1 min-w-0 flex flex-col">
+        <p style="font-size:12px;letter-spacing:0.08em;font-weight:700;" class="text-white uppercase truncate">${c.name}</p>
+        <p class="text-on-surface-variant mt-1" style="font-size:11px;">${c.color} · Size ${c.size}</p>
+        <div class="flex justify-between items-end mt-auto">
+          <p class="text-tertiary font-bold" style="font-size:15px;">Rs. ${(c.price * c.qty).toFixed(2)}</p>
+          <div class="flex items-center gap-2">
+            <button onclick="adjustQty(${c.id},'${c.size}',-1)" class="w-7 h-7 flex items-center justify-center border border-white/20 hover:border-white/50 text-white">−</button>
+            <span style="font-size:13px;width:20px;text-align:center;">${c.qty}</span>
+            <button onclick="adjustQty(${c.id},'${c.size}',1)" class="w-7 h-7 flex items-center justify-center border border-white/20 hover:border-white/50 text-white">+</button>
+            <button onclick="removeFromCart(${c.id},'${c.size}')" class="material-symbols-outlined text-on-surface-variant hover:text-error ml-2" style="font-size:18px;">delete</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+    }
+    function openCart() {
+      renderCart();
+      document.getElementById('cart-drawer').classList.add('open');
+      const ov = document.getElementById('mobile-overlay');
+      ov.style.opacity = '1'; ov.style.pointerEvents = 'auto';
+      document.body.style.overflow = 'hidden';
+    }
+    function closeCart() {
+      document.getElementById('cart-drawer').classList.remove('open');
+      if (!document.getElementById('mobile-menu').classList.contains('open') && !document.getElementById('mobile-filters').classList.contains('open')) {
+        const ov = document.getElementById('mobile-overlay');
+        ov.style.opacity = '0'; ov.style.pointerEvents = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+
+    function updateBadges() {
+      const total = cart.reduce((s, c) => s + c.qty, 0);
+      const cc = document.getElementById('cart-count');
+      cc.textContent = total; cc.classList.toggle('hidden', total === 0);
+      const wc = document.getElementById('wishlist-count');
+      wc.textContent = wishlist.size; wc.classList.toggle('hidden', wishlist.size === 0);
+    }
+
+    // ═══════════════════════════════════════════
+    //  GLOBAL UTILS
+    // ═══════════════════════════════════════════
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-overlay');
+      const isOpen = menu.classList.contains('open');
+      menu.classList.toggle('open', !isOpen);
+      overlay.style.opacity = isOpen ? '0' : '1';
+      overlay.style.pointerEvents = isOpen ? 'none' : 'auto';
+      document.body.style.overflow = isOpen ? '' : 'hidden';
+    }
+    function closeAllDrawers() {
+      document.getElementById('mobile-menu').classList.remove('open');
+      document.getElementById('mobile-filters').classList.remove('open');
+      document.getElementById('cart-drawer').classList.remove('open');
+      const ov = document.getElementById('mobile-overlay');
+      ov.style.opacity = '0'; ov.style.pointerEvents = 'none';
+      document.body.style.overflow = '';
+    }
+
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      const icon = document.getElementById('toast-icon');
+      document.getElementById('toast-msg').textContent = msg;
+      const cfg = { success: ['check_circle', '#e9c349'], error: ['error', '#ffb4ab'], info: ['info', '#c6c6c6'] };
+      icon.textContent = cfg[type][0]; icon.style.color = cfg[type][1];
+      t.style.borderColor = cfg[type][1] + '40';
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // Close QV on backdrop
+    document.getElementById('qv-modal').addEventListener('click', e => {
+      if (e.target === document.getElementById('qv-modal')) closeQV();
+    });
+
+    // ═══════════════════════════════════════════
+    //  CHECKOUT
+    // ═══════════════════════════════════════════
+    function checkout() {
+      if (cart.length === 0) { showToast('Your cart is empty', 'info'); return; }
+      closeCart();
+      const modal = document.getElementById('checkout-modal');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        document.getElementById('checkout-modal-content').classList.remove('scale-95');
+      }, 10);
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCheckout() {
+      const modal = document.getElementById('checkout-modal');
+      modal.classList.add('opacity-0');
+      document.getElementById('checkout-modal-content').classList.add('scale-95');
+      setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 300);
+    }
+
+    async function sendOrderNotification(order, customer, cartItems, total) {
+      const orderData = {
+        order_id: String(order.id).substring(0, 8).toUpperCase(),
+        customer_name: `${customer.first_name} ${customer.last_name}`,
+        email: customer.email,
+        phone: customer.phone,
+        address: customer.address,
+        city: 'N/A',
+        items: cartItems.map(c => ({
+          name: c.name,
+          size: c.size,
+          color: c.color || 'N/A',
+          qty: c.qty,
+          price: c.price
+        })),
+        total_amount: total.toFixed(2),
+        payment_method: 'Cash on Delivery',
+        notes: ''
+      };
+
+      let email_status = 'failed';
+      let email_provider = 'none';
+      let email_error = '';
+
+      const isTest = window.IS_LOAD_TEST_MODE || (typeof IS_LOAD_TEST_MODE !== 'undefined' && IS_LOAD_TEST_MODE);
+      if (isTest) {
+        email_status = 'skipped_test_mode';
+        email_provider = 'none';
+      } else {
+        try {
+          // 1. Try Resend via Supabase Edge Function
+          const { data, error } = await dbClient.functions.invoke('send-order-email', {
+            body: { orderData }
+          });
+
+          if (error) throw new Error(error.message || 'Edge Function Error');
+          if (data && data.error) throw new Error(data.error);
+
+          email_status = 'sent';
+          email_provider = 'resend';
+        } catch (resendErr) {
+          console.warn('Resend failed, trying EmailJS fallback...', resendErr);
+
+          // 2. Fallback to EmailJS (best effort to owner)
+          try {
+            const orderSummary = cartItems.map(c => `${c.qty}x ${c.name} (Size: ${c.size}) — Rs. ${(c.price * c.qty).toFixed(0)}`).join('\n');
+            await emailjs.send('service_i9tzjls', 'template_7c5tcmd', {
+              to_email: 'Admin', // Owner email for fallback
+              email: customer.email,
+              reply_to: customer.email,
+              to_name: 'Store Owner',
+              order_id: orderData.order_id,
+              order_total: `Rs. ${total.toFixed(0)}`,
+              order_summary: orderSummary,
+              address: customer.address
+            });
+            email_status = 'sent';
+            email_provider = 'emailjs';
+            email_error = resendErr.message || 'Resend failed';
+          } catch (emailjsErr) {
+            console.error('EmailJS fallback also failed:', emailjsErr);
+            email_status = 'failed';
+            email_provider = 'none';
+            email_error = `Resend: ${resendErr.message || 'Failed'}. EmailJS: ${emailjsErr.text || 'Failed'}`;
+          }
+        }
+      }
+
+      // 3. Update order in Supabase with email tracking status
+      try {
+        await dbClient.from('orders').update({
+          email_status,
+          email_provider,
+          email_error: email_error ? email_error.substring(0, 250) : null
+        }).eq('id', order.id);
+      } catch (dbErr) {
+        console.warn('Failed to update email status on order:', dbErr);
+      }
+
+      return { email_status, email_provider };
+    }
+
+    async function processCheckout(e) {
+      e.preventDefault();
+      const fname = document.getElementById('co-fname').value;
+      const lname = document.getElementById('co-lname').value;
+      const email = document.getElementById('co-email').value;
+      const phone = document.getElementById('co-phone').value;
+      const address = document.getElementById('co-address').value;
+      const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+
+      const isTest = window.IS_LOAD_TEST_MODE || (typeof IS_LOAD_TEST_MODE !== 'undefined' && IS_LOAD_TEST_MODE);
+      const checkoutEmail = isTest ? `loadtest+${Math.floor(Math.random() * 10000000)}@example.com` : email;
+
+      const submitText = document.getElementById('co-submit-text');
+      const spinner = document.getElementById('co-spinner');
+      const submitBtn = document.getElementById('co-submit-btn');
+      submitText.classList.add('invisible');
+      spinner.classList.remove('hidden');
+      submitBtn.disabled = true;
+
+      try {
+        // Upsert customer
+        let customerId;
+        let customerData = { email: checkoutEmail, phone, first_name: fname, last_name: lname, address };
+
+        const { data: existing } = await dbClient.from('customers').select('id').eq('email', checkoutEmail).maybeSingle();
+        if (existing) {
+          customerId = existing.id;
+        } else {
+          const { data: newCust, error: custErr } = await dbClient.from('customers')
+            .insert([customerData])
+            .select('id').single();
+          if (custErr) throw custErr;
+          customerId = newCust.id;
+        }
+
+        // Create order
+        const orderData = { customer_id: customerId, total_amount: total, status: 'Pending' };
+        if (isTest) {
+          orderData.is_test_order = true;
+          console.log('[LoadTest] Creating test order with payload:', orderData);
+        }
+        const { data: order, error: orderErr } = await dbClient.from('orders')
+          .insert([orderData])
+          .select('id').single();
+        if (orderErr) {
+          if (isTest) console.error('[LoadTest] Order creation failed:', orderErr);
+          throw orderErr;
+        }
+        if (isTest) {
+          console.log('[LoadTest] Created customerId:', customerId);
+          console.log('[LoadTest] Created orderId:', order.id);
+        }
+
+        // Create order items
+        const items = cart.map(c => ({
+          order_id: order.id,
+          product_id: c.id,
+          size: c.size || 'M', // Ensure size is never null/empty
+          quantity: c.qty || 1, // Ensure quantity is never null/empty
+          price_at_purchase: c.price
+        }));
+
+        if (isTest) {
+          console.log('[LoadTest] Mapped orderItems payload:', items);
+        }
+
+        const { error: itemsErr } = await dbClient.from('order_items').insert(items);
+        if (itemsErr) {
+          if (isTest) {
+            console.error('[LoadTest] order_items insert failed:', itemsErr);
+            // Rollback the created order to avoid orphans
+            console.log('[LoadTest] Rolling back created test order:', order.id);
+            await dbClient.from('orders').delete().eq('id', order.id);
+            console.log('[LoadTest] Test order rolled back successfully.');
+          }
+          throw itemsErr;
+        }
+        if (isTest) {
+          console.log('[LoadTest] order_items inserted successfully.');
+        }
+
+        // Trigger Notification Flow (Resend -> EmailJS fallback)
+        await sendOrderNotification(order, customerData, cart, total);
+
+        cart = [];
+        renderCart();
+        updateBadges();
+        closeCheckout();
+        showToast('Order placed successfully!', 'success');
+
+      } catch (err) {
+        console.error('Checkout error:', err);
+        showToast('Checkout failed. Please try again.', 'error');
+      } finally {
+        submitText.classList.remove('invisible');
+        spinner.classList.add('hidden');
+        submitBtn.disabled = false;
+      }
+    }
+  </script>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-modal"
+    class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+    <div
+      class="bg-surface-container w-full max-w-md p-8 border border-white/10 relative transform scale-95 transition-transform duration-300"
+      id="checkout-modal-content">
+      <button onclick="closeCheckout()"
+        class="absolute top-6 right-6 text-on-surface-variant hover:text-white transition-colors">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <h2 class="text-2xl text-white font-bold mb-6" style="font-family:Anton,sans-serif;letter-spacing:0.05em;">
+        CHECKOUT</h2>
+      <form id="checkout-form" onsubmit="processCheckout(event)" class="space-y-4">
+        <div>
+          <label class="block text-[11px] font-bold text-on-surface-variant mb-1 tracking-widest">FIRST NAME</label>
+          <input type="text" id="co-fname" required
+            class="w-full bg-transparent border border-white/20 text-white px-4 py-3 focus:border-tertiary focus:outline-none transition-colors" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-on-surface-variant mb-1 tracking-widest">LAST NAME</label>
+          <input type="text" id="co-lname" required
+            class="w-full bg-transparent border border-white/20 text-white px-4 py-3 focus:border-tertiary focus:outline-none transition-colors" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-on-surface-variant mb-1 tracking-widest">EMAIL</label>
+          <input type="email" id="co-email" required
+            class="w-full bg-transparent border border-white/20 text-white px-4 py-3 focus:border-tertiary focus:outline-none transition-colors" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-on-surface-variant mb-1 tracking-widest">PHONE NUMBER</label>
+          <input type="tel" id="co-phone" required
+            class="w-full bg-transparent border border-white/20 text-white px-4 py-3 focus:border-tertiary focus:outline-none transition-colors" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-on-surface-variant mb-1 tracking-widest">ADDRESS</label>
+          <input type="text" id="co-address" required
+            class="w-full bg-transparent border border-white/20 text-white px-4 py-3 focus:border-tertiary focus:outline-none transition-colors" />
+        </div>
+        <button type="submit" id="co-submit-btn"
+          class="w-full bg-tertiary text-black py-4 mt-6 font-bold tracking-widest hover:bg-white transition-colors relative">
+          <span id="co-submit-text">PLACE ORDER</span>
+          <div id="co-spinner" class="absolute inset-0 flex items-center justify-center hidden">
+            <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
+            </svg>
+          </div>
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+</html>
