@@ -1715,6 +1715,74 @@
 
     function editProduct(id) { openProductModal(id); }
 
+    // ── Image Optimization State & Processing ──
+    let selectedProductImageBlob = null;
+    let selectedDealImageBlob = null;
+
+    function processImage(file) {
+      return new Promise((resolve, reject) => {
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+        if (!allowedTypes.includes(file.type)) {
+          showToast('Invalid file type. Only JPG, PNG, and WebP are accepted.', 'error');
+          reject(new Error('Invalid file type'));
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          showToast('File is too large. Maximum size allowed before compression is 5 MB.', 'error');
+          reject(new Error('File too large'));
+          return;
+        }
+
+        const img = new Image();
+        const objectUrl = URL.createObjectURL(file);
+        img.onload = () => {
+          URL.revokeObjectURL(objectUrl);
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const MAX_WIDTH = 1400;
+          if (width > MAX_WIDTH) {
+            height = Math.round(height * (MAX_WIDTH / width));
+            width = MAX_WIDTH;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Try WebP first
+          let dataUrl = canvas.toDataURL('image/webp', 0.8);
+          let mime = 'image/webp';
+          if (!dataUrl.startsWith('data:image/webp')) {
+            // Fallback to JPEG
+            dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            mime = 'image/jpeg';
+          }
+
+          // Convert dataURL to Blob for upload
+          try {
+            const binary = atob(dataUrl.split(',')[1]);
+            const array = [];
+            for (let i = 0; i < binary.length; i++) {
+              array.push(binary.charCodeAt(i));
+            }
+            const blob = new Blob([new Uint8Array(array)], { type: mime });
+            console.log(`Processed image size: ${(blob.size / 1024).toFixed(1)} KB`);
+            resolve({ dataUrl, blob });
+          } catch (e) {
+            showToast('Failed to process image data.', 'error');
+            reject(e);
+          }
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(objectUrl);
+          showToast('Failed to load image file.', 'error');
+          reject(new Error('Load error'));
+        };
+        img.src = objectUrl;
+      });
+    }
+
     // ── Image helpers ──
     function setImagePreview(dataUrl) {
       const zone = document.getElementById('img-drop-zone');
@@ -1730,9 +1798,14 @@
         removeBtn.classList.remove('hidden');
         hidden.value = dataUrl;
       } else {
+        selectedProductImageBlob = null;
         preview.src = '';
         preview.classList.add('hidden');
         placeholder.classList.remove('hidden');
+        placeholder.innerHTML = `
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:36px;opacity:0.4;">add_photo_alternate</span>
+          <p class="text-on-surface-variant text-center" style="font-size:11px;letter-spacing:0.1em;opacity:0.6;">DRAG & DROP OR CLICK TO UPLOAD</p>
+        `;
         zone.classList.remove('has-image');
         removeBtn.classList.add('hidden');
         hidden.value = '';
@@ -1749,27 +1822,23 @@
     function handleImageFile(input) {
       const file = input.files[0];
       if (!file) return;
-      // Validate type
-      if (!file.type.startsWith('image/')) { showToast('Please select an image file', 'error'); return; }
-      // Validate size (10MB max)
-      if (file.size > 10 * 1024 * 1024) { showToast('Image must be under 10MB', 'error'); return; }
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let width = img.width; let height = img.height;
-          const MAX_DIM = 800;
-          if (width > height && width > MAX_DIM) { height *= MAX_DIM / width; width = MAX_DIM; }
-          else if (height > MAX_DIM) { width *= MAX_DIM / height; height = MAX_DIM; }
-          canvas.width = width; canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          setImagePreview(canvas.toDataURL('image/jpeg', 0.8));
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
+
+      const placeholder = document.getElementById('img-placeholder');
+      placeholder.innerHTML = `
+        <span class="material-symbols-outlined text-tertiary animate-spin" style="font-size:36px;">sync</span>
+        <p class="text-tertiary text-center animate-pulse" style="font-size:11px;letter-spacing:0.1em;">COMPRESSING IMAGE...</p>
+      `;
+
+      processImage(file).then(({ dataUrl, blob }) => {
+        selectedProductImageBlob = blob;
+        setImagePreview(dataUrl);
+      }).catch((err) => {
+        placeholder.innerHTML = `
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:36px;opacity:0.4;">add_photo_alternate</span>
+          <p class="text-on-surface-variant text-center" style="font-size:11px;letter-spacing:0.1em;opacity:0.6;">DRAG & DROP OR CLICK TO UPLOAD</p>
+        `;
+        removeProductImage();
+      });
     }
 
     function handleDragOver(e) {
@@ -1807,9 +1876,14 @@
         removeBtn.classList.remove('hidden');
         hidden.value = dataUrl;
       } else {
+        selectedDealImageBlob = null;
         preview.src = '';
         preview.classList.add('hidden');
         placeholder.classList.remove('hidden');
+        placeholder.innerHTML = `
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:36px;opacity:0.4;">add_photo_alternate</span>
+          <p class="text-on-surface-variant text-center" style="font-size:11px;letter-spacing:0.1em;opacity:0.6;">DRAG & DROP OR CLICK TO UPLOAD</p>
+        `;
         zone.classList.remove('has-image');
         removeBtn.classList.add('hidden');
         hidden.value = '';
@@ -1822,28 +1896,27 @@
       document.getElementById('d-camera-file').value = '';
     }
 
+    // ── Deal drag and drop helpers ──
     function handleDealImageFile(input) {
       const file = input.files[0];
       if (!file) return;
-      if (!file.type.startsWith('image/')) { showToast('Please select an image file', 'error'); return; }
-      if (file.size > 10 * 1024 * 1024) { showToast('Image must be under 10MB', 'error'); return; }
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let width = img.width; let height = img.height;
-          const MAX_DIM = 800;
-          if (width > height && width > MAX_DIM) { height *= MAX_DIM / width; width = MAX_DIM; }
-          else if (height > MAX_DIM) { width *= MAX_DIM / height; height = MAX_DIM; }
-          canvas.width = width; canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          setDealImagePreview(canvas.toDataURL('image/jpeg', 0.8));
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
+
+      const placeholder = document.getElementById('d-img-placeholder');
+      placeholder.innerHTML = `
+        <span class="material-symbols-outlined text-tertiary animate-spin" style="font-size:36px;">sync</span>
+        <p class="text-tertiary text-center animate-pulse" style="font-size:11px;letter-spacing:0.1em;">COMPRESSING IMAGE...</p>
+      `;
+
+      processImage(file).then(({ dataUrl, blob }) => {
+        selectedDealImageBlob = blob;
+        setDealImagePreview(dataUrl);
+      }).catch((err) => {
+        placeholder.innerHTML = `
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:36px;opacity:0.4;">add_photo_alternate</span>
+          <p class="text-on-surface-variant text-center" style="font-size:11px;letter-spacing:0.1em;opacity:0.6;">DRAG & DROP OR CLICK TO UPLOAD</p>
+        `;
+        removeDealImage();
+      });
     }
 
     function handleDealDragOver(e) {
@@ -1868,41 +1941,50 @@
     }
     async function saveProduct(e) {
       e.preventDefault();
-      const id = document.getElementById('edit-product-id').value;
-      const imageData = document.getElementById('p-image-data').value || null;
-      
-      const dbData = {
-        name: document.getElementById('p-name').value,
-        price: parseFloat(document.getElementById('p-price').value),
-        category: document.getElementById('p-category').value,
-        color: 'DEFAULT',
-        hex_color: '#000000',
-        is_new_arrival: document.getElementById('p-is-new').checked
-      };
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
 
-      const finalId = id ? parseInt(id, 10) : Date.now();
-      if (!id) {
-        dbData.id = finalId;
-      }
+      try {
+        const id = document.getElementById('edit-product-id').value;
+        const imageData = document.getElementById('p-image-data').value || null;
+        
+        const dbData = {
+          name: document.getElementById('p-name').value,
+          price: parseFloat(document.getElementById('p-price').value),
+          category: document.getElementById('p-category').value,
+          color: 'DEFAULT',
+          hex_color: '#000000',
+          is_new_arrival: document.getElementById('p-is-new').checked
+        };
 
-      if (imageData) {
-        // Upload to Supabase Storage instead of storing base64 in DB
-        try {
-          const resp = await fetch(imageData);
-          const blob = await resp.blob();
-          const ext = blob.type.includes('png') ? 'png' : 'jpg';
-          const filename = `product-${finalId}.${ext}`;
-          const { error: upErr } = await dbClient.storage.from('product-images').upload(filename, blob, { contentType: blob.type, upsert: true });
+        const finalId = id ? parseInt(id, 10) : Date.now();
+        if (!id) {
+          dbData.id = finalId;
+        }
+
+        if (selectedProductImageBlob) {
+          submitBtn.textContent = 'UPLOADING IMAGE (0%)...';
+          const ext = selectedProductImageBlob.type.includes('webp') ? 'webp' : (selectedProductImageBlob.type.includes('png') ? 'png' : 'jpg');
+          const filename = `product-${finalId}-${Date.now()}.${ext}`;
+          
+          const { error: upErr } = await dbClient.storage.from('product-images').upload(filename, selectedProductImageBlob, {
+            contentType: selectedProductImageBlob.type,
+            upsert: true,
+            onUploadProgress: (progress) => {
+              const percent = Math.round((progress.loaded / progress.total) * 100);
+              submitBtn.textContent = `UPLOADING IMAGE (${percent}%)...`;
+            }
+          });
           if (upErr) throw upErr;
           const { data: urlData } = dbClient.storage.from('product-images').getPublicUrl(filename);
           dbData.img_url = urlData.publicUrl;
-        } catch (storageErr) {
-          console.warn('Storage upload failed, saving compressed base64 to DB:', storageErr.message);
-          dbData.img_url = imageData; // Fallback
+        } else {
+          dbData.img_url = imageData;
         }
-      }
 
-      try {
+        submitBtn.textContent = 'SAVING PRODUCT...';
+
         if (id) {
           console.log('[ProductEdit] Sending update payload to Supabase:', { id, dbData });
           const { data, error } = await dbClient.from('products').update(dbData).eq('id', id).select();
@@ -1917,6 +1999,11 @@
           notifications.unshift({ icon: 'inventory_2', msg: `New product added: ${dbData.name}`, sub: 'Just now', read: false });
           showToast('Product added', 'success');
         }
+
+        // Reset local selected image state
+        selectedProductImageBlob = null;
+        document.getElementById('p-image-file').value = '';
+        document.getElementById('p-camera-file').value = '';
 
         // Refresh products list
         const { data: refreshed, error: refreshErr } = await dbClient.from('products').select('id, name, category, color, price, badge, img_url, hex_color, is_new_arrival, created_at');
@@ -1942,13 +2029,12 @@
         renderProducts();
         renderAnalytics();
       } catch (err) {
-        if (id) {
-          console.error('[ProductEdit] Error updating product:', err);
-        } else {
-          console.error('[ProductAdd] Error inserting product:', err);
-        }
+        console.error('Error saving product:', err);
         alert('Failed to save product: ' + (err.message || err.details || err));
         showToast('Failed to save product: ' + (err.message || 'error'), 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
       }
     }
 
@@ -2054,37 +2140,48 @@
 
     async function saveDeal(e) {
       e.preventDefault();
-      const id = document.getElementById('edit-deal-id').value;
-      const imageData = document.getElementById('d-image-data').value || null;
-      const dbData = {
-        title: document.getElementById('d-title').value,
-        description: document.getElementById('d-desc').value || null,
-        product_id: document.getElementById('d-product-id').value.trim() ? parseInt(document.getElementById('d-product-id').value.trim()) : null,
-        original_price: parseFloat(document.getElementById('d-orig-price').value),
-        deal_price: parseFloat(document.getElementById('d-deal-price').value),
-        start_date: null,
-        end_date: null,
-        is_active: document.getElementById('d-is-active').checked
-      };
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
 
-      if (imageData) {
-        // Upload to Supabase Storage instead of storing base64 in DB
-        try {
-          const resp = await fetch(imageData);
-          const blob = await resp.blob();
-          const ext = blob.type.includes('png') ? 'png' : 'jpg';
-          const filename = `deal-${id || Date.now()}.${ext}`;
-          const { error: upErr } = await dbClient.storage.from('product-images').upload(filename, blob, { contentType: blob.type, upsert: true });
+      try {
+        const id = document.getElementById('edit-deal-id').value;
+        const imageData = document.getElementById('d-image-data').value || null;
+        const dbData = {
+          title: document.getElementById('d-title').value,
+          description: document.getElementById('d-desc').value || null,
+          product_id: document.getElementById('d-product-id').value.trim() ? parseInt(document.getElementById('d-product-id').value.trim()) : null,
+          original_price: parseFloat(document.getElementById('d-orig-price').value),
+          deal_price: parseFloat(document.getElementById('d-deal-price').value),
+          start_date: null,
+          end_date: null,
+          is_active: document.getElementById('d-is-active').checked
+        };
+
+        const finalId = id || Date.now();
+
+        if (selectedDealImageBlob) {
+          submitBtn.textContent = 'UPLOADING IMAGE (0%)...';
+          const ext = selectedDealImageBlob.type.includes('webp') ? 'webp' : (selectedDealImageBlob.type.includes('png') ? 'png' : 'jpg');
+          const filename = `deal-${finalId}-${Date.now()}.${ext}`;
+          
+          const { error: upErr } = await dbClient.storage.from('product-images').upload(filename, selectedDealImageBlob, {
+            contentType: selectedDealImageBlob.type,
+            upsert: true,
+            onUploadProgress: (progress) => {
+              const percent = Math.round((progress.loaded / progress.total) * 100);
+              submitBtn.textContent = `UPLOADING IMAGE (${percent}%)...`;
+            }
+          });
           if (upErr) throw upErr;
           const { data: urlData } = dbClient.storage.from('product-images').getPublicUrl(filename);
           dbData.image_url = urlData.publicUrl;
-        } catch (storageErr) {
-          console.warn('Storage upload failed, saving compressed base64 to DB:', storageErr.message);
-          dbData.image_url = imageData; // Fallback
+        } else {
+          dbData.image_url = imageData;
         }
-      }
 
-      try {
+        submitBtn.textContent = 'SAVING DEAL...';
+
         if (id) {
           console.log('[DealEdit] Updating deal payload:', { id, dbData });
           const { data, error } = await dbClient.from('deals').update(dbData).eq('id', id).select();
@@ -2098,6 +2195,11 @@
           if (error) throw error;
           showToast('Deal added', 'success');
         }
+
+        // Reset local selected image state
+        selectedDealImageBlob = null;
+        document.getElementById('d-image-file').value = '';
+        document.getElementById('d-camera-file').value = '';
 
         // Refresh
         const { data: refreshed, error: refErr } = await dbClient.from('deals').select('id, title, description, product_id, original_price, deal_price, image_url, start_date, end_date, is_active, created_at');
@@ -2113,6 +2215,9 @@
         console.error('Error saving deal:', err);
         alert('Failed to save deal: ' + (err.message || err.details || err));
         showToast('Failed to save deal', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
       }
     }
 
