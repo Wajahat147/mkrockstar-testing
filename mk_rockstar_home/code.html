@@ -5,6 +5,19 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MK Rockstar | Luxury Streetwear</title>
 <meta name="description" content="MK Rockstar — Premium streetwear for the modern generation. Engineered for those who command the room without saying a word."/>
+<link rel="canonical" href="https://mkrockstar-testing.vercel.app/mk_rockstar_home/code.html" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>" />
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://mkrockstar-testing.vercel.app/mk_rockstar_home/code.html" />
+<meta property="og:title" content="MK Rockstar | Luxury Streetwear" />
+<meta property="og:description" content="MK Rockstar — Premium streetwear for the modern generation. Engineered for those who command the room without saying a word." />
+<meta property="og:image" content="https://mkrockstar-testing.vercel.app/mk_rockstar_home/screen.png" />
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="MK Rockstar | Luxury Streetwear" />
+<meta name="twitter:description" content="MK Rockstar — Premium streetwear for the modern generation." />
+<meta name="twitter:image" content="https://mkrockstar-testing.vercel.app/mk_rockstar_home/screen.png" />
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -1051,7 +1064,7 @@ async function sendOrderNotification(order, customer, cartItems, total) {
       email_status = 'sent';
       email_provider = 'resend';
     } catch (resendErr) {
-      console.warn('Resend failed, trying EmailJS fallback...', resendErr);
+      // Resend failed silently — trying EmailJS fallback
       
       // 2. Fallback to EmailJS (best effort to owner)
       try {
@@ -1070,7 +1083,7 @@ async function sendOrderNotification(order, customer, cartItems, total) {
         email_provider = 'emailjs';
         email_error = resendErr.message || 'Resend failed';
       } catch (emailjsErr) {
-        console.error('EmailJS fallback also failed:', emailjsErr);
+        // EmailJS fallback also failed — order is saved, email notification missed
         email_status = 'failed';
         email_provider = 'none';
         email_error = `Resend: ${resendErr.message || 'Failed'}. EmailJS: ${emailjsErr.text || 'Failed'}`;
@@ -1086,7 +1099,7 @@ async function sendOrderNotification(order, customer, cartItems, total) {
       email_error: email_error ? email_error.substring(0, 250) : null
     }).eq('id', order.id);
   } catch (dbErr) {
-    console.warn('Failed to update email status on order:', dbErr);
+    // Non-critical — order is saved, only email tracking update failed
   }
 
   return { email_status, email_provider };
@@ -1213,7 +1226,6 @@ async function processCheckout(e) {
     showToast('Order placed successfully!', 'success');
 
   } catch (err) {
-    console.error('Checkout error:', err);
     const msg = err instanceof Error ? err.message : 'Checkout failed. Please try again.';
     showToast(msg, 'error');
   } finally {

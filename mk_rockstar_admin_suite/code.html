@@ -6,6 +6,8 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>MK Rockstar | Admin Suite</title>
   <meta name="description" content="MK Rockstar Admin Dashboard" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>" />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="output.css" />
@@ -648,8 +650,8 @@
             <option value="Cancelled">Cancelled</option>
             <option value="Pending">Pending</option>
           </select>
-          <button onclick="deleteTestOrders()" class="bg-red-600/20 text-red-400 hover:bg-red-600/40 hover:text-white px-4 py-2 text-xs font-bold border border-red-500/30 transition-all" style="letter-spacing:0.1em; border-radius:4px;">DELETE TEST ORDERS</button>
-          <button onclick="deleteAllOrders()" class="bg-red-600 text-white hover:bg-red-750 px-4 py-2 text-xs font-bold transition-all" style="letter-spacing:0.1em; border-radius:4px;">DELETE ALL ORDERS</button>
+          <!-- DEV TOOL: only visible with ?devtools=1 in URL -->
+          <button id="btn-delete-test-orders" onclick="deleteTestOrders()" class="hidden bg-amber-600/20 text-amber-400 hover:bg-amber-600/40 hover:text-white px-4 py-2 text-xs font-bold border border-amber-500/30 transition-all" style="letter-spacing:0.1em; border-radius:4px;" title="DEV TOOL — only for removing load-test orders">🛠 DELETE TEST ORDERS</button>
         </div>
       </header>
       <!-- Mobile cards -->
@@ -1196,12 +1198,14 @@
   </div>
 
   <script>
+    // Production error handlers — silent (no alert exposed to users)
     window.onerror = function (msg, url, lineNo, columnNo, error) {
-      alert('Global JS Error: ' + msg + '\nLine: ' + lineNo);
-      return false;
+      // Errors are swallowed silently in production
+      return true;
     };
     window.addEventListener('unhandledrejection', function (event) {
-      alert('Unhandled Promise Rejection: ' + (event.reason && event.reason.message ? event.reason.message : event.reason));
+      // Unhandled promise rejections are swallowed silently in production
+      event.preventDefault();
     });
 
     // App State═══════════════════════════════════════════
@@ -1249,14 +1253,12 @@
     let currentCtxOrderId = null;
 
     function clearStorefrontCache() {
-      console.log('[StorefrontRefresh] Clearing sessionStorage cache keys for storefront updates...');
       try {
         sessionStorage.removeItem('mk_deals');
         sessionStorage.removeItem('mk_products');
         sessionStorage.removeItem('mk_shop_all');
-        console.log('[StorefrontRefresh] Cache cleared successfully.');
       } catch (e) {
-        console.error('[StorefrontRefresh] Failed to clear cache:', e);
+        // Cache clear failed — non-critical
       }
     }
 
@@ -1305,6 +1307,11 @@
 
     async function initApp() {
       displayedOrdersCount = 50;
+      // Show DELETE TEST ORDERS button only when ?devtools=1 is in the URL
+      if (new URLSearchParams(window.location.search).has('devtools')) {
+        const devBtn = document.getElementById('btn-delete-test-orders');
+        if (devBtn) devBtn.classList.remove('hidden');
+      }
       // 1. Fetch Products Independently
       dbClient.from('products').select('id, name, category, color, price, badge, img_url, hex_color, is_new_arrival, created_at').then(prodRes => {
         if (prodRes.data) {
@@ -1986,15 +1993,11 @@
         submitBtn.textContent = 'SAVING PRODUCT...';
 
         if (id) {
-          console.log('[ProductEdit] Sending update payload to Supabase:', { id, dbData });
-          const { data, error } = await dbClient.from('products').update(dbData).eq('id', id).select();
-          console.log('[ProductEdit] Supabase response data:', data, 'error:', error);
+          const { error } = await dbClient.from('products').update(dbData).eq('id', id).select();
           if (error) throw error;
           showToast('Product updated', 'success');
         } else {
-          console.log('[ProductAdd] Sending insert payload to Supabase:', dbData);
-          const { data, error } = await dbClient.from('products').insert([dbData]).select();
-          console.log('[ProductAdd] Supabase response data:', data, 'error:', error);
+          const { error } = await dbClient.from('products').insert([dbData]).select();
           if (error) throw error;
           notifications.unshift({ icon: 'inventory_2', msg: `New product added: ${dbData.name}`, sub: 'Just now', read: false });
           showToast('Product added', 'success');
@@ -2183,15 +2186,11 @@
         submitBtn.textContent = 'SAVING DEAL...';
 
         if (id) {
-          console.log('[DealEdit] Updating deal payload:', { id, dbData });
-          const { data, error } = await dbClient.from('deals').update(dbData).eq('id', id).select();
-          console.log('[DealEdit] Deal update response:', data, 'error:', error);
+          const { error } = await dbClient.from('deals').update(dbData).eq('id', id).select();
           if (error) throw error;
           showToast('Deal updated', 'success');
         } else {
-          console.log('[DealAdd] Inserting deal payload:', dbData);
-          const { data, error } = await dbClient.from('deals').insert(dbData).select();
-          console.log('[DealAdd] Deal insert response:', data, 'error:', error);
+          const { error } = await dbClient.from('deals').insert(dbData).select();
           if (error) throw error;
           showToast('Deal added', 'success');
         }

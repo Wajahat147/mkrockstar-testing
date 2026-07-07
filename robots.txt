@@ -1,0 +1,6 @@
+﻿User-agent: *
+Disallow: /mk_rockstar_admin_suite/
+Allow: /
+
+Sitemap: https://mkrockstar-testing.vercel.app/sitemap.xml
+
