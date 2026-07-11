@@ -404,14 +404,14 @@
         <p class="text-on-surface-variant mb-8 max-w-xs" style="font-size:14px;line-height:1.7;">Defining the next era
           of urban luxury. High-end streetwear for the visionaries.</p>
         <div class="flex gap-5">
-          <a href="https://www.instagram.com/m_k_rockstar?igsh=MTB1NHZsc2gyMW0xcw==" target="_blank"
+          <a href="https://www.instagram.com/m_k_rockstar?igsh=MTB1NHZsc2gyMW0xcw==" target="_blank" rel="noopener noreferrer"
             class="text-on-surface-variant hover:text-tertiary transition-colors" title="Instagram">
             <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
               <path
                 d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm3.98-10.834a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z" />
             </svg>
           </a>
-          <a href="https://www.tiktok.com/@m_k_rockstar?_r=1&_t=ZS-92R8PqQfa5q" target="_blank"
+          <a href="https://www.tiktok.com/@m_k_rockstar?_r=1&_t=ZS-92R8PqQfa5q" target="_blank" rel="noopener noreferrer"
             class="text-on-surface-variant hover:text-tertiary transition-colors" title="TikTok">
             <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
               <path
@@ -511,6 +511,14 @@
     const supabaseUrl = 'https://aigyflxgtbkwhlhkdznd.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpZ3lmbHhndGJrd2hsaGtkem5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MDE2MDAsImV4cCI6MjA5ODM3NzYwMH0.S-9Ti5SyZ0_bpc0RKcM28eDY8okWmte3O-ePP_RGCT4';
     const dbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // XSS Escaping Helper
+    function esc(str) {
+      const d = document.createElement('div');
+      d.textContent = str == null ? '' : String(str);
+      return d.innerHTML;
+    }
+
 
     // Explicit column list — never use select('*')
     const PRODUCT_COLS = 'id, name, category, color, price, badge, img_url, hex_color, is_new_arrival, created_at';
@@ -626,7 +634,7 @@
       <h3 class="font-label-caps text-label-caps text-on-surface border-b border-white/10 pb-4 mb-5 tracking-widest text-[11px]">COLOR</h3>
       <div class="flex flex-wrap gap-3">
         ${colors.map(c => `
-          <button onclick="toggleColorFilter('${c.hex}', this)" class="color-btn w-7 h-7 rounded-full border border-white/20 transition-all hover:scale-110" style="background-color:${c.hex}" title="${c.name}"></button>
+          <button onclick="toggleColorFilter('${c.hex}', this)" class="color-btn w-7 h-7 rounded-full border border-white/20 transition-all hover:scale-110" style="background-color:${c.hex}" title="${esc(c.name)}"></button>
         `).join('')}
       </div>
     </section>
@@ -734,18 +742,18 @@
     <article class="product-card group relative flex flex-col mb-4">
       <div class="relative aspect-[3/4] bg-surface-container overflow-hidden mb-4 img-zoom">
         <a href="../oversized_hoodie_mk_rockstar/code.html" class="block w-full h-full">
-          <img class="product-img w-full h-full object-cover" src="${p.img}" alt="${p.name}" loading="lazy"/>
+          <img class="product-img w-full h-full object-cover" src="${p.img}" alt="${esc(p.name)}" loading="lazy"/>
         </a>
         <button class="quick-view absolute bottom-0 left-0 w-full bg-white text-black py-4 font-bold" style="font-size:11px;letter-spacing:0.15em;" onclick="quickView(${p.id})">QUICK VIEW</button>
         <button class="wishlist-btn absolute top-3 right-3 lg:top-4 lg:right-4 w-9 h-9 flex items-center justify-center bg-black/60 backdrop-blur-sm hover:bg-black/90 transition-colors z-10 rounded-full" id="wl-${p.id}" onclick="toggleWishlist(${p.id},event)">
           <span class="material-symbols-outlined" style="font-size:18px;color:#e5e2e1;">favorite</span>
         </button>
-        ${p.badge ? `<div class="absolute top-4 left-4"><span class="bg-black/80 text-white px-3 py-1 font-bold" style="font-size:9px;letter-spacing:0.15em;">${p.badge}</span></div>` : ''}
+        ${p.badge ? `<div class="absolute top-4 left-4"><span class="bg-black/80 text-white px-3 py-1 font-bold" style="font-size:9px;letter-spacing:0.15em;">${esc(p.badge)}</span></div>` : ''}
       </div>
       <div class="flex justify-between items-start">
         <div class="pr-2">
-          <a href="../oversized_hoodie_mk_rockstar/code.html" class="hover:text-tertiary transition-colors"><h4 class="text-white mb-1 uppercase" style="font-size:13px;letter-spacing:0.08em;font-weight:700;">${p.name}</h4></a>
-          <p class="text-on-surface-variant uppercase" style="font-size:10px;letter-spacing:0.1em;">${p.color}</p>
+          <a href="../oversized_hoodie_mk_rockstar/code.html" class="hover:text-tertiary transition-colors"><h4 class="text-white mb-1 uppercase" style="font-size:13px;letter-spacing:0.08em;font-weight:700;">${esc(p.name)}</h4></a>
+          <p class="text-on-surface-variant uppercase" style="font-size:10px;letter-spacing:0.1em;">${esc(p.color)}</p>
         </div>
         <p class="text-tertiary font-bold" style="font-size:15px;">Rs. ${p.price}</p>
       </div>
@@ -766,19 +774,18 @@
     function quickView(id) {
       const p = PRODUCTS.find(x => x.id === id);
       if (!p) return;
-      const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
       document.getElementById('qv-content').innerHTML = `
     <div class="flex flex-col sm:flex-row">
       <div class="sm:w-1/2 img-zoom" style="aspect-ratio:3/4;max-height:55vh;overflow:hidden;">
-        <img src="${p.img}" alt="${p.name}" class="product-img w-full h-full object-cover"/>
+        <img src="${p.img}" alt="${esc(p.name)}" class="product-img w-full h-full object-cover"/>
       </div>
       <div class="sm:w-1/2 p-6 lg:p-8 flex flex-col">
         <div class="flex justify-between items-start mb-1">
-          <span class="text-on-surface-variant uppercase" style="font-size:10px;letter-spacing:0.15em;">${p.category}</span>
+          <span class="text-on-surface-variant uppercase" style="font-size:10px;letter-spacing:0.15em;">${esc(p.category)}</span>
           <button onclick="closeQV()" class="material-symbols-outlined text-on-surface-variant hover:text-white transition-colors">close</button>
         </div>
-        <h3 class="text-white uppercase mb-1 mt-2" style="font-family:Anton,sans-serif;font-size:28px;letter-spacing:0.04em;line-height:1.1;">${p.name}</h3>
-        <p class="text-on-surface-variant mb-4" style="font-size:13px;">${p.color}</p>
+        <h3 class="text-white uppercase mb-1 mt-2" style="font-family:Anton,sans-serif;font-size:28px;letter-spacing:0.04em;line-height:1.1;">${esc(p.name)}</h3>
+        <p class="text-on-surface-variant mb-4" style="font-size:13px;">${esc(p.color)}</p>
         <p class="text-tertiary font-bold mb-8" style="font-size:24px;font-family:Anton,sans-serif;">Rs. ${p.price}</p>
         <p class="text-on-surface-variant mb-2 font-bold" style="font-size:10px;letter-spacing:0.15em;">SELECT SIZE</p>
         <div class="flex flex-wrap gap-2 mb-8" id="qv-sizes">
@@ -876,10 +883,10 @@
         if (p) {
           html += `
       <div class="flex gap-4 border-b border-white/5 pb-4">
-        <img src="${p.img}" class="w-20 h-24 object-cover" alt="${p.name}">
+        <img src="${p.img}" class="w-20 h-24 object-cover" alt="${esc(p.name)}">
         <div class="flex-1 flex flex-col justify-between">
           <div>
-            <h4 class="text-white text-sm font-bold uppercase tracking-wider">${p.name}</h4>
+            <h4 class="text-white text-sm font-bold uppercase tracking-wider">${esc(p.name)}</h4>
             <p class="text-on-surface-variant text-xs mt-1">Rs. ${p.price}</p>
           </div>
           <div class="flex gap-3 mt-2">
@@ -906,7 +913,7 @@
       saveCart();
       renderCart();
       updateBadges();
-      showToast(`${p.name} added to cart`, 'success');
+      showToast(`${esc(p.name)} added to cart`, 'success');
     }
     function removeFromCart(id, size) {
       cart = cart.filter(c => !(c.id === id && c.size === size));
@@ -935,11 +942,11 @@
       container.innerHTML = cart.map(c => `
     <div class="py-5 flex gap-4">
       <div class="w-20 h-24 flex-shrink-0 overflow-hidden bg-surface-container">
-        <img src="${c.img}" alt="${c.name}" class="w-full h-full object-cover"/>
+        <img src="${c.img}" alt="${esc(c.name)}" class="w-full h-full object-cover"/>
       </div>
       <div class="flex-1 min-w-0 flex flex-col">
-        <p style="font-size:12px;letter-spacing:0.08em;font-weight:700;" class="text-white uppercase truncate">${c.name}</p>
-        <p class="text-on-surface-variant mt-1" style="font-size:11px;">${c.color} · Size ${c.size}</p>
+        <p style="font-size:12px;letter-spacing:0.08em;font-weight:700;" class="text-white uppercase truncate">${esc(c.name)}</p>
+        <p class="text-on-surface-variant mt-1" style="font-size:11px;">${esc(c.color)} · Size ${c.size}</p>
         <div class="flex justify-between items-end mt-auto">
           <p class="text-tertiary font-bold" style="font-size:15px;">Rs. ${(c.price * c.qty).toFixed(2)}</p>
           <div class="flex items-center gap-2">
@@ -1082,7 +1089,7 @@
 
           // 2. Fallback to EmailJS (best effort to owner)
           try {
-            const orderSummary = cartItems.map(c => `${c.qty}x ${c.name} (Size: ${c.size}) — Rs. ${(c.price * c.qty).toFixed(0)}`).join('\n');
+            const orderSummary = cartItems.map(c => `${c.qty}x ${esc(c.name)} (Size: ${c.size}) — Rs. ${(c.price * c.qty).toFixed(0)}`).join('\n');
             await emailjs.send('service_i9tzjls', 'template_7c5tcmd', {
               to_email: 'Admin', // Owner email for fallback
               email: customer.email,
@@ -1270,6 +1277,11 @@
             </svg>
           </div>
         </button>
+      <div class="mt-4 text-center space-y-1 text-on-surface-variant" style="font-size:12px;">
+        <p>Cash on Delivery Charges: <span class="text-white font-bold">Rs. 299</span></p>
+        <p>For any queries contact: <span class="text-white font-bold">03330610700</span></p>
+      </div>
+
       </form>
     </div>
   </div>

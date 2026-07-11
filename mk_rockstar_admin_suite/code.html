@@ -1019,6 +1019,18 @@
               <option>Bottoms</option>
             </select>
           </div>
+
+          <div><label class="block text-on-surface-variant mb-2" style="font-size:10px;letter-spacing:0.15em;">AVAILABLE SIZES (Leave all unchecked for all sizes)</label>
+            <div class="flex flex-wrap gap-3" id="p-sizes">
+              <label class="flex items-center gap-2"><input type="checkbox" value="XS" class="size-cb form-checkbox bg-transparent border-white/20 text-tertiary"> <span style="font-size:12px;">XS</span></label>
+              <label class="flex items-center gap-2"><input type="checkbox" value="S" class="size-cb form-checkbox bg-transparent border-white/20 text-tertiary"> <span style="font-size:12px;">S</span></label>
+              <label class="flex items-center gap-2"><input type="checkbox" value="M" class="size-cb form-checkbox bg-transparent border-white/20 text-tertiary"> <span style="font-size:12px;">M</span></label>
+              <label class="flex items-center gap-2"><input type="checkbox" value="L" class="size-cb form-checkbox bg-transparent border-white/20 text-tertiary"> <span style="font-size:12px;">L</span></label>
+              <label class="flex items-center gap-2"><input type="checkbox" value="XL" class="size-cb form-checkbox bg-transparent border-white/20 text-tertiary"> <span style="font-size:12px;">XL</span></label>
+              <label class="flex items-center gap-2"><input type="checkbox" value="XXL" class="size-cb form-checkbox bg-transparent border-white/20 text-tertiary"> <span style="font-size:12px;">XXL</span></label>
+            </div>
+          </div>
+
           <div><label class="block text-on-surface-variant mb-1"
               style="font-size:10px;letter-spacing:0.15em;">SKU</label><input class="mk-input" id="p-sku"
               placeholder="MK-XXXX" /></div>
@@ -1219,6 +1231,14 @@
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpZ3lmbHhndGJrd2hsaGtkem5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MDE2MDAsImV4cCI6MjA5ODM3NzYwMH0.S-9Ti5SyZ0_bpc0RKcM28eDY8okWmte3O-ePP_RGCT4';
     const dbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+    // XSS Escaping Helper
+    function esc(str) {
+      const d = document.createElement('div');
+      d.textContent = str == null ? '' : String(str);
+      return d.innerHTML;
+    }
+
+
     let products = [];
 
 
@@ -1313,7 +1333,7 @@
         if (devBtn) devBtn.classList.remove('hidden');
       }
       // 1. Fetch Products Independently
-      dbClient.from('products').select('id, name, category, color, price, badge, img_url, hex_color, is_new_arrival, created_at').then(prodRes => {
+      dbClient.from('products').select('id, name, category, color, price, badge, img_url, hex_color, is_new_arrival, created_at, available_sizes').then(prodRes => {
         if (prodRes.data) {
           products = prodRes.data.map(p => ({
             id: p.id.toString(),
@@ -1324,7 +1344,8 @@
             sku: 'MK-' + p.id.toString().substring(0, 6),
             desc: p.name,
             image: p.img_url,
-            is_new: p.is_new_arrival
+            is_new: p.is_new_arrival,
+            available_sizes: p.available_sizes || null
           }));
           renderProducts();
           renderAnalytics();
@@ -1563,7 +1584,7 @@
       cats.innerHTML = CATEGORIES_DATA.map(c => `
     <div>
       <div class="flex justify-between items-center mb-1">
-        <span style="font-size:14px;">${c.name}</span>
+        <span style="font-size:14px;">${esc(c.name)}</span>
         <span class="text-tertiary font-bold" style="font-size:12px;letter-spacing:0.1em;">${c.pct}%</span>
       </div>
       <div class="w-full h-1 overflow-hidden" style="background:rgba(255,255,255,0.1);">
@@ -1585,10 +1606,10 @@
           <div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold flex-shrink-0" style="font-size:10px;">${o.initials}</div>
           <div>
             <div class="flex items-center gap-2">
-              <p style="font-size:14px;">${o.customer}</p>
+              <p style="font-size:14px;">${esc(o.customer)}</p>
               ${o.is_test_order ? `<span class="px-1 bg-yellow-500/20 text-yellow-500 font-bold border border-yellow-500/30" style="font-size:8px;border-radius:2px;">TEST</span>` : ''}
             </div>
-            <p class="text-on-surface-variant opacity-60" style="font-size:10px;">${o.id.substring(0, 8)} · ${o.date}</p>
+            <p class="text-on-surface-variant opacity-60" style="font-size:10px;">${esc(o.id).substring(0, 8)} · ${esc(o.date)}</p>
           </div>
         </div>
         <span class="px-2 py-1 badge-${o.status.toLowerCase()}" style="font-size:10px;letter-spacing:0.1em;">${o.status.toUpperCase()}</span>
@@ -1603,17 +1624,17 @@
     <tr class="row-hover transition-colors">
       <td class="px-6 lg:px-8 py-5 whitespace-nowrap" style="font-size:14px;">
         <div class="flex items-center gap-2">
-          <span>${o.id.substring(0, 8)}</span>
+          <span>${esc(o.id).substring(0, 8)}</span>
           ${o.is_test_order ? `<span class="px-1 bg-yellow-500/20 text-yellow-500 font-bold border border-yellow-500/30" style="font-size:8px;border-radius:2px;">TEST</span>` : ''}
         </div>
       </td>
       <td class="px-6 lg:px-8 py-5">
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold flex-shrink-0" style="font-size:10px;">${o.initials}</div>
-          <span class="whitespace-nowrap" style="font-size:14px;">${o.customer}</span>
+          <span class="whitespace-nowrap" style="font-size:14px;">${esc(o.customer)}</span>
         </div>
       </td>
-      <td class="px-6 lg:px-8 py-5 opacity-60 whitespace-nowrap" style="font-size:14px;">${o.date}</td>
+      <td class="px-6 lg:px-8 py-5 opacity-60 whitespace-nowrap" style="font-size:14px;">${esc(o.date)}</td>
       <td class="px-6 lg:px-8 py-5 whitespace-nowrap" style="font-size:14px;">Rs. ${o.amount.toFixed(2)}</td>
       <td class="px-6 lg:px-8 py-5"><span class="px-3 py-1 badge-${o.status.toLowerCase()} whitespace-nowrap" style="font-size:10px;letter-spacing:0.1em;">${o.status.toUpperCase()}</span></td>
       <td class="px-6 lg:px-8 py-5"><button class="material-symbols-outlined text-on-surface-variant hover:text-white ctx-trigger" onclick="openCtx(event,'${o.id}')">more_vert</button></td>
@@ -1657,7 +1678,7 @@
       <!-- Product Image -->
       <div style="height:200px;overflow:hidden;background:rgba(255,255,255,0.04);position:relative;">
         ${p.image
-          ? `<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;"/>`
+          ? `<img src="${p.image}" alt="${esc(p.name)}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;"/>`
           : `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0.25;">
                <span class="material-symbols-outlined" style="font-size:40px;">image_not_supported</span>
                <span style="font-size:10px;letter-spacing:0.1em;">NO IMAGE</span>
@@ -1670,7 +1691,7 @@
       <!-- Card body -->
       <div class="p-4 flex flex-col gap-2 flex-1">
         <div class="flex justify-between items-start">
-          <h4 style="font-size:14px;font-weight:500;line-height:1.3;flex:1;margin-right:8px;">${p.name}</h4>
+          <h4 style="font-size:14px;font-weight:500;line-height:1.3;flex:1;margin-right:8px;">${esc(p.name)}</h4>
           <span class="text-on-surface-variant flex-shrink-0" style="font-size:10px;">${p.sku}</span>
         </div>
         <p class="text-on-surface-variant flex-1" style="font-size:12px;line-height:1.5;">${p.desc}</p>
@@ -1706,12 +1727,21 @@
             document.getElementById('p-category').value = p.category;
             document.getElementById('p-sku').value = p.sku;
             document.getElementById('p-desc').value = p.desc;
+            document.querySelectorAll('.size-cb').forEach(cb => cb.checked = false);
+            if (p.available_sizes && Array.isArray(p.available_sizes)) {
+              p.available_sizes.forEach(s => {
+                const cb = document.querySelector(`.size-cb[value='${s}']`);
+                if (cb) cb.checked = true;
+              });
+            }
             // Restore image if exists
             if (p.image) setImagePreview(p.image);
           }
         } else {
           document.getElementById('product-form').reset();
           document.getElementById('p-image-data').value = '';
+          document.querySelectorAll('.size-cb').forEach(cb => cb.checked = false);
+
         }
         openModal('product-modal');
       } catch (err) {
@@ -1962,7 +1992,9 @@
           category: document.getElementById('p-category').value,
           color: 'DEFAULT',
           hex_color: '#000000',
-          is_new_arrival: document.getElementById('p-is-new').checked
+          is_new_arrival: document.getElementById('p-is-new').checked,
+          available_sizes: Array.from(document.querySelectorAll('.size-cb:checked')).map(cb => cb.value)
+
         };
 
         const finalId = id ? parseInt(id, 10) : Date.now();
@@ -2009,7 +2041,7 @@
         document.getElementById('p-camera-file').value = '';
 
         // Refresh products list
-        const { data: refreshed, error: refreshErr } = await dbClient.from('products').select('id, name, category, color, price, badge, img_url, hex_color, is_new_arrival, created_at');
+        const { data: refreshed, error: refreshErr } = await dbClient.from('products').select('id, name, category, color, price, badge, img_url, hex_color, is_new_arrival, created_at, available_sizes');
         if (refreshErr) throw refreshErr;
         if (refreshed) {
           products = refreshed.map(p => ({
@@ -2021,7 +2053,8 @@
             sku: 'MK-' + p.id.toString().substring(0, 6),
             desc: p.name,
             image: p.img_url,
-            is_new: p.is_new_arrival
+            is_new: p.is_new_arrival,
+            available_sizes: p.available_sizes || null
           }));
         }
 
@@ -2043,7 +2076,7 @@
 
     function confirmDeleteProduct(id) {
       const p = products.find(x => x.id === id);
-      document.getElementById('confirm-message').textContent = `Delete "${p.name}"? This will also delete any linked deals or order items and cannot be undone.`;
+      document.getElementById('confirm-message').textContent = `Delete "${esc(p.name)}"? This will also delete any linked deals or order items and cannot be undone.`;
       document.getElementById('confirm-yes').onclick = async () => {
         try {
           console.log('[ProductDelete] Deleting product. Affected ID:', id);
@@ -2094,7 +2127,7 @@
       grid.innerHTML = deals.map(d => `
     <div class="product-card flex flex-col" style="overflow:hidden; ${!d.is_active ? 'opacity:0.6;' : ''}">
       <div style="height:200px;overflow:hidden;background:rgba(255,255,255,0.04);position:relative;">
-        <img src="${d.image_url || 'https://via.placeholder.com/400x500?text=No+Image'}" alt="${d.title}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;"/>
+        <img src="${d.image_url || 'https://via.placeholder.com/400x500?text=No+Image'}" alt="${esc(d.title)}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;"/>
         <div style="position:absolute;top:8px;right:8px;">
           <span style="background:${d.is_active ? 'rgba(0,180,0,0.6)' : 'rgba(180,0,0,0.6)'};backdrop-filter:blur(4px);padding:2px 8px;font-size:9px;letter-spacing:0.12em;color:#fff;">
             ${d.is_active ? 'ACTIVE' : 'INACTIVE'}
@@ -2102,8 +2135,8 @@
         </div>
       </div>
       <div class="p-4 flex flex-col gap-2 flex-1">
-        <h4 style="font-size:14px;font-weight:500;line-height:1.3;flex:1;">${d.title}</h4>
-        <p class="text-on-surface-variant flex-1" style="font-size:12px;line-height:1.5;">${d.description || ''}</p>
+        <h4 style="font-size:14px;font-weight:500;line-height:1.3;flex:1;">${esc(d.title)}</h4>
+        <p class="text-on-surface-variant flex-1" style="font-size:12px;line-height:1.5;">${esc(d.description || '')}</p>
         <div class="flex justify-between items-center border-t border-white/10 pt-3 mt-auto">
           <div>
             <p style="font-family:Anton,sans-serif;font-size:22px;">Rs. ${d.deal_price}</p>
@@ -2222,7 +2255,7 @@
 
     function confirmDeleteDeal(id) {
       const d = deals.find(x => String(x.id) === String(id));
-      document.getElementById('confirm-message').textContent = `Delete deal "${d.title}"? This cannot be undone.`;
+      document.getElementById('confirm-message').textContent = `Delete deal "${esc(d.title)}"? This cannot be undone.`;
       document.getElementById('confirm-yes').onclick = async () => {
         try {
           console.log('[DealDelete] Deleting deal from Supabase. Affected ID:', id);
@@ -2281,16 +2314,16 @@
           <div class="w-9 h-9 rounded-full bg-surface-container-highest flex items-center justify-center font-bold flex-shrink-0" style="font-size:11px;">${o.initials}</div>
           <div>
             <div class="flex items-center gap-2">
-              <p style="font-size:14px;font-weight:500;">${o.customer}</p>
+              <p style="font-size:14px;font-weight:500;">${esc(o.customer)}</p>
               ${o.is_test_order ? `<span class="px-1 bg-yellow-500/20 text-yellow-500 font-bold border border-yellow-500/30" style="font-size:8px;border-radius:2px;">TEST</span>` : ''}
             </div>
-            <p class="text-on-surface-variant" style="font-size:10px;letter-spacing:0.05em;">${o.id.substring(0, 8)}</p>
+            <p class="text-on-surface-variant" style="font-size:10px;letter-spacing:0.05em;">${esc(o.id).substring(0, 8)}</p>
           </div>
         </div>
         <span class="px-2 py-1 badge-${o.status.toLowerCase()}" style="font-size:10px;letter-spacing:0.1em;">${o.status.toUpperCase()}</span>
       </div>
       <div class="flex justify-between items-center text-on-surface-variant border-t border-white/10 pt-3" style="font-size:12px;">
-        <span>${o.date}</span><span>${o.items} items</span><span style="color:#e5e2e1;font-size:14px;">Rs. ${o.amount.toFixed(2)}</span>
+        <span>${esc(o.date)}</span><span>${o.items} items</span><span style="color:#e5e2e1;font-size:14px;">Rs. ${o.amount.toFixed(2)}</span>
         <button class="material-symbols-outlined hover:text-white ctx-trigger" onclick="openCtx(event,'${o.id}')">more_vert</button>
       </div>
     </div>`).join('');
@@ -2300,17 +2333,17 @@
     <tr class="row-hover transition-colors">
       <td class="px-6 py-5 whitespace-nowrap" style="font-size:14px;">
         <div class="flex items-center gap-2">
-          <span>${o.id.substring(0, 8)}</span>
+          <span>${esc(o.id).substring(0, 8)}</span>
           ${o.is_test_order ? `<span class="px-1 bg-yellow-500/20 text-yellow-500 font-bold border border-yellow-500/30" style="font-size:8px;border-radius:2px;">TEST</span>` : ''}
         </div>
       </td>
       <td class="px-6 py-5">
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold flex-shrink-0" style="font-size:10px;">${o.initials}</div>
-          <span class="whitespace-nowrap" style="font-size:14px;">${o.customer}</span>
+          <span class="whitespace-nowrap" style="font-size:14px;">${esc(o.customer)}</span>
         </div>
       </td>
-      <td class="px-6 py-5 opacity-60 whitespace-nowrap" style="font-size:13px;">${o.date}</td>
+      <td class="px-6 py-5 opacity-60 whitespace-nowrap" style="font-size:13px;">${esc(o.date)}</td>
       <td class="px-6 py-5 opacity-70 whitespace-nowrap" style="font-size:13px;">${o.items} items</td>
       <td class="px-6 py-5 whitespace-nowrap" style="font-size:14px;">Rs. ${o.amount.toFixed(2)}</td>
       <td class="px-6 py-5"><span class="px-3 py-1 badge-${o.status.toLowerCase()} whitespace-nowrap" style="font-size:10px;letter-spacing:0.1em;">${o.status.toUpperCase()}</span></td>
@@ -2343,8 +2376,8 @@
       document.getElementById('order-modal-id').textContent = o.id;
       document.getElementById('order-modal-content').innerHTML = `
     <div class="grid grid-cols-2 gap-4">
-      <div><p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">CUSTOMER</p><p style="font-size:15px;">${o.customer}</p></div>
-      <div><p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">DATE</p><p style="font-size:15px;">${o.date}</p></div>
+      <div><p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">CUSTOMER</p><p style="font-size:15px;">${esc(o.customer)}</p></div>
+      <div><p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">DATE</p><p style="font-size:15px;">${esc(o.date)}</p></div>
       <div><p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">AMOUNT</p><p style="font-family:Anton,sans-serif;font-size:24px;">Rs. ${o.amount.toFixed(2)}</p></div>
       <div><p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">ITEMS</p><p style="font-size:15px;">${o.items} items</p></div>
     </div>
@@ -2366,22 +2399,22 @@
     <div class="flex items-center gap-4 mb-6">
       <div class="w-14 h-14 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-lg flex-shrink-0">${c.initials}</div>
       <div>
-        <h4 style="font-family:Anton,sans-serif;font-size:20px;letter-spacing:0.02em;">${c.name}</h4>
+        <h4 style="font-family:Anton,sans-serif;font-size:20px;letter-spacing:0.02em;">${esc(c.name)}</h4>
         <p class="text-on-surface-variant" style="font-size:13px;">Customer since ${c.joined}</p>
       </div>
     </div>
     <div class="grid grid-cols-1 gap-4">
       <div class="glass p-4 border border-white/5">
         <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">EMAIL</p>
-        <p style="font-size:15px;">${c.email}</p>
+        <p style="font-size:15px;">${esc(c.email)}</p>
       </div>
       <div class="glass p-4 border border-white/5">
         <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">PHONE NUMBER</p>
-        <p style="font-size:15px;">${c.phone}</p>
+        <p style="font-size:15px;">${esc(c.phone)}</p>
       </div>
       <div class="glass p-4 border border-white/5">
         <p class="text-on-surface-variant mb-1" style="font-size:10px;letter-spacing:0.15em;">SHIPPING ADDRESS</p>
-        <p style="font-size:15px;">${c.address}</p>
+        <p style="font-size:15px;">${esc(c.address)}</p>
       </div>
     </div>
     <div class="grid grid-cols-2 gap-4 mt-4">
@@ -2550,7 +2583,7 @@
     <div class="glass p-5 cursor-pointer" onclick="viewCustomer('${c.id}')">
       <div class="flex items-center gap-3 mb-3">
         <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-bold flex-shrink-0" style="font-size:12px;">${c.initials}</div>
-        <div><p style="font-size:14px;font-weight:500;">${c.name}</p><p class="text-on-surface-variant" style="font-size:11px;">${c.email}</p></div>
+        <div><p style="font-size:14px;font-weight:500;">${esc(c.name)}</p><p class="text-on-surface-variant" style="font-size:11px;">${esc(c.email)}</p></div>
         ${tierBadge(c.tier)}
       </div>
       <div class="flex justify-between text-on-surface-variant border-t border-white/10 pt-3" style="font-size:12px;">
@@ -2564,10 +2597,10 @@
       <td class="px-6 py-4">
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-full bg-surface-container-highest flex items-center justify-center font-bold flex-shrink-0" style="font-size:11px;">${c.initials}</div>
-          <span style="font-size:14px;">${c.name}</span>
+          <span style="font-size:14px;">${esc(c.name)}</span>
         </div>
       </td>
-      <td class="px-6 py-4 text-on-surface-variant" style="font-size:13px;">${c.email}</td>
+      <td class="px-6 py-4 text-on-surface-variant" style="font-size:13px;">${esc(c.email)}</td>
       <td class="px-6 py-4" style="font-size:14px;">${c.orders}</td>
       <td class="px-6 py-4" style="font-size:14px;">Rs. ${c.spent.toLocaleString()}</td>
       <td class="px-6 py-4">${tierBadge(c.tier)}</td>
@@ -2597,8 +2630,8 @@
         const topProds = [...products].sort((a, b) => b.price - a.price).slice(0, 5);
         tbody.innerHTML = topProds.map((p, i) => `
       <tr class="row-hover transition-colors">
-        <td class="px-6 py-4" style="font-size:14px;">${p.name}</td>
-        <td class="px-6 py-4 text-on-surface-variant" style="font-size:13px;">${p.category}</td>
+        <td class="px-6 py-4" style="font-size:14px;">${esc(p.name)}</td>
+        <td class="px-6 py-4 text-on-surface-variant" style="font-size:13px;">${esc(p.category)}</td>
         <td class="px-6 py-4" style="font-size:14px;">${Math.floor(Math.random() * 50) + 10}</td>
         <td class="px-6 py-4" style="font-size:14px;">Rs. ${(p.price * (Math.floor(Math.random() * 50) + 10)).toLocaleString()}</td>
         <td class="px-6 py-4"><span class="text-tertiary font-bold" style="font-size:13px;">↑ ${(Math.random() * 20 + 5).toFixed(1)}%</span></td>
